@@ -12,7 +12,7 @@
               :class="item.index === pageIndex ? 'item-click' : 'item'"
               @click="pageChange(item.index)"
             >
-              <a-icon :type="item.icon" spin style="margin-right: 5px" />
+              <component :is="item.icon" spin style="margin-right: 5px" />
               {{ item.label }}
             </p>
           </div>
@@ -24,14 +24,14 @@
               :class="item.index === pageIndex ? 'item-click' : 'item'"
               @click="pageChange(item.index)"
             >
-              <a-icon :type="item.icon" style="margin-right: 5px" />
+              <component :is="item.icon" style="margin-right: 5px" />
               {{ item.label }}
             </p>
           </div>
           <div>
             <p class="group">
               创建的歌单
-              <a-icon type="plus-square" style="margin-left: 30px" />
+              <PlusSquareOutlined style="margin-left: 30px" />
             </p>
           </div>
           <div>
@@ -43,14 +43,12 @@
         <a-layout-header class="header">
           <a-input-search class="search" />
           <div>
-            <a-avatar icon="user" />
+            <a-avatar>
+              <template #icon><UserOutlined /></template>
+            </a-avatar>
             <span class="discolour">登录</span>
-            <a-icon
-              type="mail"
-              class="discolour"
-              style="margin: 0 10px 0 15px"
-            />
-            <a-icon type="menu" class="discolour" />
+            <MailOutlined class="discolour" style="margin: 0 10px 0 15px" />
+            <MenuOutlined class="discolour" />
           </div>
         </a-layout-header>
         <a-layout-content class="content">
@@ -70,7 +68,9 @@
           </div>
           <div class="control-bar">
             <div class="bar-left">
-              <a-avatar shape="square" :size="50" icon="play-circle" />
+              <a-avatar shape="square" :size="50">
+                <template #icon><PlayCircleOutlined /></template>
+              </a-avatar>
               <span style="margin: 0 10px; font-size: 16px">海阔天空</span>
               <span>--beyond</span>
               <svg-icon
@@ -80,23 +80,17 @@
               />
             </div>
             <div class="bar-center">
-              <svg-icon
-                name="loop"
-                class="discolour"
-                style="font-size: 20px"
-              />
+              <svg-icon name="loop" class="discolour" style="font-size: 20px" />
               <svg-icon
                 name="prev"
                 class="discolour prev-button"
                 style="font-size: 26px"
               />
-              <a @click="changeState">
-                <svg-icon
-                  :name="state ? 'pause' : 'play'"
-                  style="font-size: 40px; color: #1dcf9f"
-                  @click="changeState"
-                />
-              </a>
+              <svg-icon
+                :name="state ? 'pause' : 'play'"
+                style="font-size: 40px; color: #1dcf9f"
+                @click="changeState"
+              />
               <svg-icon
                 name="next"
                 class="discolour next-button"
@@ -123,11 +117,7 @@
                 class="discolour"
                 style="font-size: 19px; margin: 0 10px"
               />
-              <svg-icon
-                name="歌单"
-                class="discolour"
-                style="font-size: 22px"
-              />
+              <svg-icon name="歌单" class="discolour" style="font-size: 22px" />
             </div>
           </div>
         </a-layout-footer>
@@ -137,6 +127,22 @@
 </template>
 
 <script lang="ts">
+import {
+  FireOutlined,
+  HomeOutlined,
+  CustomerServiceOutlined,
+  VideoCameraOutlined,
+  CrownOutlined,
+  HeartOutlined,
+  DesktopOutlined,
+  CloudDownloadOutlined,
+  HistoryOutlined,
+  PlusSquareOutlined,
+  MailOutlined,
+  MenuOutlined,
+  UserOutlined,
+  PlayCircleOutlined
+} from "@ant-design/icons-vue";
 interface item {
   index: number;
   label: string;
@@ -153,6 +159,22 @@ interface dataType {
 }
 
 export default {
+  components: {
+    FireOutlined,
+    HomeOutlined,
+    CustomerServiceOutlined,
+    VideoCameraOutlined,
+    CrownOutlined,
+    HeartOutlined,
+    DesktopOutlined,
+    CloudDownloadOutlined,
+    HistoryOutlined,
+    PlusSquareOutlined,
+    MailOutlined,
+    MenuOutlined,
+    UserOutlined,
+    PlayCircleOutlined
+  },
   name: "MainLayout",
   data(): dataType {
     return {
@@ -164,49 +186,49 @@ export default {
         {
           index: 0,
           label: "推荐",
-          icon: "fire",
+          icon: "FireOutlined",
           path: "/0",
         },
         {
           index: 1,
           label: "音乐馆",
-          icon: "customer-service",
+          icon: "CustomerServiceOutlined",
           path: "/1",
         },
         {
           index: 2,
           label: "视频",
-          icon: "video-camera",
+          icon: "VideoCameraOutlined",
           path: "/2",
         },
         {
           index: 3,
           label: "私人FM",
-          icon: "crown",
+          icon: "CrownOutlined",
           path: "/3",
         },
         {
           index: 4,
           label: "我喜欢",
-          icon: "heart",
+          icon: "HeartOutlined",
           path: "/4",
         },
         {
           index: 5,
           label: "本地歌曲",
-          icon: "desktop",
+          icon: "DesktopOutlined",
           path: "/5",
         },
         {
           index: 6,
           label: "下载管理",
-          icon: "download",
+          icon: "CloudDownloadOutlined",
           path: "/6",
         },
         {
           index: 7,
           label: "最近播放",
-          icon: "history",
+          icon: "HistoryOutlined",
           path: "/7",
         },
       ],
@@ -365,7 +387,7 @@ export default {
   min-width: 150px;
 }
 
- .search {
+.search {
   /* background: #e1e1e1; */
   border-radius: 20px;
   /* box-shadow: none; */
