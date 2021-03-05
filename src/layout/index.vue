@@ -1,0 +1,423 @@
+<template>
+  <div>
+    <a-layout class="layout">
+      <a-layout-sider class="sider">
+        <img class="logo" src="@/assets/image/logo.png" />
+        <div class="menu">
+          <div>
+            <p class="group">在线音乐</p>
+            <p
+              v-for="item of menuList('a')"
+              :key="item.icon"
+              :class="item.index === pageIndex ? 'item-click' : 'item'"
+              @click="pageChange(item.index)"
+            >
+              <a-icon :type="item.icon" spin style="margin-right: 5px" />
+              {{ item.label }}
+            </p>
+          </div>
+          <div>
+            <p class="group">我的音乐</p>
+            <p
+              v-for="item of menuList('b')"
+              :key="item.icon"
+              :class="item.index === pageIndex ? 'item-click' : 'item'"
+              @click="pageChange(item.index)"
+            >
+              <a-icon :type="item.icon" style="margin-right: 5px" />
+              {{ item.label }}
+            </p>
+          </div>
+          <div>
+            <p class="group">
+              创建的歌单
+              <a-icon type="plus-square" style="margin-left: 30px" />
+            </p>
+          </div>
+          <div>
+            <p class="group">收藏的歌单</p>
+          </div>
+        </div>
+      </a-layout-sider>
+      <a-layout>
+        <a-layout-header class="header">
+          <a-input-search class="search" />
+          <div>
+            <a-avatar icon="user" />
+            <span class="discolour">登录</span>
+            <a-icon
+              type="mail"
+              class="discolour"
+              style="margin: 0 10px 0 15px"
+            />
+            <a-icon type="menu" class="discolour" />
+          </div>
+        </a-layout-header>
+        <a-layout-content class="content">
+          Content
+          <router-view />
+        </a-layout-content>
+        <a-layout-footer class="footer">
+          <div>
+            <a-slider
+              v-model="currentDura"
+              :min="0"
+              :max="totalDura"
+              :step="1"
+              :tip-formatter="sliderFormat"
+              @afteChange="sliderChange"
+            />
+          </div>
+          <div class="control-bar">
+            <div class="bar-left">
+              <a-avatar shape="square" :size="50" icon="play-circle" />
+              <span style="margin: 0 10px; font-size: 16px">海阔天空</span>
+              <span>--beyond</span>
+              <svg-icon
+                name="love"
+                class="discolour"
+                style="font-size: 19px; margin-left: 20px; color: #cccccc"
+              />
+            </div>
+            <div class="bar-center">
+              <svg-icon
+                name="loop"
+                class="discolour"
+                style="font-size: 20px"
+              />
+              <svg-icon
+                name="prev"
+                class="discolour prev-button"
+                style="font-size: 26px"
+              />
+              <a @click="changeState">
+                <svg-icon
+                  :name="state ? 'pause' : 'play'"
+                  style="font-size: 40px; color: #1dcf9f"
+                  @click="changeState"
+                />
+              </a>
+              <svg-icon
+                name="next"
+                class="discolour next-button"
+                style="font-size: 26px"
+              />
+              <svg-icon
+                name="volume"
+                class="discolour"
+                style="font-size: 20px"
+              />
+            </div>
+            <div class="bar-right">
+              <span style="margin-right: 10px"
+                >{{ currFormat }} / {{ totalFormat }}</span
+              >
+              <a-button size="small" style="font-size: 14px">
+                HQ
+                <a-icon type="up" style="font-size: 10px" />
+              </a-button>
+              <!--              <span class="discolour" style="font-size: 19px;margin: 0 10px">词</span>-->
+              <!--              <svg-icon name="music-list" class="discolour" style="font-size: 19px;margin: 0 10px" />-->
+              <svg-icon
+                name="歌词"
+                class="discolour"
+                style="font-size: 19px; margin: 0 10px"
+              />
+              <svg-icon
+                name="歌单"
+                class="discolour"
+                style="font-size: 22px"
+              />
+            </div>
+          </div>
+        </a-layout-footer>
+      </a-layout>
+    </a-layout>
+  </div>
+</template>
+
+<script lang="ts">
+interface item {
+  index: number;
+  label: string;
+  icon: string;
+  path: string;
+}
+
+interface dataType {
+  state: boolean; // false：暂停  true：播放
+  currentDura: number; // 当前播放进度
+  totalDura: number; // 歌曲总时长
+  pageIndex: number; //
+  itemList: Array<item>;
+}
+
+export default {
+  name: "MainLayout",
+  data(): dataType {
+    return {
+      state: false, // false:暂停 true:播放
+      currentDura: 80,
+      totalDura: 232,
+      pageIndex: 0,
+      itemList: [
+        {
+          index: 0,
+          label: "推荐",
+          icon: "fire",
+          path: "/0",
+        },
+        {
+          index: 1,
+          label: "音乐馆",
+          icon: "customer-service",
+          path: "/1",
+        },
+        {
+          index: 2,
+          label: "视频",
+          icon: "video-camera",
+          path: "/2",
+        },
+        {
+          index: 3,
+          label: "私人FM",
+          icon: "crown",
+          path: "/3",
+        },
+        {
+          index: 4,
+          label: "我喜欢",
+          icon: "heart",
+          path: "/4",
+        },
+        {
+          index: 5,
+          label: "本地歌曲",
+          icon: "desktop",
+          path: "/5",
+        },
+        {
+          index: 6,
+          label: "下载管理",
+          icon: "download",
+          path: "/6",
+        },
+        {
+          index: 7,
+          label: "最近播放",
+          icon: "history",
+          path: "/7",
+        },
+      ],
+    };
+  },
+  computed: {
+    currFormat(): string {
+      const currM = this.currentDura / 60;
+      const currS = this.currentDura % 60;
+      let currMinute: string = "";
+      let currSeconds: string = "";
+      if (currM < 10) {
+        currMinute = "0" + currM;
+      } else {
+        currMinute = "" + currM;
+      }
+      if (currS < 10) {
+        currSeconds = "0" + currS;
+      } else {
+        currSeconds = "" + currS;
+      }
+
+      currMinute = currMinute.substr(0, 2);
+
+      return currMinute + ":" + currSeconds;
+    },
+    totalFormat(): string {
+      const totalM = this.totalDura / 60;
+      const totalS = this.totalDura % 60;
+      let totalMinute: string = "";
+      let totalSeconds: string = "";
+      if (totalM < 10) {
+        totalMinute = "0" + totalM;
+      } else {
+        totalMinute = "" + totalM;
+      }
+      if (totalS < 10) {
+        totalSeconds = "0" + totalS;
+      } else {
+        totalSeconds = "" + totalS;
+      }
+      totalMinute = totalMinute.substr(0, 2);
+      return totalMinute + ":" + totalSeconds;
+    },
+    menuList() {
+      const this_: any = this;
+      return function (group: string) {
+        return this_.itemList.filter(function (item: item) {
+          switch (group) {
+            case "a":
+              return item.index < 4;
+            case "b":
+              return item.index > 3 && item.index < 8;
+            default:
+              return item.index === 0;
+          }
+        });
+      };
+    },
+  },
+  methods: {
+    changeState(): void {
+      this.state = !this.state;
+    },
+    sliderFormat(): string {
+      return this.currFormat;
+    },
+    sliderChange(value: number) {
+      console.log(value);
+    },
+    pageChange(index: number) {
+      this.pageIndex = index;
+    },
+  },
+};
+</script>
+
+<style scoped>
+.layout {
+  width: 100vw;
+  height: 100vh;
+}
+
+.layout .sider {
+  background: #f6f6f6;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+}
+
+.layout .header {
+  background: #fafafa;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  user-select: none;
+}
+
+.layout .content {
+  background: #fafafa;
+  overflow: auto;
+}
+
+.layout .footer {
+  background: #fafafa;
+  padding: 10px 2px;
+  user-select: none;
+}
+
+.sider .logo {
+  width: 100px;
+  margin-left: 45%;
+  transform: translateX(-50%);
+}
+
+.menu {
+  margin: 20px 10px;
+  margin-top: 0;
+  font-size: 16px;
+}
+
+.group {
+  padding-left: 10px;
+  color: #999;
+  font-size: 15px;
+}
+
+.item {
+  color: #666;
+  font-weight: bold;
+  border: #f6f6f6 solid;
+  padding: 2px 10px;
+}
+
+.item:hover {
+  background: #ededed;
+  border: #ededed solid;
+  border-radius: 5px;
+}
+
+.item-click {
+  color: #ffffff;
+  border: #1dcf9f solid;
+  background: #1dcf9f;
+  border-radius: 5px;
+  padding: 2px 10px;
+}
+
+.search {
+  width: 250px;
+  min-width: 150px;
+}
+
+ .search {
+  /* background: #e1e1e1; */
+  border-radius: 20px;
+  /* box-shadow: none; */
+  /* border: 0; */
+}
+
+.control-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.bar-left {
+  width: 25%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.bar-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.bar-right {
+  width: 25%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.discolour {
+  color: rgb(102, 102, 102);
+}
+
+.discolour:hover {
+  color: #1dcf9f;
+}
+
+.prev-button {
+  color: #3f3f3f;
+  margin: 0 20px 0 30px;
+}
+
+.next-button {
+  color: #3f3f3f;
+  margin: 0 30px 0 20px;
+}
+</style>
