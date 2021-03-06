@@ -12,7 +12,7 @@
               :class="item.index === pageIndex ? 'item-click' : 'item'"
               @click="pageChange(item.index)"
             >
-              <component :is="item.icon" spin style="margin-right: 5px" />
+              <component :is="item.icon" style="margin-right: 5px" />
               {{ item.label }}
             </p>
           </div>
@@ -46,17 +46,18 @@
             <a-avatar>
               <template #icon><UserOutlined /></template>
             </a-avatar>
-            <span class="discolour">登录</span>
+            <span class="discolour" style="margin: 0 10px">登录</span>
             <MailOutlined class="discolour" style="margin: 0 10px 0 15px" />
             <MenuOutlined class="discolour" />
           </div>
         </a-layout-header>
         <a-layout-content class="content">
           Content
+          <svg-icon name="tag"  style="font-size:80px;color:#1dcf9f"/>
           <router-view />
         </a-layout-content>
         <a-layout-footer class="footer">
-          <div>
+          <div> 
             <a-slider
               v-model="currentDura"
               :min="0"
@@ -108,16 +109,16 @@
               >
               <a-button size="small" style="font-size: 14px">
                 HQ
-                <a-icon type="up" style="font-size: 10px" />
+                <UpOutlined style="font-size: 10px" />
               </a-button>
               <!--              <span class="discolour" style="font-size: 19px;margin: 0 10px">词</span>-->
               <!--              <svg-icon name="music-list" class="discolour" style="font-size: 19px;margin: 0 10px" />-->
               <svg-icon
-                name="歌词"
+                name="lyric"
                 class="discolour"
                 style="font-size: 19px; margin: 0 10px"
               />
-              <svg-icon name="歌单" class="discolour" style="font-size: 22px" />
+              <svg-icon name="music-list" class="discolour" style="font-size: 22px" />
             </div>
           </div>
         </a-layout-footer>
@@ -141,8 +142,10 @@ import {
   MailOutlined,
   MenuOutlined,
   UserOutlined,
-  PlayCircleOutlined
+  PlayCircleOutlined,
+  UpOutlined
 } from "@ant-design/icons-vue";
+
 interface item {
   index: number;
   label: string;
@@ -173,7 +176,8 @@ export default {
     MailOutlined,
     MenuOutlined,
     UserOutlined,
-    PlayCircleOutlined
+    PlayCircleOutlined,
+    UpOutlined
   },
   name: "MainLayout",
   data(): dataType {
