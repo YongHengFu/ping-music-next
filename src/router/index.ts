@@ -1,11 +1,25 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Layout from '@/layout/index.vue'
+import { pathToFileURL } from 'url'
+import component from '@/layout/index.vue'
+import recommend from '@/pages/recommend.vue'
 
 const routes: Array<RouteRecordRaw> = [
+    // {
+    //     path: '/',
+    //     name: 'index',
+    //     component: Layout,
+    // },
     {
         path: '/',
-        name: 'index',
+        redirect: '/recommend',
         component: Layout,
+        children: [
+            {
+                path: 'recommend',
+                component: recommend
+            }
+        ]
     }
 ]
 

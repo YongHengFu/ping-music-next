@@ -52,9 +52,7 @@
           </div>
         </a-layout-header>
         <a-layout-content class="content">
-          Content
-          <svg-icon name="tag"  style="font-size:80px;color:#1dcf9f"/>
-          <router-view />
+          <router-view :key="key" />
         </a-layout-content>
         <a-layout-footer class="footer">
           <div> 
@@ -292,6 +290,9 @@ export default {
         });
       };
     },
+    key() {
+      return this.$route.path
+    }
   },
   methods: {
     changeState(): void {
@@ -304,6 +305,8 @@ export default {
       console.log(value);
     },
     pageChange(index: number) {
+      this.$router.push({path: '/recommend'})
+      console.log(this.$route.path);
       this.pageIndex = index;
     },
   },
@@ -380,6 +383,7 @@ export default {
 
 .item-click {
   color: #ffffff;
+  font-weight: bold;
   border: #1dcf9f solid;
   background: #1dcf9f;
   border-radius: 5px;
