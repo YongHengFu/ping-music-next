@@ -55,9 +55,9 @@
           <router-view :key="key" />
         </a-layout-content>
         <a-layout-footer class="footer">
-          <div> 
+          <div>
             <a-slider
-              v-model="currentDura"
+              v-model:value="currentDura"
               :min="0"
               :max="totalDura"
               :step="1"

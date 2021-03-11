@@ -1,11 +1,6 @@
 <template>
   <div class="personalized">
     <div class="block myFM" key="myFM">
-      <img
-        id="test"
-        class="logo"
-        src="//7n.w3cschool.cn/statics/img/logo/indexlogo@2x.png"
-      />
       <svg-icon name="tag" class="tag-icon"> </svg-icon>
       <h1 class="tag-title-line1">For</h1>
       <h1 class="tag-title-line2">You</h1>
@@ -26,7 +21,7 @@
           >父亲写的散文诗</span
         >
         <br />
-        <span style="font-size: 14px">许巍</span>
+        <span style="font-size: 14px">许飞</span>
         <div style="margin-top: 10px">
           <svg-icon name="next" class="discolour" />
           <svg-icon name="love" class="discolour" style="margin-left: 10px" />
@@ -34,14 +29,50 @@
       </div>
     </div>
     <div class="block daily" key="daily">daily</div>
-    <div class="block new" key="new">new</div>
+    <div class="block new" key="new" @click="colorfulImg()">new</div>
   </div>
+  <Block/>
 </template>
-  
+
 <script lang="ts">
+import Block from './block.vue'
 export default {
-  mounted() {},
-  methods: {},
+  components: {
+    Block
+  },
+  mounted() {
+    // console.log(this.colorfulImg(document.getElementById('img')))
+    // this.colorfulImg()
+  },
+  methods: {
+    colorfulImg(){
+      // let img = document.getElementById('test');
+      let image=new Image();
+      image.src="http://localhost:3000/src/assets/logo.png";
+      let width = image.width;
+      let height = image.height;
+      console.log(width+","+height)
+      let canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      let ctx = canvas.getContext("2d");
+      ctx.drawImage(image, 0, 0);
+      let data = ctx.getImageData(0, 0, width, height).data;
+      let rgb = {r:0,g:0,b:0}
+      let count=0;
+      for (let i = 0; i < data.length; i += 4) {
+        count++
+        rgb.r += data[i];
+        rgb.g += data[i+1];
+        rgb.b += data[i+2];
+      }
+      rgb.r = (rgb.r/count)>>0;
+      rgb.g = (rgb.g/count)>>0;
+      rgb.b = (rgb.b/count)>>0;
+      console.log(rgb)
+      return rgb;
+    }
+  },
 };
 </script>
 
@@ -79,7 +110,7 @@ export default {
   font-size: 25pt;
   padding: 0;
   margin: 0;
-  font-weight: bolde;
+  font-weight: bolder;
   z-index: 2;
 }
 .tag-title-line2 {
@@ -90,7 +121,7 @@ export default {
   font-size: 25pt;
   padding: 0;
   margin: 0;
-  font-weight: bolde;
+  font-weight: bolder;
   z-index: 2;
 }
 .myFM-image {
@@ -117,7 +148,7 @@ export default {
 .new {
   align-self: center;
   flex: 1;
-  background: crimson;
+  background: #436e94;
   height: 100%;
 }
 .discolour {
@@ -127,4 +158,5 @@ export default {
 .discolour:hover {
   color: #1dcf9f;
 }
+
 </style>
