@@ -1,7 +1,17 @@
 <template>
   <div class="block">
-    <a-avatar class="cover" shape="square" :size="150" @click.stop="clickBlock" @mouseenter="showPlay" @mouseleave="hidePlay"></a-avatar>
-    <svg-icon class="show" name="play" v-if="isShow"></svg-icon>
+    <a-avatar
+        class="cover"
+        shape="square"
+        :size="150"
+        src="src/assets/logo.png"
+        @click="clickBlock"
+        @mouseenter="showPlay"
+        @mouseleave="hidePlay">
+    </a-avatar>
+    <div class="show" v-if="isShow">
+    </div>
+    <svg-icon class="play" name="play" v-if="isShow" @mouseenter="showPlay" @click="clickBlock"></svg-icon>
   </div>
 </template>
 
@@ -21,10 +31,8 @@ export default {
     },
     showPlay(): void{
       this.isShow= true
-      console.log('移入')
     },
     hidePlay(): void{
-      console.log('移出')
       this.isShow= false
     }
   }
@@ -35,7 +43,16 @@ export default {
 .block{
   display: flex;
   width: 150px;
+  height: 150px;
+  border-radius: 5px;
   position: relative;
+  background: #efd914;
+  transition: transform 0.1s;
+}
+.block:hover{
+  transition: transform 0.3s;
+  transform: translateY(-10px);
+
 }
 .cover{
   z-index: 0;
@@ -43,11 +60,27 @@ export default {
 .show{
   pointer-events:none;
   position: absolute;
-  width: 60px;
-  height: 60px;
+  width: 150px;
+  height: 150px;
+  border-radius: 5px;
+  background: rgba(153,153,153,0.2);
   left: 50%;
   top: 50%;
   transform: translate(-50%,-50%);
   z-index: 1;
+}
+.play{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  width: 50px;
+  height: 50px;
+  margin: auto;
+  color: #FFFFFF;
+  z-index: 2;
+}
+.play:hover{
+  color: #1DCF9F;
 }
 </style>
