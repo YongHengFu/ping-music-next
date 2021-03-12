@@ -126,6 +126,9 @@
 </template>
 
 <script lang="ts">
+
+import {defineComponent, PropType} from 'vue'
+
 import {
   FireOutlined,
   HomeOutlined,
@@ -159,7 +162,7 @@ interface dataType {
   itemList: Array<item>;
 }
 
-export default {
+export default defineComponent( {
   components: {
     FireOutlined,
     HomeOutlined,
@@ -178,7 +181,7 @@ export default {
     UpOutlined
   },
   name: "MainLayout",
-  data(): dataType {
+  data() {
     return {
       state: false, // false:暂停 true:播放
       currentDura: 80,
@@ -310,7 +313,7 @@ export default {
       this.pageIndex = index;
     },
   },
-};
+});
 </script>
 
 <style scoped>

@@ -3,24 +3,24 @@
     <a-avatar
         class="cover"
         shape="square"
-        :size="150"
         src="src/assets/logo.png"
         @click="clickBlock"
         @mouseenter="showPlay"
         @mouseleave="hidePlay">
     </a-avatar>
-    <div class="show" v-if="isShow">
+    <div class="mask" v-if="isShow">
     </div>
     <svg-icon class="play" name="play" v-if="isShow" @mouseenter="showPlay" @click="clickBlock"></svg-icon>
   </div>
 </template>
 
 <script lang="ts">
-interface dataType{
-  isShow: boolean
-}
-export default {
-  data(): dataType {
+import {defineComponent, PropType} from 'vue'
+// interface dataType{
+//   isShow: boolean
+// }
+export default defineComponent( {
+  data()  {
     return {
       isShow: false
     }
@@ -36,34 +36,35 @@ export default {
       this.isShow= false
     }
   }
-}
+})
 </script>
 
 <style scoped>
 .block{
-  display: flex;
   width: 150px;
   height: 150px;
   border-radius: 5px;
   position: relative;
   background: #efd914;
-  transition: transform 0.1s;
+  /*transition: transform 0.2s;*/
 }
-.block:hover{
-  transition: transform 0.3s;
-  transform: translateY(-10px);
+/*.block:hover{*/
+/*  transition: transform 0.5s;*/
+/*  transform: translateY(-10px);*/
+/*}*/
 
-}
 .cover{
+  width: 100%;
+  height: 100%;
   z-index: 0;
 }
-.show{
+.mask{
   pointer-events:none;
   position: absolute;
-  width: 150px;
-  height: 150px;
+  width: 100%;
+  height: 100%;
   border-radius: 5px;
-  background: rgba(153,153,153,0.2);
+  background: rgba(153, 153, 153, 0.5);
   left: 50%;
   top: 50%;
   transform: translate(-50%,-50%);
@@ -81,6 +82,6 @@ export default {
   z-index: 2;
 }
 .play:hover{
-  color: #1DCF9F;
+  color: #1dcf9f;
 }
 </style>
