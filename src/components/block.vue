@@ -3,7 +3,7 @@
     <a-avatar
         class="cover"
         shape="square"
-        src="src/assets/logo.png"
+        src="src/assets/image/cover.png"
         @click="clickBlock"
         @mouseenter="showPlay"
         @mouseleave="hidePlay">
@@ -43,7 +43,7 @@ export default defineComponent( {
 .block{
   width: 150px;
   height: 150px;
-  border-radius: 5px;
+  border-radius: 8px;
   position: relative;
   background: #efd914;
   /*transition: transform 0.2s;*/
@@ -54,6 +54,7 @@ export default defineComponent( {
 /*}*/
 
 .cover{
+  border-radius: 8px;
   width: 100%;
   height: 100%;
   z-index: 0;
@@ -64,7 +65,7 @@ export default defineComponent( {
   width: 100%;
   height: 100%;
   border-radius: 5px;
-  background: rgba(153, 153, 153, 0.5);
+  background: rgba(83, 82, 82, 0.5);
   left: 50%;
   top: 50%;
   transform: translate(-50%,-50%);

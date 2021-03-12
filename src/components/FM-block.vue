@@ -48,7 +48,7 @@ export default defineComponent( {
 
 .tag-icon {
   pointer-events:none;
-  color: #1dcf9f;
+  color: rgba(92, 91, 91, 0.6);
   font-size: 60px;
   border-top-left-radius: 8px;
   position: absolute;
