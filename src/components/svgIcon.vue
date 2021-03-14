@@ -6,27 +6,26 @@
 
 <script setup>
 
-
-import { defineProps, computed } from "vue";
+import { defineProps, computed } from 'vue';
 
 const props = defineProps({
-    name: {
-        type: String,
-        required: true
-    },
-    color: {
-        type: String,
-        default: ''
-    }
-})
+  name: {
+    type: String,
+    required: true,
+  },
+  color: {
+    type: String,
+    default: '',
+  },
+});
 
-const iconName = computed(()=>`#icon-${props.name}`);
-const svgClass = computed(()=> {
-    console.log(props.name, 'props.name');
-    if (props.name) {
-        return `svg-icon icon-${props.name}`
-    }
-    return 'svg-icon'
+const iconName = computed(() => `#icon-${props.name}`);
+const svgClass = computed(() => {
+  console.log(props.name, 'props.name');
+  if (props.name) {
+    return `svg-icon icon-${props.name}`;
+  }
+  return 'svg-icon';
 });
 </script>
 

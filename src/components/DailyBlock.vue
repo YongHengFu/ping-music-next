@@ -8,19 +8,20 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
-import Block from './block.vue'
-export default defineComponent( {
+import { defineComponent, PropType } from 'vue';
+import Block from './block.vue';
+
+export default defineComponent({
   components: {
-    Block
-  }
+    Block,
+  },
 });
 </script>
 
 <style scoped>
 .daily {
-  width: 150px;
-  height: 150px;
+  width: var(--block-size);
+  height: var(--block-size);
   border-radius: 8px;
   position: relative;
 }
@@ -56,13 +57,6 @@ export default defineComponent( {
   margin: 0;
   font-weight: bolder;
   z-index: 2;
-}
-.myFM-cover {
-  position: absolute;
-  left: 25%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 0;
 }
 
 </style>

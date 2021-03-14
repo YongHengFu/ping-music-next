@@ -28,12 +28,13 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
-import Block from './block.vue'
-export default defineComponent( {
+import { defineComponent, PropType } from 'vue';
+import Block from './block.vue';
+
+export default defineComponent({
   components: {
-    Block
-  }
+    Block,
+  },
 });
 </script>
 
@@ -41,7 +42,7 @@ export default defineComponent( {
 .myFM {
   background: rgba(221, 219, 218, 0.368);
   width: 300px;
-  height: 150px;
+  height: var(--block-size);
   border-radius: 8px;
   position: relative;
 }
@@ -97,7 +98,7 @@ export default defineComponent( {
 }
 
 .discolour:hover {
-  color: #1dcf9f;
+  color: var(--primary-color);
 }
 
 </style>

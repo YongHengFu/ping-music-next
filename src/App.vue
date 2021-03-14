@@ -3,25 +3,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-document.body.style.setProperty('--main-color',  '#1DCF9F');
+import { defineComponent } from 'vue';
+
+document.body.style.setProperty('--main-color', '#1DCF9F');
 // import HelloWorld from './components/HelloWorld.vue'
 
 export default defineComponent({
   name: 'App',
   components: {
     // HelloWorld
-  }
-})
+  },
+});
 </script>
 
 <style>
-/*#app {*/
-/*  font-family: Avenir, Helvetica, Arial, sans-serif;*/
-/*  -webkit-font-smoothing: antialiased;*/
-/*  -moz-osx-font-smoothing: grayscale;*/
-/*  text-align: center;*/
-/*  color: #2c3e50;*/
-/*  margin-top: 60px;*/
-/*}*/
+:root{
+  --primary-color: #1DCF9F;
+  --block-size: 160px;
+}
 </style>

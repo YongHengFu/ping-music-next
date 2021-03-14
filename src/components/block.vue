@@ -15,34 +15,34 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import { defineComponent, PropType } from 'vue';
 // interface dataType{
 //   isShow: boolean
 // }
-export default defineComponent( {
-  data()  {
+export default defineComponent({
+  data() {
     return {
-      isShow: false
-    }
+      isShow: false,
+    };
   },
   methods: {
-    clickBlock(){
-      console.log('click')
+    clickBlock() {
+      console.log('click');
     },
-    showPlay(): void{
-      this.isShow= true
+    showPlay(): void {
+      this.isShow = true;
     },
-    hidePlay(): void{
-      this.isShow= false
-    }
-  }
-})
+    hidePlay(): void {
+      this.isShow = false;
+    },
+  },
+});
 </script>
 
 <style scoped>
 .block{
-  width: 150px;
-  height: 150px;
+  width: var(--block-size);
+  height: var(--block-size);
   border-radius: 8px;
   position: relative;
   background: #efd914;
@@ -83,6 +83,6 @@ export default defineComponent( {
   z-index: 2;
 }
 .play:hover{
-  color: #1dcf9f;
+  color: var(--primary-color);
 }
 </style>

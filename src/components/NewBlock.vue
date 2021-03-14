@@ -8,26 +8,27 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
-import Block from './block.vue'
-export default defineComponent( {
+import { defineComponent, PropType } from 'vue';
+import Block from './block.vue';
+
+export default defineComponent({
   components: {
-    Block
-  }
+    Block,
+  },
 });
 </script>
 
 <style scoped>
 .daily {
-  width: 150px;
-  height: 150px;
+  width: var(--block-size);
+  height: var(--block-size);
   border-radius: 8px;
   position: relative;
 }
 
 .tag-icon {
   pointer-events:none;
-  color: #1dcf9f;
+  color: var(--primary-color);
   font-size: 60px;
   border-top-left-radius: 8px;
   position: absolute;

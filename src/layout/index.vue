@@ -39,7 +39,7 @@
           </div>
         </div>
       </a-layout-sider>
-      <a-layout>
+      <a-layout style="min-width: 1000px">
         <a-layout-header class="header">
           <a-input-search class="search" />
           <div>
@@ -87,7 +87,7 @@
               />
               <svg-icon
                 :name="state ? 'pause' : 'play'"
-                style="font-size: 40px; color: #1dcf9f"
+                style="font-size: 40px; color: var(--primary-color)"
                 @click="changeState"
               />
               <svg-icon
@@ -127,7 +127,7 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType} from 'vue'
+import { defineComponent, PropType } from 'vue';
 
 import {
   FireOutlined,
@@ -144,8 +144,8 @@ import {
   MenuOutlined,
   UserOutlined,
   PlayCircleOutlined,
-  UpOutlined
-} from "@ant-design/icons-vue";
+  UpOutlined,
+} from '@ant-design/icons-vue';
 
 interface item {
   index: number;
@@ -162,7 +162,7 @@ interface dataType {
   itemList: Array<item>;
 }
 
-export default defineComponent( {
+export default defineComponent({
   components: {
     FireOutlined,
     HomeOutlined,
@@ -178,9 +178,9 @@ export default defineComponent( {
     MenuOutlined,
     UserOutlined,
     PlayCircleOutlined,
-    UpOutlined
+    UpOutlined,
   },
-  name: "MainLayout",
+  name: 'MainLayout',
   data() {
     return {
       state: false, // false:暂停 true:播放
@@ -190,51 +190,51 @@ export default defineComponent( {
       itemList: [
         {
           index: 0,
-          label: "推荐",
-          icon: "FireOutlined",
-          path: "/0",
+          label: '推荐',
+          icon: 'FireOutlined',
+          path: '/0',
         },
         {
           index: 1,
-          label: "音乐馆",
-          icon: "CustomerServiceOutlined",
-          path: "/1",
+          label: '音乐馆',
+          icon: 'CustomerServiceOutlined',
+          path: '/1',
         },
         {
           index: 2,
-          label: "视频",
-          icon: "VideoCameraOutlined",
-          path: "/2",
+          label: '视频',
+          icon: 'VideoCameraOutlined',
+          path: '/2',
         },
         {
           index: 3,
-          label: "私人FM",
-          icon: "CrownOutlined",
-          path: "/3",
+          label: '私人FM',
+          icon: 'CrownOutlined',
+          path: '/3',
         },
         {
           index: 4,
-          label: "我喜欢",
-          icon: "HeartOutlined",
-          path: "/4",
+          label: '我喜欢',
+          icon: 'HeartOutlined',
+          path: '/4',
         },
         {
           index: 5,
-          label: "本地歌曲",
-          icon: "DesktopOutlined",
-          path: "/5",
+          label: '本地歌曲',
+          icon: 'DesktopOutlined',
+          path: '/5',
         },
         {
           index: 6,
-          label: "下载管理",
-          icon: "CloudDownloadOutlined",
-          path: "/6",
+          label: '下载管理',
+          icon: 'CloudDownloadOutlined',
+          path: '/6',
         },
         {
           index: 7,
-          label: "最近播放",
-          icon: "HistoryOutlined",
-          path: "/7",
+          label: '最近播放',
+          icon: 'HistoryOutlined',
+          path: '/7',
         },
       ],
     };
@@ -243,49 +243,49 @@ export default defineComponent( {
     currFormat(): string {
       const currM = this.currentDura / 60;
       const currS = this.currentDura % 60;
-      let currMinute: string = "";
-      let currSeconds: string = "";
+      let currMinute: string = '';
+      let currSeconds: string = '';
       if (currM < 10) {
-        currMinute = "0" + currM;
+        currMinute = `0${currM}`;
       } else {
-        currMinute = "" + currM;
+        currMinute = `${currM}`;
       }
       if (currS < 10) {
-        currSeconds = "0" + currS;
+        currSeconds = `0${currS}`;
       } else {
-        currSeconds = "" + currS;
+        currSeconds = `${currS}`;
       }
 
       currMinute = currMinute.substr(0, 2);
 
-      return currMinute + ":" + currSeconds;
+      return `${currMinute}:${currSeconds}`;
     },
     totalFormat(): string {
       const totalM = this.totalDura / 60;
       const totalS = this.totalDura % 60;
-      let totalMinute: string = "";
-      let totalSeconds: string = "";
+      let totalMinute: string = '';
+      let totalSeconds: string = '';
       if (totalM < 10) {
-        totalMinute = "0" + totalM;
+        totalMinute = `0${totalM}`;
       } else {
-        totalMinute = "" + totalM;
+        totalMinute = `${totalM}`;
       }
       if (totalS < 10) {
-        totalSeconds = "0" + totalS;
+        totalSeconds = `0${totalS}`;
       } else {
-        totalSeconds = "" + totalS;
+        totalSeconds = `${totalS}`;
       }
       totalMinute = totalMinute.substr(0, 2);
-      return totalMinute + ":" + totalSeconds;
+      return `${totalMinute}:${totalSeconds}`;
     },
     menuList() {
       const this_: any = this;
       return function (group: string) {
-        return this_.itemList.filter(function (item: item) {
+        return this_.itemList.filter((item: item) => {
           switch (group) {
-            case "a":
+            case 'a':
               return item.index < 4;
-            case "b":
+            case 'b':
               return item.index > 3 && item.index < 8;
             default:
               return item.index === 0;
@@ -294,8 +294,8 @@ export default defineComponent( {
       };
     },
     key() {
-      return this.$route.path
-    }
+      return this.$route.path;
+    },
   },
   methods: {
     changeState(): void {
@@ -308,7 +308,7 @@ export default defineComponent( {
       console.log(value);
     },
     pageChange(index: number) {
-      this.$router.push({path: '/recommend'})
+      this.$router.push({ path: '/recommend' });
       console.log(this.$route.path);
       this.pageIndex = index;
     },
@@ -318,6 +318,7 @@ export default defineComponent( {
 
 <style scoped>
 .layout {
+  /*min-width: 1000px;*/
   width: 100vw;
   height: 100vh;
 }
@@ -387,8 +388,8 @@ export default defineComponent( {
 .item-click {
   color: #ffffff;
   font-weight: bold;
-  border: #1dcf9f solid;
-  background: #1dcf9f;
+  border: var(--primary-color) solid;
+  background: var(--primary-color);
   border-radius: 5px;
   padding: 2px 10px;
 }
@@ -441,7 +442,7 @@ export default defineComponent( {
 }
 
 .discolour:hover {
-  color: #1dcf9f;
+  color: var(--primary-color);
 }
 
 .prev-button {
