@@ -2,7 +2,7 @@
   <div>
     <a-layout class="layout">
       <a-layout-sider class="sider">
-        <img class="logo" src="@/assets/image/logo.png" />
+        <img class="logo" src="@/assets/image/logo.png">
         <div class="menu">
           <div>
             <p class="group">在线音乐</p>
@@ -102,9 +102,7 @@
               />
             </div>
             <div class="bar-right">
-              <span style="margin-right: 10px"
-                >{{ currFormat }} / {{ totalFormat }}</span
-              >
+              <span style="margin-right: 10px">{{ currFormat }} / {{ totalFormat }}</span>
               <a-button size="small" style="font-size: 14px">
                 HQ
                 <UpOutlined style="font-size: 10px" />
@@ -127,7 +125,7 @@
 
 <script lang="ts">
 
-import { defineComponent, PropType } from 'vue';
+import { defineComponent } from 'vue'
 
 import {
   FireOutlined,
@@ -145,7 +143,7 @@ import {
   UserOutlined,
   PlayCircleOutlined,
   UpOutlined,
-} from '@ant-design/icons-vue';
+} from '@ant-design/icons-vue'
 
 interface item {
   index: number;
@@ -163,6 +161,7 @@ interface dataType {
 }
 
 export default defineComponent({
+  name: 'MainLayout',
   components: {
     FireOutlined,
     HomeOutlined,
@@ -180,7 +179,6 @@ export default defineComponent({
     PlayCircleOutlined,
     UpOutlined,
   },
-  name: 'MainLayout',
   data() {
     return {
       state: false, // false:暂停 true:播放
@@ -237,83 +235,83 @@ export default defineComponent({
           path: '/7',
         },
       ],
-    };
+    }
   },
   computed: {
     currFormat(): string {
-      const currM = this.currentDura / 60;
-      const currS = this.currentDura % 60;
-      let currMinute: string = '';
-      let currSeconds: string = '';
+      const currM = this.currentDura / 60
+      const currS = this.currentDura % 60
+      let currMinute: string = ''
+      let currSeconds: string = ''
       if (currM < 10) {
-        currMinute = `0${currM}`;
+        currMinute = `0${currM}`
       } else {
-        currMinute = `${currM}`;
+        currMinute = `${currM}`
       }
       if (currS < 10) {
-        currSeconds = `0${currS}`;
+        currSeconds = `0${currS}`
       } else {
-        currSeconds = `${currS}`;
+        currSeconds = `${currS}`
       }
 
-      currMinute = currMinute.substr(0, 2);
+      currMinute = currMinute.substr(0, 2)
 
-      return `${currMinute}:${currSeconds}`;
+      return `${currMinute}:${currSeconds}`
     },
     totalFormat(): string {
-      const totalM = this.totalDura / 60;
-      const totalS = this.totalDura % 60;
-      let totalMinute: string = '';
-      let totalSeconds: string = '';
+      const totalM = this.totalDura / 60
+      const totalS = this.totalDura % 60
+      let totalMinute: string = ''
+      let totalSeconds: string = ''
       if (totalM < 10) {
-        totalMinute = `0${totalM}`;
+        totalMinute = `0${totalM}`
       } else {
-        totalMinute = `${totalM}`;
+        totalMinute = `${totalM}`
       }
       if (totalS < 10) {
-        totalSeconds = `0${totalS}`;
+        totalSeconds = `0${totalS}`
       } else {
-        totalSeconds = `${totalS}`;
+        totalSeconds = `${totalS}`
       }
-      totalMinute = totalMinute.substr(0, 2);
-      return `${totalMinute}:${totalSeconds}`;
+      totalMinute = totalMinute.substr(0, 2)
+      return `${totalMinute}:${totalSeconds}`
     },
     menuList() {
-      const this_: any = this;
-      return function (group: string) {
+      const this_: any = this
+      return function(group: string) {
         return this_.itemList.filter((item: item) => {
           switch (group) {
             case 'a':
-              return item.index < 4;
+              return item.index < 4
             case 'b':
-              return item.index > 3 && item.index < 8;
+              return item.index > 3 && item.index < 8
             default:
-              return item.index === 0;
+              return item.index === 0
           }
-        });
-      };
+        })
+      }
     },
     key() {
-      return this.$route.path;
+      return this.$route.path
     },
   },
   methods: {
     changeState(): void {
-      this.state = !this.state;
+      this.state = !this.state
     },
     sliderFormat(): string {
-      return this.currFormat;
+      return this.currFormat
     },
     sliderChange(value: number) {
-      console.log(value);
+      console.log(value)
     },
     pageChange(index: number) {
-      this.$router.push({ path: '/recommend' });
-      console.log(this.$route.path);
-      this.pageIndex = index;
+      this.$router.push({ path: '/recommend' })
+      console.log(this.$route.path)
+      this.pageIndex = index
     },
   },
-});
+})
 </script>
 
 <style scoped>

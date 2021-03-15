@@ -1,21 +1,20 @@
 <template>
   <div class="block">
     <a-avatar
-        class="cover"
-        shape="square"
-        src="src/assets/image/cover.png"
-        @click="clickBlock"
-        @mouseenter="showPlay"
-        @mouseleave="hidePlay">
-    </a-avatar>
-    <div class="mask" v-if="isShow">
-    </div>
-    <svg-icon class="play" name="play" v-if="isShow" @mouseenter="showPlay" @click="clickBlock"></svg-icon>
+      class="cover"
+      shape="square"
+      src="src/assets/image/cover.png"
+      @click="clickBlock"
+      @mouseenter="showPlay"
+      @mouseleave="hidePlay"
+    />
+    <div v-if="isShow" class="mask" />
+    <svg-icon v-if="isShow" class="play" name="play" @mouseenter="showPlay" @click="clickBlock" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent } from 'vue'
 // interface dataType{
 //   isShow: boolean
 // }
@@ -23,20 +22,20 @@ export default defineComponent({
   data() {
     return {
       isShow: false,
-    };
+    }
   },
   methods: {
     clickBlock() {
-      console.log('click');
+      console.log('click')
     },
     showPlay(): void {
-      this.isShow = true;
+      this.isShow = true
     },
     hidePlay(): void {
-      this.isShow = false;
+      this.isShow = false
     },
   },
-});
+})
 </script>
 
 <style scoped>
@@ -46,6 +45,7 @@ export default defineComponent({
   border-radius: 8px;
   position: relative;
   background: #efd914;
+  user-select: none;
   /*transition: transform 0.2s;*/
 }
 /*.block:hover{*/

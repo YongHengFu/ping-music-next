@@ -1,21 +1,21 @@
 <template>
   <div class="daily">
-    <svg-icon name="tag" class="tag-icon"> </svg-icon>
+    <svg-icon name="tag" class="tag-icon" />
     <h1 class="tag-title-line1">Daily</h1>
     <h1 class="tag-title-line2">30</h1>
-    <Block></Block>
+    <Block />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import Block from './block.vue';
+import { defineComponent } from 'vue'
+import Block from './block.vue'
 
 export default defineComponent({
   components: {
     Block,
   },
-});
+})
 </script>
 
 <style scoped>

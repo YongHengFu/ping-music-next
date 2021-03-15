@@ -1,10 +1,10 @@
-import request from '@/utils/request';
+import request from '@/utils/request'
 
 export function getQRCodeKey() {
   return request({
     url: '/login/qr/key',
     method: 'get',
-  });
+  })
 }
 
 export function getQRCode(params:object) {
@@ -12,5 +12,5 @@ export function getQRCode(params:object) {
     url: '/login/qr/key',
     method: 'get',
     params,
-  });
+  })
 }

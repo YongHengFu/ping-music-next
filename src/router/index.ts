@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import Layout from '@/layout/index.vue';
-import recommend from '@/pages/recommend.vue';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import Layout from '@/layout/index.vue'
+import recommend from '@/pages/recommend.vue'
 
 const routes: Array<RouteRecordRaw> = [
   // {
@@ -19,11 +19,11 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
   },
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
+})
 
-export default router;
+export default router

@@ -1,41 +1,40 @@
 <template>
-    <div class="myFM">
-      <svg-icon name="tag" class="tag-icon"> </svg-icon>
-      <h1 class="tag-title-line1">For</h1>
-      <h1 class="tag-title-line2">You</h1>
-      <div  class="myFM-cover">
-        <Block style="width: 100px;height: 100px;"></Block>
-      </div>
+  <div class="myFM">
+    <svg-icon name="tag" class="tag-icon" />
+    <h1 class="tag-title-line1">For</h1>
+    <h1 class="tag-title-line2">You</h1>
+    <div class="myFM-cover">
+      <Block style="width: 100px;height: 100px;" />
+    </div>
 
-      <div class="myFM-control">
-        <span
-            style="
+    <div class="myFM-control">
+      <span
+        style="
             font-size: 16px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
           "
-        >父亲写的散文诗</span
-        >
-        <br />
-        <span style="font-size: 14px">许飞</span>
-        <div style="margin-top: 10px">
-          <svg-icon name="next" class="discolour" />
-          <svg-icon name="love" class="discolour" style="margin-left: 10px" />
-        </div>
+      >父亲写的散文诗</span>
+      <br>
+      <span style="font-size: 14px">许飞</span>
+      <div style="margin-top: 10px">
+        <svg-icon name="next" class="discolour" />
+        <svg-icon name="love" class="discolour" style="margin-left: 10px" />
       </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import Block from './block.vue';
+import { defineComponent, PropType } from 'vue'
+import Block from './block.vue'
 
 export default defineComponent({
   components: {
     Block,
   },
-});
+})
 </script>
 
 <style scoped>
