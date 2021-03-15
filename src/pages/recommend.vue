@@ -5,10 +5,11 @@
 </template>
 
 <script>
-import Personalized from '../components/Personalized.vue';
+import Personalized from '@/components/Personalized.vue';
+
 export default {
   components: {
-    Personalized
+    Personalized,
   },
 };
 </script>
