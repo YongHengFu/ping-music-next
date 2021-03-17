@@ -306,7 +306,7 @@ export default defineComponent({
       console.log(value)
     },
     pageChange(index: number) {
-      this.$router.push({ path: '/recommend' })
+      this.$router.push({ path: '/musicHall' })
       console.log(this.$route.path)
       this.pageIndex = index
     },

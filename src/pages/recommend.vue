@@ -1,6 +1,9 @@
 <template>
   <div style="padding: 10px 30px;user-select: none;">
     <Personalized />
+    <div class="test">
+
+    </div>
   </div>
 </template>
 <script>
@@ -12,7 +15,7 @@ export default {
     Personalized,
   },
   created() {
-    this.test()
+    // this.test()
   },
   methods: {
     test() {
@@ -24,5 +27,16 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.test{
+  width: 100px;
+  height: 100px;
+  background:red;
+  animation: myfirst 5s;
+}
+@keyframes myfirst
+{
+  from {background:red;}
+  to {background:yellow;}
+}
 </style>
