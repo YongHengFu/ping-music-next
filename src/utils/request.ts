@@ -2,7 +2,7 @@ import axios from 'axios'
 import { message } from 'ant-design-vue'
 
 const service = axios.create({
-  baseURL: '/',
+  baseURL: 'https://ping-music-api.vercel.app/',
   timeout: 10000,
 })
 service.interceptors.request.use((config) => config, (error) => Promise.reject(error))
@@ -13,11 +13,11 @@ service.interceptors.response.use(
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
-    if (res.code !== 20000) {
+    if (res.code !== 200) {
       message.error('网络异常，请重试！')
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      if (res.code === 508 || res.code === 512 || res.code === 514) {
         message.error('网络异常，请重试！')
       }
       return Promise.reject(new Error(res.message || 'Error'))

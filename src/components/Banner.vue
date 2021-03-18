@@ -3,11 +3,11 @@
     <div v-if="show.length>0" class="container" @mouseleave="leave" @mouseenter="enter">
       <LeftCircleFilled v-if="controlButton" class="prevIcon" @click="prev" />
       <RightCircleFilled v-if="controlButton" class="nextIcon" @click="next" />
-      <div :class="item[0].class"><a-image :src="show[0].imgUrl" style="border-radius: 5px;" /></div>
-      <div :class="item[1].class"><a-image :src="show[1].imgUrl" style="border-radius: 5px;" /></div>
-      <div :class="item[2].class"><a-image :src="show[2].imgUrl" style="border-radius: 5px;" /></div>
-      <div :class="item[3].class"><a-image :src="show[3].imgUrl" style="border-radius: 5px;" /></div>
-      <div :class="item[4].class"><a-image :src="show[4].imgUrl" style="border-radius: 5px;" /></div>
+      <div :class="item[0].class"><a-image :src="show[0].pic" style="border-radius: 5px;" /></div>
+      <div :class="item[1].class"><a-image :src="show[1].pic" style="border-radius: 5px;" /></div>
+      <div :class="item[2].class"><a-image :src="show[2].pic" style="border-radius: 5px;" /></div>
+      <div :class="item[3].class"><a-image :src="show[3].pic" style="border-radius: 5px;" /></div>
+      <div :class="item[4].class"><a-image :src="show[4].pic" style="border-radius: 5px;" /></div>
       <div class="points">
         <div v-for="(item,ind) of data" :key="item" :class="ind===index?'point-L':'point'" />
       </div>
@@ -26,6 +26,13 @@ export default defineComponent({
     LeftCircleFilled,
     RightCircleFilled,
   },
+  // props: ['banners', 'test'],
+  props: {
+    banners: {
+      type: Array,
+      required: true,
+    },
+  },
   data() {
     return {
       index: 0,
@@ -38,18 +45,17 @@ export default defineComponent({
       ],
       show: [],
       // data: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-      data: [
-        { imgUrl: '../src/assets/image/a (1).png', No: 1 },
-        { imgUrl: '../src/assets/image/a (2).png', No: 2 },
-        { imgUrl: '../src/assets/image/a (3).png', No: 3 },
-        { imgUrl: '../src/assets/image/a (4).png', No: 4 },
-        { imgUrl: '../src/assets/image/a (5).png', No: 5 },
-        { imgUrl: '../src/assets/image/a (6).png', No: 6 },
-        { imgUrl: '../src/assets/image/a (7).png', No: 7 },
-        { imgUrl: '../src/assets/image/a (8).png', No: 8 },
-        { imgUrl: '../src/assets/image/a (9).png', No: 9 },
-        { imgUrl: '../src/assets/image/a (10).png', No: 10 },
-      ],
+      data: [],
+      // { pic: '../src/assets/image/a (1).png', No: 1 },
+      // { pic: '../src/assets/image/a (2).png', No: 2 },
+      // { pic: '../src/assets/image/a (3).png', No: 3 },
+      // { pic: '../src/assets/image/a (4).png', No: 4 },
+      // { pic: '../src/assets/image/a (5).png', No: 5 },
+      // { pic: '../src/assets/image/a (6).png', No: 6 },
+      // { pic: '../src/assets/image/a (7).png', No: 7 },
+      // { pic: '../src/assets/image/a (8).png', No: 8 },
+      // { pic: '../src/assets/image/a (9).png', No: 9 },
+      // { pic: '../src/assets/image/a (10).png', No: 10 },
       // points: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       interval: null,
       controlButton: false,
@@ -60,10 +66,11 @@ export default defineComponent({
   },
   methods: {
     init() {
-      for (let i = 0; i < 4; i++) {
-        this.show.push(this.data[i])
+      this.data = this.banners
+      for (let i = 0; i < this.data.length; i++) {
+        this.data[i].No = i
       }
-      // this.show = this.data.slice(0, 5)
+      this.show = this.data.slice(0, 5)
       this.show.push(this.data[this.data.length - 1])
       this.initPrev()
       this.initNext()
