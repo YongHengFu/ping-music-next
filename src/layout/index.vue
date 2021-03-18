@@ -151,14 +151,14 @@ interface item {
   icon: string;
   path: string;
 }
-
-interface dataType {
-  state: boolean; // false：暂停  true：播放
-  currentDura: number; // 当前播放进度
-  totalDura: number; // 歌曲总时长
-  pageIndex: number; //
-  itemList: Array<item>;
-}
+//
+// interface dataType {
+//   state: boolean; // false：暂停  true：播放
+//   currentDura: number; // 当前播放进度
+//   totalDura: number; // 歌曲总时长
+//   pageIndex: number; //
+//   itemList: Array<item>;
+// }
 
 export default defineComponent({
   name: 'MainLayout',

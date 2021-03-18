@@ -1,8 +1,8 @@
 <template>
   <div>
     <div v-if="show.length>0" class="container" @mouseleave="leave" @mouseenter="enter">
-      <LeftOutlined v-if="controlButton" class="prevIcon" @click="prev" />
-      <RightOutlined v-if="controlButton" class="nextIcon" @click="next" />
+      <LeftCircleFilled v-if="controlButton" class="prevIcon" @click="prev" />
+      <RightCircleFilled v-if="controlButton" class="nextIcon" @click="next" />
       <div :class="item[0].class"><a-image :src="show[0].imgUrl" style="border-radius: 5px;" /></div>
       <div :class="item[1].class"><a-image :src="show[1].imgUrl" style="border-radius: 5px;" /></div>
       <div :class="item[2].class"><a-image :src="show[2].imgUrl" style="border-radius: 5px;" /></div>
@@ -18,13 +18,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { LeftOutlined, RightOutlined } from '@ant-design/icons-vue'
+import { LeftCircleFilled, RightCircleFilled } from '@ant-design/icons-vue'
 
 export default defineComponent({
   name: 'Banner',
   components: {
-    LeftOutlined,
-    RightOutlined,
+    LeftCircleFilled,
+    RightCircleFilled,
   },
   data() {
     return {
@@ -203,7 +203,6 @@ export default defineComponent({
   height: 250px;
   position: relative;
   marginLeft: 300px;
-  /*background: #999999;*/
 }
 .left-out{
   transition: 1s;
@@ -281,22 +280,18 @@ export default defineComponent({
 }
 
 .prevIcon{
-  padding: 30px 5px;
-  color: #FFFFFF;
-  background: rgba(217, 215, 215, 0.5);
+  color: rgba(163, 161, 161, 0.8);
   position: absolute;
-  font-size: 22px;
+  font-size: 30px;
   top: 50%;
   left: 65px;
   transform: translate(0%,-50%);
   z-index: 2;
 }
 .nextIcon{
-  padding: 30px 5px;
-  color: #FFFFFF;
-  background: rgba(217, 215, 215, 0.5);
+  color: rgba(163, 161, 161, 0.8);
   position: absolute;
-  font-size: 22px;
+  font-size: 30px;
   top: 50%;
   right: 65px;
   transform: translate(0%,-50%);
