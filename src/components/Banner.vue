@@ -3,11 +3,14 @@
     <div v-if="show.length>0" class="container" @mouseleave="leave" @mouseenter="enter">
       <LeftCircleFilled v-if="controlButton" class="prevIcon" @click="prev" />
       <RightCircleFilled v-if="controlButton" class="nextIcon" @click="next" />
-      <div :class="item[0].class"><a-image :src="show[0].pic" style="border-radius: 5px;" /></div>
-      <div :class="item[1].class"><a-image :src="show[1].pic" style="border-radius: 5px;" /></div>
-      <div :class="item[2].class"><a-image :src="show[2].pic" style="border-radius: 5px;" /></div>
-      <div :class="item[3].class"><a-image :src="show[3].pic" style="border-radius: 5px;" /></div>
-      <div :class="item[4].class"><a-image :src="show[4].pic" style="border-radius: 5px;" /></div>
+      <div v-for="n of 5" :key="n" :class="item[n-1].class" >
+        <a-image :src="show[n-1].pic" style="border-radius: 5px;" />
+      </div>
+<!--      <div :class="item[0].class"><a-image :src="show[0].pic" style="border-radius: 5px;" /></div>-->
+<!--      <div :class="item[1].class"><aimage :src="show[1].pic" style="border-radius: 5px;" /></div>-->
+<!--      <div :class="item[2].class"><a-image :src="show[2].pic" style="border-radius: 5px;" /></div>-->
+<!--      <div :class="item[3].class"><a-image :src="show[3].pic" style="border-radius: 5px;" /></div>-->
+<!--      <div :class="item[4].class"><a-image :src="show[4].pic" style="border-radius: 5px;" /></div>-->
       <div class="points">
         <div v-for="(item,ind) of data" :key="item" :class="ind===index?'point-L':'point'" />
       </div>
@@ -19,6 +22,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { LeftCircleFilled, RightCircleFilled } from '@ant-design/icons-vue'
+import { getBanner } from '@/api/music.ts'
 
 export default defineComponent({
   name: 'Banner',
@@ -26,12 +30,8 @@ export default defineComponent({
     LeftCircleFilled,
     RightCircleFilled,
   },
-  // props: ['banners', 'test'],
   props: {
-    banners: {
-      type: Array,
-      required: true,
-    },
+
   },
   data() {
     return {
@@ -44,37 +44,36 @@ export default defineComponent({
         { position: 4, class: 'left' },
       ],
       show: [],
-      // data: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-      data: [],
-      // { pic: '../src/assets/image/a (1).png', No: 1 },
-      // { pic: '../src/assets/image/a (2).png', No: 2 },
-      // { pic: '../src/assets/image/a (3).png', No: 3 },
-      // { pic: '../src/assets/image/a (4).png', No: 4 },
-      // { pic: '../src/assets/image/a (5).png', No: 5 },
-      // { pic: '../src/assets/image/a (6).png', No: 6 },
-      // { pic: '../src/assets/image/a (7).png', No: 7 },
-      // { pic: '../src/assets/image/a (8).png', No: 8 },
-      // { pic: '../src/assets/image/a (9).png', No: 9 },
-      // { pic: '../src/assets/image/a (10).png', No: 10 },
-      // points: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      banners: [],
       interval: null,
       controlButton: false,
     }
   },
+  created() {
+    this.getBannerData()
+  },
   mounted() {
-    this.init()
+    if (this.banners.length > 0) {
+      this.init()
+    }
   },
   methods: {
+    getBannerData() {
+      getBanner().then((res) => {
+        if (res.code === 200) {
+          this.banners = res.banners
+        }
+      })
+    },
     init() {
-      this.data = this.banners
-      for (let i = 0; i < this.data.length; i++) {
-        this.data[i].No = i
+      for (let i = 0; i < this.banners.length; i++) {
+        this.banners[i].No = i
       }
-      this.show = this.data.slice(0, 5)
-      this.show.push(this.data[this.data.length - 1])
+      this.show = this.banners.slice(0, 5)
+      this.show.push(this.banners[this.banners.length - 1])
       this.initPrev()
       this.initNext()
-      this.autoExe(true)
+      this.autoExe()
     },
     leave() {
       this.controlButton = false
@@ -117,12 +116,12 @@ export default defineComponent({
           positionLO = this.item[i].position
         }
       }
-      if (NoL < NoM && NoL === this.data[0].No) {
-        this.show[positionLO] = this.data[this.data.length - 1]
+      if (NoL < NoM && NoL === this.banners[0].No) {
+        this.show[positionLO] = this.banners[this.banners.length - 1]
       } else {
-        for (const [index, dataItem] of this.data.entries()) {
+        for (const [index, dataItem] of this.banners.entries()) {
           if (dataItem.No === NoL) {
-            this.show[positionLO] = this.data[index - 1]
+            this.show[positionLO] = this.banners[index - 1]
             break
           }
         }
@@ -146,12 +145,12 @@ export default defineComponent({
           positionRO = this.item[i].position
         }
       }
-      if (NoR > NoM && NoR === this.data[this.data.length - 1].No) {
-        this.show[positionRO] = this.data[0]
+      if (NoR > NoM && NoR === this.banners[this.banners.length - 1].No) {
+        this.show[positionRO] = this.banners[0]
       } else {
-        for (const [index, dataItem] of this.data.entries()) {
+        for (const [index, dataItem] of this.banners.entries()) {
           if (dataItem.No === NoR) {
-            this.show[positionRO] = this.data[index + 1]
+            this.show[positionRO] = this.banners[index + 1]
             break
           }
         }
@@ -173,7 +172,7 @@ export default defineComponent({
       this.item[3].class = this.item[4].class
       this.item[4].class = tran
       if (this.index === 0) {
-        this.index = this.data.length - 1
+        this.index = this.banners.length - 1
       } else {
         this.index--
       }
@@ -193,7 +192,7 @@ export default defineComponent({
       this.item[3].class = this.item[2].class
       this.item[2].class = this.item[1].class
       this.item[1].class = tran
-      if (this.index === this.data.length - 1) {
+      if (this.index === this.banners.length - 1) {
         this.index = 0
       } else {
         this.index++

@@ -7,6 +7,13 @@ export function homepage() {
   })
 }
 
+export function getBanner() {
+  return request({
+    url: '/banner',
+    method: 'get',
+  })
+}
+
 export function getQRCode(params:object) {
   return request({
     url: '/login/qr/key',

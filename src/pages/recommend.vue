@@ -3,9 +3,9 @@
     <Personalized />
   </div>
 </template>
-<script>
+<script lang="ts">
 import Personalized from '@/components/Personalized.vue'
-import { getQRCodeKey } from '@/api/user.ts'
+import { getQRCodeKey } from '../api/user'
 
 export default {
   components: {
