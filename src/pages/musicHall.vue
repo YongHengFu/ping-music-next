@@ -3,7 +3,7 @@
     <h1>音乐馆</h1>
     <Tabs />
     <Banner class="banner" />
-
+    <BlockList />
   </div>
 </template>
 
@@ -11,6 +11,7 @@
 import { defineComponent } from 'vue'
 import Banner from '@/components/Banner.vue'
 import Tabs from '@/components/Tabs.vue'
+import BlockList from '@/components/BlockList.vue'
 
 import { homepage } from '@/api/music.ts'
 export default defineComponent({
@@ -18,6 +19,7 @@ export default defineComponent({
   components: {
     Banner,
     Tabs,
+    BlockList
   },
   data() {
     return {

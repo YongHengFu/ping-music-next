@@ -12,7 +12,7 @@
 <!--      <div :class="item[3].class"><a-image :src="show[3].pic" style="border-radius: 5px;" /></div>-->
 <!--      <div :class="item[4].class"><a-image :src="show[4].pic" style="border-radius: 5px;" /></div>-->
       <div class="points">
-        <div v-for="(item,ind) of data" :key="item" :class="ind===index?'point-L':'point'" />
+        <div v-for="(item,ind) of banners" :key="item" :class="ind===index?'point-L':'point'" />
       </div>
     </div>
   </div>
