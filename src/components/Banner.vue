@@ -6,11 +6,6 @@
       <div v-for="n of 5" :key="n" :class="item[n-1].class" >
         <a-image :src="show[n-1].pic" style="border-radius: 5px;" />
       </div>
-<!--      <div :class="item[0].class"><a-image :src="show[0].pic" style="border-radius: 5px;" /></div>-->
-<!--      <div :class="item[1].class"><aimage :src="show[1].pic" style="border-radius: 5px;" /></div>-->
-<!--      <div :class="item[2].class"><a-image :src="show[2].pic" style="border-radius: 5px;" /></div>-->
-<!--      <div :class="item[3].class"><a-image :src="show[3].pic" style="border-radius: 5px;" /></div>-->
-<!--      <div :class="item[4].class"><a-image :src="show[4].pic" style="border-radius: 5px;" /></div>-->
       <div class="points">
         <div v-for="(item,ind) of banners" :key="item" :class="ind===index?'point-L':'point'" />
       </div>

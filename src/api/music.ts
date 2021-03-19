@@ -14,9 +14,9 @@ export function getBanner() {
   })
 }
 
-export function getQRCode(params:object) {
+export function getPlayList_Qua(params:object) {
   return request({
-    url: '/login/qr/key',
+    url: '/top/playlist/highquality',
     method: 'get',
     params,
   })

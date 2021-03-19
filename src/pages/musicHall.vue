@@ -19,7 +19,7 @@ export default defineComponent({
   components: {
     Banner,
     Tabs,
-    BlockList
+    BlockList,
   },
   data() {
     return {

@@ -1,16 +1,20 @@
 <template>
-  <div class="block">
-    <a-avatar
-      class="cover"
-      shape="square"
-      src="src/assets/image/cover.png"
-      @click="clickBlock"
-      @mouseenter="showPlay"
-      @mouseleave="hidePlay"
-    />
-    <div v-if="isShow" class="mask" />
-    <svg-icon v-if="isShow" class="play" name="play" @mouseenter="showPlay" @click="clickBlock" />
+  <div>
+    <div v-if="content" class="block">
+      <a-avatar
+        class="cover"
+        shape="square"
+        :src="content.coverImgUrl"
+        @click="clickBlock"
+        @mouseenter="showPlay"
+        @mouseleave="hidePlay"
+      />
+      <div v-if="isShow" class="mask" />
+      <svg-icon v-if="isShow" class="play" name="play" @mouseenter="showPlay" @click="clickBlock" />
+    </div>
+    <span class="title">{{content.name}}</span>
   </div>
+
 </template>
 
 <script lang="ts">
@@ -19,6 +23,11 @@ import { defineComponent } from 'vue'
 //   isShow: boolean
 // }
 export default defineComponent({
+  props: {
+    content: {
+      type: Object,
+    },
+  },
   data() {
     return {
       isShow: false,
@@ -53,6 +62,13 @@ export default defineComponent({
 /*  transform: translateY(-10px);*/
 /*}*/
 
+.title{
+  width: var(--block-size);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+  display:block;
+}
 .cover{
   border-radius: 8px;
   width: 100%;
