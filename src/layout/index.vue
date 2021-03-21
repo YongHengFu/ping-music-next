@@ -51,8 +51,8 @@
             <MenuOutlined class="discolour" />
           </div>
         </a-layout-header>
-        <a-layout-content class="content">
-          <router-view :key="key" />
+        <a-layout-content id="content" class="content">
+          <router-view :key="key" class="view" />
         </a-layout-content>
         <a-layout-footer class="footer">
           <div>
@@ -126,6 +126,7 @@
 <script lang="ts">
 
 import { defineComponent } from 'vue'
+import elementResizeDetectorMaker from 'element-resize-detector'
 
 import {
   FireOutlined,
@@ -181,6 +182,7 @@ export default defineComponent({
   },
   data() {
     return {
+      timer: null,
       state: false, // false:暂停 true:播放
       currentDura: 80,
       totalDura: 232,
@@ -295,7 +297,24 @@ export default defineComponent({
       return this.$route.path
     },
   },
+  mounted() {
+    const erd = elementResizeDetectorMaker()
+    const this_ = this
+
+    erd.listenTo(document.getElementById('content'), function(element) {
+      this_.debounce(function(ele) {
+        const width = (ele.offsetWidth / 5) - (ele.offsetWidth * (40 / 1000))
+        document.documentElement.style.setProperty(`--block-size`, width + 'px')
+      }, element)
+    })
+  },
   methods: {
+    debounce(func, element) {
+      if (this.timer) {
+        clearTimeout(this.timer)
+      }
+      this.timer = setTimeout(func, 300, element)
+    },
     changeState(): void {
       this.state = !this.state
     },
@@ -343,7 +362,12 @@ export default defineComponent({
 
 .layout .content {
   background: #fafafa;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.view{
+  margin: 0px auto;
 }
 
 .layout .footer {

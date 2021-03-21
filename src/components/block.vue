@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div v-if="content" class="block">
+  <div v-if="content">
+    <div class="block">
       <a-avatar
         class="cover"
         shape="square"
@@ -55,7 +55,7 @@ export default defineComponent({
   position: relative;
   background: #efd914;
   user-select: none;
-  /*transition: transform 0.2s;*/
+  transition: 0.3s;
 }
 /*.block:hover{*/
 /*  transition: transform 0.5s;*/

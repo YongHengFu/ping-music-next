@@ -1,8 +1,7 @@
 <template>
   <div>
     <div>
-      <sapn>精选专辑</sapn>
-      <RightOutlined />
+      <span class="h2">精选专辑<RightOutlined /></span>
     </div>
     <div v-if="list.length>0">
       <div v-for="n of 2" :key="n">

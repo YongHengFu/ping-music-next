@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <div v-if="show.length>0" class="container" @mouseleave="leave" @mouseenter="enter">
+  <div v-if="show.length>0">
+    <div class="container" @mouseleave="leave" @mouseenter="enter">
       <LeftCircleFilled v-if="controlButton" class="prevIcon" @click="prev" />
       <RightCircleFilled v-if="controlButton" class="nextIcon" @click="next" />
       <div v-for="n of 5" :key="n" :class="item[n-1].class" >
-        <a-image :src="show[n-1].pic" style="border-radius: 5px;" />
+        <a-image :src="show[n-1].imageUrl" style="border-radius: 5px;" />
       </div>
       <div class="points">
         <div v-for="(item,ind) of banners" :key="item" :class="ind===index?'point-L':'point'" />
@@ -44,17 +44,18 @@ export default defineComponent({
       controlButton: false,
     }
   },
-  created() {
-    this.getBannerData()
-  },
-  mounted() {
+  async created() {
+    await this.getBannerData()
     if (this.banners.length > 0) {
       this.init()
     }
   },
+  mounted() {
+
+  },
   methods: {
-    getBannerData() {
-      getBanner().then((res) => {
+    async getBannerData() {
+      await getBanner().then((res) => {
         if (res.code === 200) {
           this.banners = res.banners
         }
@@ -198,12 +199,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
-@import '../style/animations.css';
 .container{
   width: 800px;
   height: 250px;
+  /*marginLeft: 300px;*/
   position: relative;
-  marginLeft: 300px;
 }
 .left-out{
   transition: 1s;

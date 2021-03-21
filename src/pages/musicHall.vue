@@ -1,8 +1,10 @@
 <template>
-  <div style="user-select: none;position: relative">
-    <h1>音乐馆</h1>
+  <div style="user-select: none;width: calc((var(--block-size) + 20px) * var(--block-num))">
+    <span class="h1">音乐馆</span>
     <Tabs />
-    <Banner class="banner" />
+    <div style="position: relative;height: 250px">
+      <Banner class="banner" />
+    </div>
     <BlockList />
   </div>
 </template>

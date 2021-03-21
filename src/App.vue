@@ -20,5 +20,6 @@ export default defineComponent({
 :root{
   --primary-color: #1DCF9F;
   --block-size: 160px;
+  --block-num: 5;
 }
 </style>
