@@ -305,13 +305,15 @@ export default defineComponent({
       this_.debounce(function(ele) {
         const width = ele.offsetWidth
         let blockSize = (width / 5) - (width * (40 / 1000))
-        blockSize = width > 250 ? 250 : blockSize
+        blockSize = blockSize > 240 ? 240 : blockSize
         if (width - (blockSize + 20) * 6 > 40) {
           this_.$store.commit('setBlockNum', 6)
+          document.documentElement.style.setProperty(`--block-num`, 6)
         } else {
           this_.$store.commit('setBlockNum', 5)
+          document.documentElement.style.setProperty(`--block-num`, 5)
         }
-        console.log(this_.$store.getters.getBlockNum)
+        console.log(blockSize+'px, ',this_.$store.getters.getBlockNum)
         document.documentElement.style.setProperty(`--block-size`, blockSize + 'px')
       }, element)
     })

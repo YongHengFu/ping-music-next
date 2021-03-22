@@ -9,7 +9,7 @@
           v-for="m of blockNum"
           :key="m"
           style="display: inline-block;margin: 10px"
-          :content="list[(m-1)+(5*(n-1))]"
+          :content="list[(m-1)+(blockNum*(n-1))]"
         />
       </div>
     </div>
