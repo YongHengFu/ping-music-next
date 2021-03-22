@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-document.body.style.setProperty('--main-color', '#1DCF9F')
+// document.body.style.setProperty('--main-color', '#1DCF9F')
 // import HelloWorld from './components/HelloWorld.vue'
 
 export default defineComponent({

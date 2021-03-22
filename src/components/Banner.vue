@@ -17,7 +17,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { LeftCircleFilled, RightCircleFilled } from '@ant-design/icons-vue'
-import { getBanner } from '@/api/music.ts'
+import { getBanner } from '../api/music'
 
 export default defineComponent({
   name: 'Banner',

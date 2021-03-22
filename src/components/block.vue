@@ -53,7 +53,7 @@ export default defineComponent({
   height: var(--block-size);
   border-radius: 8px;
   position: relative;
-  background: #efd914;
+  /*background: #efd914;*/
   user-select: none;
   transition: 0.3s;
 }

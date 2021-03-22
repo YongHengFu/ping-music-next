@@ -303,8 +303,16 @@ export default defineComponent({
 
     erd.listenTo(document.getElementById('content'), function(element) {
       this_.debounce(function(ele) {
-        const width = (ele.offsetWidth / 5) - (ele.offsetWidth * (40 / 1000))
-        document.documentElement.style.setProperty(`--block-size`, width + 'px')
+        const width = ele.offsetWidth
+        let blockSize = (width / 5) - (width * (40 / 1000))
+        blockSize = width > 250 ? 250 : blockSize
+        if (width - (blockSize + 20) * 6 > 40) {
+          this_.$store.commit('setBlockNum', 6)
+        } else {
+          this_.$store.commit('setBlockNum', 5)
+        }
+        console.log(this_.$store.getters.getBlockNum)
+        document.documentElement.style.setProperty(`--block-size`, blockSize + 'px')
       }, element)
     })
   },

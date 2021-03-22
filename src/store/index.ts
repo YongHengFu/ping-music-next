@@ -2,11 +2,17 @@ import { createStore } from 'vuex'
 
 const store = createStore({
   state: {
-    count: 0,
+    blockNum: 5,
+    playerState: false,
   },
   mutations: {
-    add(state) {
-
+    setBlockNum(state, num) {
+      state.blockNum = num
+    },
+  },
+  getters: {
+    getBlockNum(state) {
+      return state.blockNum
     },
   },
   actions: {},

@@ -2,7 +2,7 @@ import axios from 'axios'
 import { message } from 'ant-design-vue'
 
 const service = axios.create({
-  baseURL: 'https://ping-music-api.vercel.app/',
+  baseURL: (import.meta.env.VITE_APP_BASE_URL) as string,
   timeout: 10000,
 })
 service.interceptors.request.use((config) => config, (error) => Promise.reject(error))

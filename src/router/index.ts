@@ -12,10 +12,12 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'recommend',
         component: recommend,
+        meta: { title: '推荐' },
       },
       {
         path: 'musicHall',
         component: musicHall,
+        meta: { title: '音乐馆' },
       },
     ],
   },

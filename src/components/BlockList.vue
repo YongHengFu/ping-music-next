@@ -6,7 +6,7 @@
     <div v-if="list.length>0">
       <div v-for="n of 2" :key="n">
         <Block
-          v-for="m of 5"
+          v-for="m of blockNum"
           :key="m"
           style="display: inline-block;margin: 10px"
           :content="list[(m-1)+(5*(n-1))]"
@@ -20,7 +20,7 @@
 import { defineComponent } from 'vue'
 import { RightOutlined } from '@ant-design/icons-vue'
 import Block from './block.vue'
-import { getPlayList_Qua } from '@/api/music.ts'
+import { getPlayList_Qua } from '../api/music'
 export default defineComponent({
   name: 'BlockList',
   components: {
@@ -32,6 +32,11 @@ export default defineComponent({
       list: [],
       param: {},
     }
+  },
+  computed: {
+    blockNum: function() {
+      return this.$store.getters.getBlockNum
+    },
   },
   created() {
     this.getList()
