@@ -1,9 +1,13 @@
 <template>
-  <router-view />
+  <div>
+    <router-view />
+    <Player />
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import Player from '@/components/player.vue'
 
 // document.body.style.setProperty('--main-color', '#1DCF9F')
 // import HelloWorld from './components/HelloWorld.vue'
@@ -11,7 +15,7 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'App',
   components: {
-    // HelloWorld
+    Player,
   },
 })
 </script>

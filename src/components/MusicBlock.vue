@@ -28,6 +28,9 @@ export default defineComponent({
     song: {
       type: Object,
     },
+    index: {
+      type: Number,
+    },
   },
   data() {
     return {
@@ -41,10 +44,10 @@ export default defineComponent({
   },
   methods: {
     clickSong() {
-      this.$emit('handleMusicBlock', 0)
+      this.$emit('handleMusicBlock', 0, this.index)
     },
     clickArt() {
-      this.$emit('handleMusicBlock', 1)
+      this.$emit('handleMusicBlock', 1, this.index)
     },
   },
 })
@@ -58,6 +61,7 @@ export default defineComponent({
   left: 0;
   top: 50%;
   transform: translateY(-50%);
+  cursor: pointer;
 }
 .info{
   height: 60px;
@@ -68,18 +72,26 @@ export default defineComponent({
 }
 .song{
   font-size:14px;
-  display: block
+  display: block;
+  cursor: pointer;
+}
+.song:hover{
+  text-decoration: underline var(--primary-color);
 }
 .icon{
   font-size: 28px;
   height:16px;
-  color: #1DCF9F
+  color: #1DCF9F;
 }
 .artists{
   display: inline-block;
   font-size: 13px;
   font-weight:300;
   margin-left: 1px;
-  padding: 0
+  padding: 0;
+  cursor: pointer;
+}
+.artists:hover{
+  text-decoration: underline;
 }
 </style>

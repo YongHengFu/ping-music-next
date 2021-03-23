@@ -30,3 +30,12 @@ export function getNewSong(params:object) {
     params,
   })
 }
+
+// 根据id获取音乐url
+export function getMusicById(params:object) {
+  return request({
+    url: '/song/url',
+    method: 'get',
+    params,
+  })
+}
