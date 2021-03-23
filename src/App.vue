@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Player from '@/components/player.vue'
+import Player from '@/components/Player.vue'
 
 // document.body.style.setProperty('--main-color', '#1DCF9F')
 // import HelloWorld from './components/HelloWorld.vue'
