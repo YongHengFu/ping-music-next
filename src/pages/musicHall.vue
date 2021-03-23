@@ -9,7 +9,14 @@
     <span class="h2" style="margin-right: 10px">大家都在听</span>
     <span style="font-size: 12px;border-radius: 20px;background: rgba(227,227,227,0.8);padding: 6px 12px"><svg-icon name="play-line" />播放全部</span>
     <div v-for="m of 3" :key="m" style="margin-bottom: 20px">
-      <MusicBlock v-for="n of 3" :key="n" style="display: inline-block"/>
+      <MusicBlock
+        v-for="n of 3"
+        :key="n"
+        style="display: inline-block"
+        :song="newSong[(n-1)+(m-1)*3]"
+        :index="(n-1)+(m-1)*3"
+        @handle="clickMusicBlock"
+      />
     </div>
   </div>
 </template>
@@ -20,7 +27,7 @@ import Banner from '@/components/Banner.vue'
 import Tabs from '@/components/Tabs.vue'
 import BlockList from '@/components/BlockList.vue'
 import MusicBlock from '@/components/MusicBlock.vue'
-import { homepage } from '../api/music'
+import { homepage, getNewSong } from '../api/music'
 export default defineComponent({
   name: 'MusicHall',
   components: {
@@ -32,6 +39,7 @@ export default defineComponent({
   data() {
     return {
       homePageData: {},
+      newSong: [],
     }
   },
   created() {
@@ -42,6 +50,20 @@ export default defineComponent({
       homepage().then((res) => {
         this.homePageData = res.data
       })
+    },
+    getNewSongData() {
+      getNewSong().then((res) => {
+        if (res.code === 200) {
+          this.newSong = res.result
+        }
+      })
+    },
+    clickMusicBlock(param) {
+      if (param === 0) {
+
+      } else {
+
+      }
     },
   },
 })

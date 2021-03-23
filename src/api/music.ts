@@ -21,3 +21,12 @@ export function getPlayList_Qua(params:object) {
     params,
   })
 }
+
+// 推荐新音乐
+export function getNewSong(params:object) {
+  return request({
+    url: '/personalized/newsong',
+    method: 'get',
+    params,
+  })
+}
