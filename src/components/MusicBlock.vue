@@ -1,10 +1,11 @@
 <template>
-  <div v-if="data.id!==undefined" style="position: relative;height: 60px;width: 33%">
+  <div v-if="data.id!==undefined" class="musicBlock">
     <div class="cover" @click="clickSong">
       <a-avatar shape="square" :size="60" :src="data.picUrl" />
+      <svg-icon class="play-icon" name="play-fill" />
     </div>
     <div class="info">
-      <span class="song" @click="clickSong">{{ data.name }}</span>
+      <span class="song">{{ data.name }}</span>
       <svg-icon class="icon" name="SQ" />
       <div class="artists" @click="clickArt">
         <span
@@ -54,6 +55,16 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.musicBlock{
+  position: relative;
+  height: 60px;
+  width: 30%;
+  margin-right: 10px;
+}
+.musicBlock:hover{
+  background: #e2e2e2;
+  border-radius: 5px;
+}
 .cover{
   width: 60px;
   height: 60px;
@@ -62,6 +73,19 @@ export default defineComponent({
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
+}
+.play-icon{
+  color: var(--primary-color);
+  background: rgba(255,255,255,0.95);
+  /*filter: blur(1px);*/
+  padding: 5px 5px 5px 6px;
+  border-radius: 50%;
+  font-size: 30px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.9;
 }
 .info{
   height: 60px;
@@ -74,10 +98,9 @@ export default defineComponent({
   font-size:14px;
   display: block;
   cursor: pointer;
+  padding-bottom: 10px;
 }
-.song:hover{
-  text-decoration: underline var(--primary-color);
-}
+
 .icon{
   font-size: 28px;
   height:16px;
