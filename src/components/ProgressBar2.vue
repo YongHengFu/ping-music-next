@@ -1,17 +1,17 @@
 <template>
   <Player :jump="jump" />
-  <div class="progress-bar">
+  <div id="progress-bar" class="progress-bar">
     <div class="duration" />
     <div class="buffered" />
-    <div class="currentTime" :style="'right:'+currFormat" />
+    <div class="currentTime" :style="currStyle" />
     <div
       class="point"
-      :style="'right:'+currFormat"
+      :style="currStyle"
       @mousedown="mousedown($event)"
-      @mousemove="mousemove($event)"
       @mouseup="mouseup($event)"
-    />
-    <p v-show="false">{{ currentDura }}</p>
+    >
+      <span class="tip">{{ sliderFormat }}</span>
+    </div>
   </div>
 </template>
 
@@ -26,46 +26,90 @@ export default defineComponent({
   data() {
     return {
       // buffStyle: { right: '20%' },
-      // currStyle: { right: '50%' },
-      // pointStyle: { right: '50%' },
+      currStyle: '',
       oldX: 0,
       newX: 0,
       jump: 0,
-      mouseDown: false,
+      barWidth: 0,
+      move: 50,
+      state: true,
+      tip: 0,
     }
   },
   computed: {
     currentDura() {
-      // this.currStyle.right = (1 - (this.$store.state.audio.currentTime / this.totalDura)) * 100 + ''
-      // this.currStyle.right = this.currStyle.right.substr(0, 4) + '%'
-      // console.log(this.currStyle.right)
-      // this.progress[0] = this.$store.state.audio.currentTime
       return this.$store.state.audio.currentTime
     },
     totalDura() {
       return this.$store.state.audio.duration
     },
-    currFormat(): string {
-      return ((1 - (this.currentDura / this.totalDura)) * 100 + '').substr(0, 4) + '%'
+    currFormat() {
+      return ((1 - (this.currentDura / this.totalDura)) * 100)
     },
+    sliderFormat(): string {
+      const currM = this.tip / 60
+      const currS = this.tip % 60
+      let currMinute: string = ''
+      let currSeconds: string = ''
+      if (currM < 10) {
+        currMinute = `0${currM}`
+      } else {
+        currMinute = `${currM}`
+      }
+      if (currS < 10) {
+        currSeconds = `0${currS}`
+      } else {
+        currSeconds = `${currS}`
+      }
+
+      currMinute = currMinute.substr(0, 2)
+      currSeconds = currSeconds.substr(0, 2)
+
+      return `${currMinute}:${currSeconds}`
+    },
+  },
+  watch: {
+    currFormat() {
+      if (this.state) {
+        this.move = this.currFormat
+        this.tip = this.currentDura
+        this.currStyle = `right: ${this.move}%`
+      }
+    },
+  },
+  mounted() {
+
   },
   methods: {
     mousedown(e) {
-      this.mouseDown = true
+      this.state = false
       this.oldX = e.x
-      console.log(this.oldX)
-      if (this.mouseDown) {
-        window.addEventListener('mousemove', function(el) {
-          console.log(el.x)
-        })
+      const this_ = this
+      function move(el) {
+        const width = document.getElementById('progress-bar').offsetWidth
+        const moveWidth = this_.move - ((el.x - this_.oldX) / width) * 100
+        moveWidth < 0 ? 0 : moveWidth
+        moveWidth > 100 ? 100 : moveWidth
+        if (moveWidth >= 0 && moveWidth <= 100) {
+          this_.currStyle = `right: ${moveWidth}%`
+          this_.tip = (1 - (moveWidth / 100)) * this_.totalDura
+        }
       }
-    },
-    mousemove(e) {
-      // this.newX = e.x
-      // console.log(this.newX)
+      window.addEventListener('mousemove', move, false)
+
+      window.addEventListener('mouseup', function(el) {
+        if (!this_.state) {
+          const width = document.getElementById('progress-bar').offsetWidth
+          const moveWidth = this_.move - ((el.x - this_.oldX) / width) * 100
+          this_.tip = (1 - (moveWidth / 100)) * this_.totalDura
+          this_.jump = this_.tip
+          this_.state = true
+        }
+        window.removeEventListener('mousemove', move, false)
+      }, false)
     },
     mouseup(e) {
-      this.mouseDown = false
+      // console.log(this.mouseDown)
     },
   },
 })
@@ -101,7 +145,7 @@ export default defineComponent({
   height: 5px;
   position: absolute;
   left: 0;
-  right: 50%;
+  right: 100%;
   z-index: 4;
 }
 .point{
@@ -113,8 +157,27 @@ export default defineComponent({
   background: #FFFFFF;
   position: absolute;
   top: 50%;
-  right: 50%;
+  right: 100%;
   transform: translateY(-50%);
   z-index: 5;
+}
+.tip {
+  visibility: hidden;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 10px;
+
+  /* 定位 */
+  position: absolute;
+  left: 50%;
+  top: -40px;
+  transform: translateX(-50%);
+  z-index: 6;
+}
+
+.point:hover .tip {
+  visibility: visible;
 }
 </style>

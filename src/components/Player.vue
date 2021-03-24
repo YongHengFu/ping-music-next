@@ -1,7 +1,7 @@
 <template>
   <audio
     id="audio"
-    src="http://172.16.19.76:10000/hyjw/%E9%BB%84%E6%A2%85%E6%88%8F-%E6%85%95%E5%AE%B9%E6%99%93%E6%99%93.mp3"
+    :src="source"
     controls
     autoplay
     @durationchange="durationchange"
@@ -27,7 +27,6 @@ export default defineComponent({
   },
   computed: {
     source: function() {
-      this.startPlay()
       return this.$store.state.audio.src
     },
   },
