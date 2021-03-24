@@ -5,6 +5,14 @@ const store = createStore({
     blockNum: 5,
     playerState: false,
     source: '',
+    audio: {
+      state: false,
+      src: '',
+      buffered: 0,
+      duration: 1,
+      currentTime: 0,
+      volume: 0.2,
+    },
   },
   mutations: {
     setBlockNum(state, num) {
@@ -13,6 +21,10 @@ const store = createStore({
     setSource(state, src) {
       state.source = src
     },
+    setAudio(state, param) {
+      // @ts-ignore
+      state.audio[param.prop] = param.value
+    },
   },
   getters: {
     getBlockNum(state) {
@@ -20,6 +32,9 @@ const store = createStore({
     },
     getSource(state) {
       return state.source
+    },
+    getAudio(state) {
+      return state.audio
     },
   },
   actions: {},

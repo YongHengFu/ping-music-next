@@ -55,16 +55,17 @@
           <router-view :key="key" class="view" />
         </a-layout-content>
         <a-layout-footer class="footer">
-          <div>
+          <ProgressBar />
+<!--          <div>
             <a-slider
-              v-model:value="currentDura"
+              v-model:value="time"
               :min="0"
               :max="totalDura"
               :step="1"
               :tip-formatter="sliderFormat"
               @afteChange="sliderChange"
             />
-          </div>
+          </div>-->
           <div class="control-bar">
             <div class="bar-left">
               <a-avatar shape="square" :size="50">
@@ -107,8 +108,6 @@
                 HQ
                 <UpOutlined style="font-size: 10px" />
               </a-button>
-              <!--              <span class="discolour" style="font-size: 19px;margin: 0 10px">词</span>-->
-              <!--              <svg-icon name="music-list" class="discolour" style="font-size: 19px;margin: 0 10px" />-->
               <svg-icon
                 name="lyric"
                 class="discolour"
@@ -127,6 +126,7 @@
 
 import { defineComponent } from 'vue'
 import elementResizeDetectorMaker from 'element-resize-detector'
+import ProgressBar from '@/components/ProgressBar.vue'
 
 import {
   FireOutlined,
@@ -179,13 +179,15 @@ export default defineComponent({
     UserOutlined,
     PlayCircleOutlined,
     UpOutlined,
+    ProgressBar,
   },
   data() {
     return {
       timer: null,
       state: false, // false:暂停 true:播放
-      currentDura: 80,
-      totalDura: 232,
+      // currentDura: 80,
+      // totalDura: 232,
+      time: 0,
       pageIndex: 0,
       itemList: [
         {
@@ -240,6 +242,13 @@ export default defineComponent({
     }
   },
   computed: {
+    currentDura() {
+      this.time = this.$store.state.audio.currentTime
+      return this.$store.state.audio.currentTime
+    },
+    totalDura() {
+      return this.$store.state.audio.duration
+    },
     currFormat(): string {
       const currM = this.currentDura / 60
       const currS = this.currentDura % 60
@@ -257,6 +266,7 @@ export default defineComponent({
       }
 
       currMinute = currMinute.substr(0, 2)
+      currSeconds = currSeconds.substr(0, 2)
 
       return `${currMinute}:${currSeconds}`
     },
@@ -276,6 +286,7 @@ export default defineComponent({
         totalSeconds = `${totalS}`
       }
       totalMinute = totalMinute.substr(0, 2)
+      totalSeconds = totalSeconds.substr(0, 2)
       return `${totalMinute}:${totalSeconds}`
     },
     menuList() {
@@ -313,12 +324,13 @@ export default defineComponent({
           this_.$store.commit('setBlockNum', 5)
           document.documentElement.style.setProperty(`--block-num`, 5)
         }
-        console.log(blockSize+'px, ',this_.$store.getters.getBlockNum)
+        console.log(blockSize + 'px, ', this_.$store.getters.getBlockNum)
         document.documentElement.style.setProperty(`--block-size`, blockSize + 'px')
       }, element)
     })
   },
   methods: {
+
     debounce(func, element) {
       if (this.timer) {
         clearTimeout(this.timer)
@@ -328,12 +340,12 @@ export default defineComponent({
     changeState(): void {
       this.state = !this.state
     },
-    sliderFormat(): string {
-      return this.currFormat
-    },
-    sliderChange(value: number) {
-      console.log(value)
-    },
+    // sliderFormat(): string {
+    //   return this.currFormat
+    // },
+    // sliderChange(value: number) {
+    //   console.log(value)
+    // },
     pageChange(index: number) {
       this.$router.push({ path: '/musicHall' })
       console.log(this.$route.path)

@@ -69,7 +69,8 @@ export default defineComponent({
         const param = { id: this.newSong[index].id }
         await getMusicById(param).then((res) => {
           if (res.code === 200) {
-            this.$store.commit('setSource', res.data[0].url)
+            const param = { prop: 'src', value: res.data[0].url }
+            this.$store.commit('setAudio', param)
           }
         })
       } else {

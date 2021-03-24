@@ -35,7 +35,7 @@ export default defineComponent({
   },
   computed: {
     blockNum: function() {
-      return this.$store.getters.getBlockNum
+      return this.$store.state.blockNum
     },
   },
   created() {
