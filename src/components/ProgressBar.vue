@@ -61,6 +61,7 @@ export default defineComponent({
   },
   methods: {
     sliderFormat(): string {
+      // return ''
       return this.currFormat
       /* const currM = this.progress[this.index] / 60
       const currS = this.progress[this.index] % 60
@@ -82,8 +83,8 @@ export default defineComponent({
 
       return `${currMinute}:${currSeconds}`*/
     },
-    mousedown() {
-      this.progress[1] = this.$store.state.audio.currentTime
+    mousedown(value) {
+      this.progress[1] = value
       this.index = 1
       console.log('down')
     },

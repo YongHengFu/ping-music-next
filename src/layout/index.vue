@@ -55,7 +55,8 @@
           <router-view :key="key" class="view" />
         </a-layout-content>
         <a-layout-footer class="footer">
-          <ProgressBar />
+<!--          <ProgressBar />-->
+          <ProgressBar2 />
 <!--          <div>
             <a-slider
               v-model:value="time"
@@ -127,6 +128,7 @@
 import { defineComponent } from 'vue'
 import elementResizeDetectorMaker from 'element-resize-detector'
 import ProgressBar from '@/components/ProgressBar.vue'
+import ProgressBar2 from '@/components/ProgressBar2.vue'
 
 import {
   FireOutlined,
@@ -180,6 +182,7 @@ export default defineComponent({
     PlayCircleOutlined,
     UpOutlined,
     ProgressBar,
+    ProgressBar2,
   },
   data() {
     return {
