@@ -56,7 +56,7 @@
         </a-layout-content>
         <a-layout-footer class="footer">
 <!--          <ProgressBar />-->
-          <ProgressBar2 />
+<!--          <ProgressBar2 />-->
 <!--          <div>
             <a-slider
               v-model:value="time"
@@ -67,13 +67,13 @@
               @afteChange="sliderChange"
             />
           </div>-->
-          <div class="control-bar">
+<!--          <div class="control-bar">
             <div class="bar-left">
               <a-avatar shape="square" :size="50">
                 <template #icon><PlayCircleOutlined /></template>
               </a-avatar>
               <span style="margin: 0 10px; font-size: 16px">海阔天空</span>
-              <span>--beyond</span>
+              <span>&#45;&#45;beyond</span>
               <svg-icon
                 name="love"
                 class="discolour"
@@ -89,7 +89,7 @@
               />
               <svg-icon
                 :name="state ? 'pause' : 'play'"
-                style="font-size: 40px; color: var(--primary-color)"
+                style="font-size: 40px; color: var(&#45;&#45;primary-color)"
                 @click="changeState"
               />
               <svg-icon
@@ -116,7 +116,8 @@
               />
               <svg-icon name="music-list" class="discolour" style="font-size: 22px" />
             </div>
-          </div>
+          </div>-->
+          <ControlBar />
         </a-layout-footer>
       </a-layout>
     </a-layout>
@@ -127,8 +128,8 @@
 
 import { defineComponent } from 'vue'
 import elementResizeDetectorMaker from 'element-resize-detector'
-import ProgressBar from '@/components/ProgressBar.vue'
-import ProgressBar2 from '@/components/ProgressBar2.vue'
+// import ProgressBar2 from '@/components/ProgressBar2.vue'
+import ControlBar from '@/components/ControlBar.vue'
 
 import {
   FireOutlined,
@@ -181,8 +182,8 @@ export default defineComponent({
     UserOutlined,
     PlayCircleOutlined,
     UpOutlined,
-    ProgressBar,
-    ProgressBar2,
+    // ProgressBar2,
+    ControlBar,
   },
   data() {
     return {
@@ -245,53 +246,6 @@ export default defineComponent({
     }
   },
   computed: {
-    currentDura() {
-      this.time = this.$store.state.audio.currentTime
-      return this.$store.state.audio.currentTime
-    },
-    totalDura() {
-      return this.$store.state.audio.duration
-    },
-    currFormat(): string {
-      const currM = this.currentDura / 60
-      const currS = this.currentDura % 60
-      let currMinute: string = ''
-      let currSeconds: string = ''
-      if (currM < 10) {
-        currMinute = `0${currM}`
-      } else {
-        currMinute = `${currM}`
-      }
-      if (currS < 10) {
-        currSeconds = `0${currS}`
-      } else {
-        currSeconds = `${currS}`
-      }
-
-      currMinute = currMinute.substr(0, 2)
-      currSeconds = currSeconds.substr(0, 2)
-
-      return `${currMinute}:${currSeconds}`
-    },
-    totalFormat(): string {
-      const totalM = this.totalDura / 60
-      const totalS = this.totalDura % 60
-      let totalMinute: string = ''
-      let totalSeconds: string = ''
-      if (totalM < 10) {
-        totalMinute = `0${totalM}`
-      } else {
-        totalMinute = `${totalM}`
-      }
-      if (totalS < 10) {
-        totalSeconds = `0${totalS}`
-      } else {
-        totalSeconds = `${totalS}`
-      }
-      totalMinute = totalMinute.substr(0, 2)
-      totalSeconds = totalSeconds.substr(0, 2)
-      return `${totalMinute}:${totalSeconds}`
-    },
     menuList() {
       const this_: any = this
       return function(group: string) {
@@ -340,9 +294,9 @@ export default defineComponent({
       }
       this.timer = setTimeout(func, 300, element)
     },
-    changeState(): void {
-      this.state = !this.state
-    },
+    // changeState(): void {
+    //   this.state = !this.state
+    // },
     // sliderFormat(): string {
     //   return this.currFormat
     // },
@@ -453,36 +407,36 @@ export default defineComponent({
   /* border: 0; */
 }
 
-.control-bar {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-}
+/*.control-bar {*/
+/*  display: flex;*/
+/*  flex-direction: row;*/
+/*  justify-content: space-between;*/
+/*  align-items: center;*/
+/*  padding: 0 20px;*/
+/*}*/
 
-.bar-left {
-  width: 25%;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-}
+/*.bar-left {*/
+/*  width: 25%;*/
+/*  display: flex;*/
+/*  flex-direction: row;*/
+/*  justify-content: flex-start;*/
+/*  align-items: center;*/
+/*}*/
 
-.bar-center {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
+/*.bar-center {*/
+/*  display: flex;*/
+/*  flex-direction: row;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*}*/
 
-.bar-right {
-  width: 25%;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-}
+/*.bar-right {*/
+/*  width: 25%;*/
+/*  display: flex;*/
+/*  flex-direction: row;*/
+/*  justify-content: flex-end;*/
+/*  align-items: center;*/
+/*}*/
 
 .discolour {
   color: rgb(102, 102, 102);
@@ -492,13 +446,13 @@ export default defineComponent({
   color: var(--primary-color);
 }
 
-.prev-button {
-  color: #3f3f3f;
-  margin: 0 20px 0 30px;
-}
+/*.prev-button {*/
+/*  color: #3f3f3f;*/
+/*  margin: 0 20px 0 30px;*/
+/*}*/
 
-.next-button {
-  color: #3f3f3f;
-  margin: 0 30px 0 20px;
-}
+/*.next-button {*/
+/*  color: #3f3f3f;*/
+/*  margin: 0 30px 0 20px;*/
+/*}*/
 </style>

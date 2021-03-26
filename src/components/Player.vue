@@ -1,13 +1,15 @@
 <template>
   <audio
     id="audio"
-    :src="source"
+    src="http://172.16.19.76:10000/hyjw/%E5%9C%A8%E9%9B%A8%E4%B8%AD-%E6%B1%AA%E5%B3%B0.mp3"
     controls
     autoplay
     @durationchange="durationchange"
     @loadeddata="loadeddata"
     @progress="progress"
     @canplay="canplay"
+    @play="play"
+    @pause="pause"
   />
 </template>
 
@@ -26,44 +28,66 @@ export default defineComponent({
     }
   },
   computed: {
-    source: function() {
+    source() {
       return this.$store.state.audio.src
+    },
+    state() {
+      return this.$store.state.audio.state
     },
   },
   watch: {
     jump() {
-      const audio = document.getElementById('audio')
+      let audio = document.getElementById('audio')
       audio.currentTime = this.jump
-      console.log('jump :' + this.jump)
+      audio = document.getElementById('audio')
+      if (audio.paused) {
+        audio.play()
+      }
+    },
+    state() {
+      const audio = document.getElementById('audio')
+      if (this.state) {
+        audio.play()
+      } else {
+        audio.pause()
+      }
     },
   },
   methods: {
     durationchange() {
       const audio = document.getElementById('audio')
-      this.$store.state.audio.duration = audio.duration
+      const param = { prop: 'duration', value: audio.duration }
+      this.$store.commit('setAudio', param)
     },
     loadeddata() {
-      // const audio = document.getElementById('audio')
-      // console.log(JSON.stringify(audio))
+
     },
     progress() {
       const audio = document.getElementById('audio')
-      console.log('缓冲进度' + audio.buffered.end(audio.buffered.length - 1))
+      const param = { prop: 'buffered', value: audio.buffered.end(audio.buffered.length - 1) }
+      this.$store.commit('setAudio', param)
     },
     canplay() {
       const audio = document.getElementById('audio')
-      this.$store.state.audio.volume = audio.volume
+      const param = { prop: 'volume', value: audio.volume }
+      this_.$store.commit('setAudio', param)
       const this_ = this
       audio.ontimeupdate = function() {
         const param = { prop: 'currentTime', value: audio.currentTime }
         this_.$store.commit('setAudio', param)
       }
     },
-    audioPlay() {
-
+    play() {
+      if (!this.state) {
+        const param = { prop: 'state', value: true }
+        this.$store.commit('setAudio', param)
+      }
     },
-    audioJump() {
-
+    pause() {
+      if (this.state) {
+        const param = { prop: 'state', value: false }
+        this.$store.commit('setAudio', param)
+      }
     },
   },
 })

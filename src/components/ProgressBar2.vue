@@ -1,39 +1,49 @@
 <template>
-  <Player :jump="jump" />
-  <div id="progress-bar" class="progress-bar">
+  <div
+    id="progress-bar"
+    class="progress-bar"
+    @click="jumpPoint($event)"
+    @mouseenter="isPoint=true"
+    @mouseleave="isPoint=false"
+  >
     <div class="duration" />
-    <div class="buffered" />
+    <div class="buffered" :style="`right: ${(1- buffDura / totalDura) * 100}%`" />
     <div class="currentTime" :style="currStyle" />
-    <div
-      class="point"
-      :style="currStyle"
-      @mousedown="mousedown($event)"
-      @mouseup="mouseup($event)"
-    >
-      <span class="tip">{{ sliderFormat }}</span>
-    </div>
+    <a-tooltip placement="top" :title="sliderFormat" :arrowPointAtCenter="true">
+      <div
+        v-show="isPoint"
+        class="point"
+        :style="currStyle"
+        @mousedown="mousedown($event)"
+        @mouseup="mouseup($event)"
+        @mouseenter="isTip=true"
+        @mouseleave="isTip=false"
+      >
+        <!--      <span v-if="!state||isTip" class="tip" id="tipText">{{ sliderFormat }}</span>-->
+      </div>
+    </a-tooltip>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Player from '@/components/Player.vue'
+
 export default defineComponent({
   name: 'ProgressBar2',
   components: {
-    Player,
+
   },
   data() {
     return {
-      // buffStyle: { right: '20%' },
+      buffStyle: '',
       currStyle: '',
       oldX: 0,
-      newX: 0,
-      jump: 0,
-      barWidth: 0,
+      // jump: 0,
       move: 50,
       state: true,
-      tip: 0,
+      tipTime: 0,
+      isPoint: false,
+      isTip: false,
     }
   },
   computed: {
@@ -43,12 +53,15 @@ export default defineComponent({
     totalDura() {
       return this.$store.state.audio.duration
     },
+    buffDura() {
+      return this.$store.state.audio.buffered
+    },
     currFormat() {
       return ((1 - (this.currentDura / this.totalDura)) * 100)
     },
     sliderFormat(): string {
-      const currM = this.tip / 60
-      const currS = this.tip % 60
+      const currM = this.tipTime / 60
+      const currS = this.tipTime % 60
       let currMinute: string = ''
       let currSeconds: string = ''
       if (currM < 10) {
@@ -72,40 +85,53 @@ export default defineComponent({
     currFormat() {
       if (this.state) {
         this.move = this.currFormat
-        this.tip = this.currentDura
+        this.tipTime = this.currentDura
         this.currStyle = `right: ${this.move}%`
       }
     },
+    // buffDura() {
+    //   this.buffStyle = `right: ${(1 - this.buffDura / this.totalDura) * 100}%`
+    // },
   },
   mounted() {
 
   },
   methods: {
+    jumpPoint(e) {
+      const pro = document.getElementById('progress-bar')
+      const width = pro.offsetWidth
+      const X = pro.offsetLeft
+      this.$emit('jumpTo', ((e.x - X) / width) * this.totalDura)
+      // this.jump = ((e.x - X) / width) * this.totalDura
+    },
     mousedown(e) {
       this.state = false
       this.oldX = e.x
       const this_ = this
       function move(el) {
-        const width = document.getElementById('progress-bar').offsetWidth
-        const moveWidth = this_.move - ((el.x - this_.oldX) / width) * 100
-        moveWidth < 0 ? 0 : moveWidth
-        moveWidth > 100 ? 100 : moveWidth
-        if (moveWidth >= 0 && moveWidth <= 100) {
-          this_.currStyle = `right: ${moveWidth}%`
-          this_.tip = (1 - (moveWidth / 100)) * this_.totalDura
-        }
+        const pro = document.getElementById('progress-bar')
+        const width = pro.offsetWidth
+        const X = pro.offsetLeft
+        let moveWidth = (1 - ((el.x - X) / width)) < 0 ? 0 : (1 - ((el.x - X) / width))
+        moveWidth = (1 - ((el.x - X) / width)) > 1 ? 1 : moveWidth
+        this_.currStyle = `right: ${moveWidth * 100}%`
+        this_.tipTime = (1 - moveWidth) * this_.totalDura
       }
       window.addEventListener('mousemove', move, false)
 
-      window.addEventListener('mouseup', function(el) {
+      window.addEventListener('mouseup', async function(el) {
+        await window.removeEventListener('mousemove', move, false)
         if (!this_.state) {
-          const width = document.getElementById('progress-bar').offsetWidth
-          const moveWidth = this_.move - ((el.x - this_.oldX) / width) * 100
-          this_.tip = (1 - (moveWidth / 100)) * this_.totalDura
-          this_.jump = this_.tip
+          // const pro = document.getElementById('progress-bar')
+          // const width = pro.offsetWidth
+          // const X = pro.offsetLeft
+          // const width = document.getElementById('progress-bar').offsetWidth
+          // const moveWidth = this_.move - ((el.x - this_.oldX) / width) * 100
+          // this_.tipTime = (1 - (moveWidth / 100)) * this_.totalDura
           this_.state = true
+          this_.$emit('jumpTo', this_.tipTime)
+          // this_.jump = this_.tipTime
         }
-        window.removeEventListener('mousemove', move, false)
       }, false)
     },
     mouseup(e) {
@@ -117,15 +143,17 @@ export default defineComponent({
 
 <style scoped>
 .progress-bar{
-  margin: 0 2px;
-  height: 5px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 5px;
+  height: 12px;
   position: relative;
-  background: #2f54eb;
   z-index: 0;
-  margin-bottom: 10px;
+  padding: 0;
 }
 .duration{
-  height: 5px;
+  height: 3px;
   background: #cccccc;
   position: absolute;
   left: 0;
@@ -133,7 +161,7 @@ export default defineComponent({
   z-index: 1;
 }
 .buffered{
-  height: 5px;
+  height: 3px;
   background: #999999;
   position: absolute;
   left: 0;
@@ -142,42 +170,51 @@ export default defineComponent({
 }
 .currentTime{
   background: var(--primary-color);
-  height: 5px;
+  height: 3px;
+  /*box-shadow: 0 0px 5px var(--primary-color);*/
+  box-shadow:10px 0 20px -10px blue;
   position: absolute;
   left: 0;
   right: 100%;
   z-index: 4;
 }
-.point{
+ .point{
   cursor: pointer;
-  width: 15px;
-  height: 15px;
-  border: var(--primary-color) solid 2px;
+  width: 12px;
+  height: 12px;
+  border: var(--primary-color) solid 1px;
   border-radius: 50%;
   background: #FFFFFF;
+  box-shadow: 0 0 10px var(--primary-color);
   position: absolute;
   top: 50%;
   right: 100%;
-  transform: translateY(-50%);
+  transform: translate(50%,-50%);
   z-index: 5;
+  animation: point-shadow 1.5s infinite alternate-reverse;
+}
+@keyframes  point-shadow {
+  0% {
+    box-shadow: 0 0 1px var(--primary-color);
+  }
+  50% {
+    box-shadow: 0 0 5px 2px var(--primary-color);
+  }
+  100% {
+    box-shadow: 0 0 10px 3px var(--primary-color);
+  }
 }
 .tip {
-  visibility: hidden;
   background-color: black;
-  color: #fff;
+  color: #fffFFF;
   text-align: center;
   border-radius: 6px;
   padding: 5px 10px;
-
-  /* 定位 */
+  opacity: 0.8;
   position: absolute;
   left: 50%;
   top: -40px;
   transform: translateX(-50%);
   z-index: 6;
-}
-
-.point:hover .tip {
-  visibility: visible;
 }
 </style>
