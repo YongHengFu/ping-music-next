@@ -15,7 +15,8 @@ jobs:
     - name: repo-sync
       uses: repo-sync/github-sync@v2
       with:
-        source_repo: "http://${{ secrets.gogsToken }}@116.6.118.87:3000/180810/ping-music-next.git"
+        source_repo: "ssh://ssh@116.6.118.87:3000/180810/ping-music-next.git"
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
         source_branch: "*"
         destination_branch: "*"
         sync_tags: "true"
