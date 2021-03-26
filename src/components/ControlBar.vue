@@ -37,15 +37,6 @@
           class="discolour"
           style="font-size: 20px"
         />
-        <a-slider
-          v-model:value="progress[index]"
-          :min="0"
-          :max="1"
-          :step="0.1"
-          :tip-formatter="sliderFormat"
-          @beforeChange="mousedown"
-          @afterChange="mouseup"
-        />
       </div>
       <div class="bar-right">
         <span style="margin-right: 10px">{{ currFormat }} / {{ totalFormat }}</span>
