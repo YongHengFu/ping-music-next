@@ -11,7 +11,7 @@
     <div class="currentTime" :style="currStyle" />
     <a-tooltip placement="top" :title="sliderFormat" :arrowPointAtCenter="true">
       <div
-        v-show="isPoint"
+        v-show="!state||isPoint"
         class="point"
         :style="currStyle"
         @mousedown="mousedown($event)"

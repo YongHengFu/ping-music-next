@@ -34,6 +34,12 @@ export default defineComponent({
     state() {
       return this.$store.state.audio.state
     },
+    volume() {
+      return this.$store.state.audio.volume
+    },
+    mute() {
+      return this.$store.state.audio.mute
+    },
   },
   watch: {
     jump() {
@@ -52,6 +58,14 @@ export default defineComponent({
         audio.pause()
       }
     },
+    volume() {
+      const audio = document.getElementById('audio')
+      audio.volume = this.volume
+    },
+    mute() {
+      const audio = document.getElementById('audio')
+      audio.muted = !audio.muted
+    },
   },
   methods: {
     durationchange() {
@@ -69,8 +83,7 @@ export default defineComponent({
     },
     canplay() {
       const audio = document.getElementById('audio')
-      const param = { prop: 'volume', value: audio.volume }
-      this_.$store.commit('setAudio', param)
+      audio.volume = this.$store.state.audio.volume
       const this_ = this
       audio.ontimeupdate = function() {
         const param = { prop: 'currentTime', value: audio.currentTime }

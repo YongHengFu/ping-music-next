@@ -11,7 +11,8 @@ const store = createStore({
       buffered: 0,
       duration: 1,
       currentTime: 0,
-      volume: 0.2,
+      volume: 0.6,
+      mute: false,
     },
   },
   mutations: {
