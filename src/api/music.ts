@@ -39,3 +39,12 @@ export function getMusicById(params:object) {
     params,
   })
 }
+
+// 根据id获取音乐详情
+export function getMusicDetail(params:object) {
+  return request({
+    url: '/song/detail',
+    method: 'get',
+    params,
+  })
+}

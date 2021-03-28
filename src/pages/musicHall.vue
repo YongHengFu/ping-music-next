@@ -7,7 +7,10 @@
     </div>
     <BlockList />
     <span class="h2" style="margin-right: 10px">大家都在听</span>
-    <span style="font-size: 12px;border-radius: 20px;background: rgba(227,227,227,0.8);padding: 6px 12px"><svg-icon name="play-line" />播放全部</span>
+    <span
+      style="font-size: 12px;border-radius: 20px;background: rgba(227,227,227,0.8);padding: 6px 12px"
+      @click="playAll"
+    ><svg-icon name="play-line" />播放全部</span>
     <div v-if="newSong.length>0">
       <div v-for="m of 3" :key="m" style="margin-bottom: 20px">
         <MusicBlock
@@ -75,6 +78,12 @@ export default defineComponent({
         })
       } else {
 
+      }
+    },
+    playAll() {
+      debugger
+      if (this.newSong.length > 0) {
+        this.$store.commit('setMusicList', this.newSong)
       }
     },
   },

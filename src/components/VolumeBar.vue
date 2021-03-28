@@ -32,6 +32,14 @@ export default defineComponent({
       right: 100,
     }
   },
+  watch: {
+    volume() {
+      if (this.volume === 0) {
+        const param = { prop: 'mute', value: !this.$store.state.audio.mute }
+        this.$store.commit('setAudio', param)
+      }
+    },
+  },
   mounted() {
     this.right = (1 - this.$store.state.audio.volume) * 100
   },

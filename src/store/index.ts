@@ -14,6 +14,7 @@ const store = createStore({
       volume: 0.6,
       mute: false,
     },
+    musicList: [],
   },
   mutations: {
     setBlockNum(state, num) {
@@ -26,6 +27,9 @@ const store = createStore({
       // @ts-ignore
       state.audio[param.prop] = param.value
     },
+    setMusicList(state, list) {
+      state.musicList = list
+    },
   },
   getters: {
     getBlockNum(state) {
@@ -36,6 +40,9 @@ const store = createStore({
     },
     getAudio(state) {
       return state.audio
+    },
+    getMusicList(state) {
+      return state.musicList
     },
   },
   actions: {},

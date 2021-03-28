@@ -1,8 +1,7 @@
 <template>
   <audio
     id="audio"
-    src="http://172.16.19.76:10000/hyjw/%E5%9C%A8%E9%9B%A8%E4%B8%AD-%E6%B1%AA%E5%B3%B0.mp3"
-    controls
+    :src="list.length>0?list[index]:null"
     autoplay
     @durationchange="durationchange"
     @loadeddata="loadeddata"
@@ -10,6 +9,7 @@
     @canplay="canplay"
     @play="play"
     @pause="pause"
+    @ended="ended"
   />
 </template>
 
@@ -25,6 +25,7 @@ export default defineComponent({
   data() {
     return {
       audio: null,
+      index: 0,
     }
   },
   computed: {
@@ -39,6 +40,9 @@ export default defineComponent({
     },
     mute() {
       return this.$store.state.audio.mute
+    },
+    list() {
+      return this.$store.state.musicList
     },
   },
   watch: {
@@ -65,6 +69,9 @@ export default defineComponent({
     mute() {
       const audio = document.getElementById('audio')
       audio.muted = !audio.muted
+    },
+    list() {
+      this.index = 0
     },
   },
   methods: {
@@ -100,6 +107,11 @@ export default defineComponent({
       if (this.state) {
         const param = { prop: 'state', value: false }
         this.$store.commit('setAudio', param)
+      }
+    },
+    ended() {
+      if (this.index !== this.list.length - 1) {
+        this.index++
       }
     },
   },
