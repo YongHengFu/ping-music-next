@@ -4,7 +4,7 @@
     <ProgressBar2 @jumpTo="jumpTo" />
     <div class="control-bar">
       <div class="bar-left">
-        <a-avatar shape="square" :size="50" :src="detailList[currIndex].album.picUrl" alt="PING" />
+        <a-avatar shape="square" :size="50" :src="detailList[currIndex].album.picUrl" alt="alt"  >test</a-avatar>
         <div style="display: flex;flex-direction: column;margin-left: 10px">
           <span style="font-size: 16px;font-weight: bolder">{{ detailList[currIndex].name }}</span>
           <span style="font-size: 12px">{{ detailList[currIndex].artist.name }}</span>

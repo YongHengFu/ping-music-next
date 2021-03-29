@@ -90,7 +90,7 @@ export default defineComponent({
     playAll() {
       console.log('p')
       if (this.newSongIdList.length > 0) {
-        this.$store.state.commit('setMusicList', this.newSongIdList)
+        this.$store.commit('setMusicList', this.newSongIdList)
       } else {
         this.getNewSongData()
         // this.playAll()
