@@ -6,11 +6,13 @@
       <Banner class="banner" />
     </div>
     <BlockList />
-    <span class="h2" style="margin-right: 10px">大家都在听</span>
-    <span
-      style="font-size: 12px;border-radius: 20px;background: rgba(227,227,227,0.8);padding: 6px 12px"
-      @click="playAll"
-    ><svg-icon name="play-line" />播放全部</span>
+    <span class="h2" style="margin-right: 10px">最新听
+      <svg-icon class="play-all" name="playAll" @click="playAll" />
+    </span>
+    <!--    <span-->
+    <!--      style="font-size: 12px;border-radius: 20px;background: rgba(227,227,227,0.8);padding: 6px 12px"-->
+    <!--      @click="playAll"-->
+    <!--    ><svg-icon name="play-line" />播放全部</span>-->
     <div v-if="newSong.length>0">
       <div v-for="m of 3" :key="m" style="margin-bottom: 20px">
         <MusicBlock
@@ -46,6 +48,7 @@ export default defineComponent({
     return {
       homePageData: {},
       newSong: [],
+      newSongIdList: [],
     }
   },
   async created() {
@@ -63,6 +66,10 @@ export default defineComponent({
       getNewSong(param).then((res) => {
         if (res.code === 200) {
           this.newSong = res.result
+          for (const item of this.newSong) {
+            this.newSongIdList.push(item.id)
+          }
+          // this.$store.state.commit('setMusicList', this.newSongIdList)
         }
       })
     },
@@ -81,9 +88,12 @@ export default defineComponent({
       }
     },
     playAll() {
-      debugger
-      if (this.newSong.length > 0) {
-        this.$store.commit('setMusicList', this.newSong)
+      console.log('p')
+      if (this.newSongIdList.length > 0) {
+        this.$store.state.commit('setMusicList', this.newSongIdList)
+      } else {
+        this.getNewSongData()
+        this.playAll()
       }
     },
   },
@@ -95,5 +105,10 @@ export default defineComponent({
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+}
+.play-all{
+  font-size: 24px;
+  color: #000c17;
+  cursor: pointer;
 }
 </style>

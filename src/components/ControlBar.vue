@@ -4,11 +4,11 @@
     <ProgressBar2 @jumpTo="jumpTo" />
     <div class="control-bar">
       <div class="bar-left">
-        <a-avatar shape="square" :size="50">
-          <!--          <template #icon><PlayCircleOutlined /></template>-->
-        </a-avatar>
-        <span style="margin: 0 10px; font-size: 16px">海阔天空</span>
-        <span>--beyond</span>
+        <a-avatar shape="square" :size="50" :src="detailList[currIndex].album.picUrl" alt="PING" />
+        <div style="display: flex;flex-direction: column;margin-left: 10px">
+          <span style="font-size: 16px;font-weight: bolder">{{ detailList[currIndex].name }}</span>
+          <span style="font-size: 12px">{{ detailList[currIndex].artist.name }}</span>
+        </div>
         <svg-icon
           name="love"
           class="discolour"
@@ -89,6 +89,12 @@ export default defineComponent({
     },
     mute() {
       return this.$store.state.audio.mute
+    },
+    detailList() {
+      return this.$store.state.detailList
+    },
+    currIndex() {
+      return this.$store.state.currIndex
     },
   },
   watch: {

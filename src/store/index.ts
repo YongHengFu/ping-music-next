@@ -7,7 +7,6 @@ const store = createStore({
     source: '',
     audio: {
       state: false,
-      src: '',
       buffered: 0,
       duration: 1,
       currentTime: 0,
@@ -15,6 +14,16 @@ const store = createStore({
       mute: false,
     },
     musicList: [],
+    detailList: [{
+      name: '聆听生活',
+      artist: {
+        name: 'PING',
+      },
+      album: {
+        picUrl: 'http://test.png',
+      },
+    }],
+    currIndex: 0,
   },
   mutations: {
     setBlockNum(state, num) {
@@ -30,6 +39,12 @@ const store = createStore({
     setMusicList(state, list) {
       state.musicList = list
     },
+    setDetailList(state, list) {
+      state.detailList = list
+    },
+    setCurrIndex(state, index) {
+      state.currIndex = index
+    },
   },
   getters: {
     getBlockNum(state) {
@@ -43,6 +58,12 @@ const store = createStore({
     },
     getMusicList(state) {
       return state.musicList
+    },
+    getDetailList(state) {
+      return state.detailList
+    },
+    getCurrIndex(state) {
+      return state.currIndex
     },
   },
   actions: {},

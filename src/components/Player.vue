@@ -1,7 +1,7 @@
 <template>
   <audio
     id="audio"
-    :src="list.length>0?list[index]:null"
+    :src="source"
     autoplay
     @durationchange="durationchange"
     @loadeddata="loadeddata"
@@ -13,8 +13,9 @@
   />
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue'
+import { getMusicDetail } from '../api/music'
 export default defineComponent({
   name: 'Player',
   props: {
@@ -30,7 +31,7 @@ export default defineComponent({
   },
   computed: {
     source() {
-      return this.$store.state.audio.src
+      return `https://music.163.com/song/media/outer/url?id=${this.musiclist[this.index]}.mp3`
     },
     state() {
       return this.$store.state.audio.state
@@ -41,8 +42,11 @@ export default defineComponent({
     mute() {
       return this.$store.state.audio.mute
     },
-    list() {
+    musiclist() {
       return this.$store.state.musicList
+    },
+    detailList() {
+      return this.$store.state.detailList
     },
   },
   watch: {
@@ -70,8 +74,9 @@ export default defineComponent({
       const audio = document.getElementById('audio')
       audio.muted = !audio.muted
     },
-    list() {
+    musiclist() {
       this.index = 0
+      this.getMusicDetails()
     },
   },
   methods: {
@@ -110,8 +115,36 @@ export default defineComponent({
       }
     },
     ended() {
-      if (this.index !== this.list.length - 1) {
+      if (this.index !== this.musiclist.length - 1) {
         this.index++
+        this.$store.commit('setCurrIndex', this.index)
+      }
+    },
+    getMusicDetails() {
+      if (this.musiclist.length > 0) {
+        const param = { id: '' }
+        for (let i = 0; i < this.musiclist.length; i++) {
+          param.id += this.musiclist[i]
+          if (i < this.musiclist.length - 1) {
+            param.id += ','
+          }
+        }
+        getMusicDetail(param).then((res) => {
+          if (res.code === 200) {
+            const songs = res.songs
+            const details = []
+            for (const item of songs) {
+              details.push({
+                id: item.id,
+                name: item.name,
+                artist: item.ar,
+                album: item.al,
+                mvId: item.mv,
+              })
+            }
+            this.$store.commit('setDetailList', details)
+          }
+        })
       }
     },
   },
