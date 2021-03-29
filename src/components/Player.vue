@@ -152,11 +152,7 @@ export default defineComponent({
       this.$store.commit('setCurrIndex', this.index)
     },
     error() {
-      console.log('error')
-      // if (this.index !== this.musiclist.length - 1) {
-      //   this.index++
-      //   this.$store.commit('setCurrIndex', this.index)
-      // }
+      this.next()
     },
     prev() {
       if (this.prevIndex !== 0) {
