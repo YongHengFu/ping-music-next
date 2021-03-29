@@ -74,7 +74,6 @@ export default defineComponent({
       })
     },
     async clickMusicBlock(type, index) {
-      console.log('asd')
       if (type === 0) {
         const param = { id: this.newSong[index].id }
         await getMusicById(param).then((res) => {
@@ -83,12 +82,9 @@ export default defineComponent({
             this.$store.commit('setAudio', param)
           }
         })
-      } else {
-
       }
     },
     playAll() {
-      console.log('p')
       if (this.newSongIdList.length > 0) {
         this.$store.commit('setMusicList', this.newSongIdList)
       } else {

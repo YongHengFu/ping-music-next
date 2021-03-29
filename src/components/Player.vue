@@ -27,11 +27,14 @@ export default defineComponent({
   data() {
     return {
       audio: null,
-      index: 0,
+      index: -1,
+      rand: [0],
+      prevIndex: 0,
     }
   },
   computed: {
     source() {
+      console.log(`https://music.163.com/song/media/outer/url?id=${this.musiclist[this.index]}.mp3`)
       return `https://music.163.com/song/media/outer/url?id=${this.musiclist[this.index]}.mp3`
     },
     state() {
@@ -39,6 +42,9 @@ export default defineComponent({
     },
     volume() {
       return this.$store.state.audio.volume
+    },
+    mode() {
+      return this.$store.state.audio.mode
     },
     mute() {
       return this.$store.state.audio.mute
@@ -48,6 +54,9 @@ export default defineComponent({
     },
     detailList() {
       return this.$store.state.detailList
+    },
+    records() {
+      return this.$store.state.records
     },
   },
   watch: {
@@ -76,7 +85,9 @@ export default defineComponent({
       audio.muted = !audio.muted
     },
     musiclist() {
+      // this.radomList = this.musiclist
       this.index = 0
+      this.$store.commit('setCurrIndex', this.index)
       this.getMusicDetails()
     },
   },
@@ -108,6 +119,7 @@ export default defineComponent({
         const param = { prop: 'state', value: true }
         this.$store.commit('setAudio', param)
       }
+      this.setRecords(this.musiclist[this.index])
     },
     pause() {
       if (this.state) {
@@ -116,24 +128,75 @@ export default defineComponent({
       }
     },
     ended() {
-      if (this.index !== this.musiclist.length - 1) {
-        this.index++
-        this.$store.commit('setCurrIndex', this.index)
+      if (this.mode <= 1) {
+        if (this.index !== this.musiclist.length - 1) {
+          this.index++
+        } else if (this.mode === 0) {
+          this.index = 0
+        }
+      } else if (this.mode === 2) {
+        this.index = Math.floor(Math.random() * this.musiclist.length)
+        while (this.rand.includes(this.index)) {
+          this.index = Math.floor(Math.random() * this.musiclist.length)
+        }
+        this.rand.push(this.index)
+        if (this.rand.length === this.musiclist.length) {
+          this.rand = []
+        }
+      } else {
+        const audio = document.getElementById('audio')
+        if (audio !== null) {
+          audio.play()
+        }
       }
+      this.$store.commit('setCurrIndex', this.index)
     },
     error() {
-      if (this.index !== this.musiclist.length - 1) {
-        this.index++
-        this.$store.commit('setCurrIndex', this.index)
+      console.log('error')
+      // if (this.index !== this.musiclist.length - 1) {
+      //   this.index++
+      //   this.$store.commit('setCurrIndex', this.index)
+      // }
+    },
+    prev() {
+      if (this.prevIndex !== 0) {
+        const ind = this.musiclist.indexOf(this.records[this.prevIndex - 1])
+        if (ind !== -1) {
+          this.index = ind
+        } else if (this.index !== 0) {
+          this.index--
+        } else {
+          this.index = this.musiclist.length - 1
+        }
       }
+      this.$store.commit('setCurrIndex', this.index)
+    },
+    next() {
+      if (this.mode === 2) {
+        this.index = Math.floor(Math.random() * this.musiclist.length)
+        while (this.rand.includes(this.index)) {
+          this.index = Math.floor(Math.random() * this.musiclist.length)
+        }
+        this.rand.push(this.index)
+        if (this.rand.length === this.musiclist.length) {
+          this.rand = []
+        }
+      } else {
+        if (this.index !== this.musiclist.length - 1) {
+          this.index++
+        } else {
+          this.index = 0
+        }
+      }
+      this.$store.commit('setCurrIndex', this.index)
     },
     getMusicDetails() {
       if (this.musiclist.length > 0) {
         const param = { ids: '' }
         for (let i = 0; i < this.musiclist.length; i++) {
-          param.id += this.musiclist[i]
+          param.ids += this.musiclist[i]
           if (i < this.musiclist.length - 1) {
-            param.id += ','
+            param.ids += ','
           }
         }
         getMusicDetail(param).then((res) => {
@@ -153,6 +216,20 @@ export default defineComponent({
           }
         })
       }
+    },
+    setRecords(id) {
+      console.log(id)
+      const list = this.records
+      const index = list.indexOf(id)
+      if (index === -1) {
+        list.push(id)
+        this.prevIndex = list.length - 1
+      } else {
+        list.splice(index, 1)
+        this.prevIndex = index
+        list.push(id)
+      }
+      this.$store.commit('setRecords', list)
     },
   },
 })

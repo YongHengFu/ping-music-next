@@ -11,19 +11,21 @@ const store = createStore({
       duration: 1,
       currentTime: 0,
       volume: 0.6,
+      mode: 0, // 0:列表循环 1：顺序播放 2：随机播放 3：单曲循环
       mute: false,
     },
     musicList: [],
     detailList: [{
       name: '聆听生活',
-      artist: {
+      artist: [{
         name: 'PING',
-      },
+      }],
       album: {
-        picUrl: 'http://test.png',
+        picUrl: '',
       },
     }],
     currIndex: 0,
+    records: [],
   },
   mutations: {
     setBlockNum(state, num) {
@@ -45,6 +47,9 @@ const store = createStore({
     setCurrIndex(state, index) {
       state.currIndex = index
     },
+    setRecords(state, list) {
+      state.records = list
+    },
   },
   getters: {
     getBlockNum(state) {
@@ -64,6 +69,9 @@ const store = createStore({
     },
     getCurrIndex(state) {
       return state.currIndex
+    },
+    getRecords(state) {
+      return state.records
     },
   },
   actions: {},

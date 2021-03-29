@@ -281,7 +281,6 @@ export default defineComponent({
           this_.$store.commit('setBlockNum', 5)
           document.documentElement.style.setProperty(`--block-num`, 5)
         }
-        console.log(blockSize + 'px, ', this_.$store.getters.getBlockNum)
         document.documentElement.style.setProperty(`--block-size`, blockSize + 'px')
       }, element)
     })

@@ -1,32 +1,48 @@
 <template>
   <div>
-    <Player :jump="jump" />
+    <Player ref="player" :jump="jump" />
     <ProgressBar2 @jumpTo="jumpTo" />
     <div class="control-bar">
       <div class="bar-left">
         <a-avatar
           shape="square"
           :size="50"
-          :src="detailList[currIndex].album.picUrl"
+          :src="currMusic.album.picUrl"
         />
         <div style="display: flex;flex-direction: column;margin-left: 10px">
-          <span style="font-size: 16px;font-weight: bolder">{{ detailList[currIndex].name }}</span>
-          <span style="font-size: 12px">{{ detailList[currIndex].artist.name }}</span>
+          <div>
+            <span style="font-size: 18px;font-weight: bolder">{{ currMusic.name }}</span>
+            <svg-icon
+              name="love"
+              class="discolour"
+              style="font-size: 18px; margin-left: 20px; color: #cccccc"
+            />
+          </div>
+
+          <div>
+            <span
+              v-for="(item,index) of currMusic.artist"
+              :key="item.id"
+              class="discolour"
+              style="font-size: 14px;cursor: pointer"
+            >{{ item.name }}{{ index===currMusic.artist.length-1? '' : '/' }}</span>
+          </div>
         </div>
-        <svg-icon
-          name="love"
-          class="discolour"
-          style="font-size: 19px; margin-left: 20px; color: #cccccc"
-        />
       </div>
       <div class="bar-center">
         <div style="width: 150px;">
-          <svg-icon name="loop" class="discolour" style="font-size: 20px;float: right" />
+          <svg-icon
+            :name="modeList[mode]"
+            class="discolour"
+            style="font-size: 20px;float: right"
+            @click="switchMode"
+          />
         </div>
         <svg-icon
           name="prev"
           class="discolour prev-button"
           style="font-size: 26px"
+          @click="prev"
         />
         <svg-icon
           :name="state ? 'pause' : 'play'"
@@ -37,6 +53,7 @@
           name="next"
           class="discolour next-button"
           style="font-size: 26px"
+          @click="next"
         />
         <div class="volume">
           <svg-icon
@@ -56,6 +73,7 @@
           style="font-size: 19px; margin: 0 10px"
         />
         <svg-icon name="music-list" class="discolour" style="font-size: 22px" />
+        <span style="font-size: 14px">{{ detailList.length }}</span>
       </div>
     </div>
   </div>
@@ -79,6 +97,7 @@ export default defineComponent({
       totalFormat: '00:00',
       jump: 0,
       isVolumeBar: false,
+      modeList: ['order', 'loop', 'random', 'single'],
     }
   },
   computed: {
@@ -91,6 +110,9 @@ export default defineComponent({
     totalDura() {
       return this.$store.state.audio.duration
     },
+    mode() {
+      return this.$store.state.audio.mode
+    },
     mute() {
       return this.$store.state.audio.mute
     },
@@ -99,6 +121,9 @@ export default defineComponent({
     },
     currIndex() {
       return this.$store.state.currIndex
+    },
+    currMusic() {
+      return this.detailList[this.currIndex]
     },
   },
   watch: {
@@ -110,6 +135,15 @@ export default defineComponent({
     },
   },
   methods: {
+    switchMode() {
+      let param = {}
+      if (this.mode !== this.modeList.length - 1) {
+        param = { prop: 'mode', value: this.mode + 1 }
+      } else {
+        param = { prop: 'mode', value: 0 }
+      }
+      this.$store.commit('setAudio', param)
+    },
     changeState(): void {
       const param = { prop: 'state', value: !this.state }
       this.$store.commit('setAudio', param)
@@ -144,6 +178,16 @@ export default defineComponent({
       const param = { prop: 'mute', value: !this.$store.state.audio.mute }
       this.$store.commit('setAudio', param)
     },
+    prev() {
+      if (this.$refs.player !== null) {
+        this.$refs.player.prev()
+      }
+    },
+    next() {
+      if (this.$refs.player !== null) {
+        this.$refs.player.next()
+      }
+    },
   },
 })
 </script>
@@ -158,7 +202,7 @@ export default defineComponent({
 }
 
 .bar-left {
-  width: 25%;
+  width: 28%;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -166,7 +210,7 @@ export default defineComponent({
 }
 
 .bar-center {
-  width: 50%;
+  width: 44%;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -174,7 +218,7 @@ export default defineComponent({
 }
 
 .bar-right {
-  width: 25%;
+  width: 28%;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -209,5 +253,11 @@ export default defineComponent({
 }
 .volume:hover .volumeBar{
   width: 100px;
+}
+.discolour {
+  color: rgb(102, 102, 102);
+}
+.discolour:hover {
+  color: var(--primary-color);
 }
 </style>
