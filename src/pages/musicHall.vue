@@ -7,7 +7,7 @@
     </div>
     <BlockList />
     <span class="h2" style="margin-right: 10px">最新听
-      <svg-icon class="play-all" name="playAll" @click="playAll" />
+      <a><svg-icon class="play-all" name="playAll" @click="playAll" /></a>
     </span>
     <!--    <span-->
     <!--      style="font-size: 12px;border-radius: 20px;background: rgba(227,227,227,0.8);padding: 6px 12px"-->
@@ -93,7 +93,7 @@ export default defineComponent({
         this.$store.state.commit('setMusicList', this.newSongIdList)
       } else {
         this.getNewSongData()
-        this.playAll()
+        // this.playAll()
       }
     },
   },

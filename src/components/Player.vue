@@ -10,6 +10,7 @@
     @play="play"
     @pause="pause"
     @ended="ended"
+    @error="error"
   />
 </template>
 
@@ -115,6 +116,12 @@ export default defineComponent({
       }
     },
     ended() {
+      if (this.index !== this.musiclist.length - 1) {
+        this.index++
+        this.$store.commit('setCurrIndex', this.index)
+      }
+    },
+    error() {
       if (this.index !== this.musiclist.length - 1) {
         this.index++
         this.$store.commit('setCurrIndex', this.index)
