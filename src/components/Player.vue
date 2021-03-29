@@ -129,7 +129,7 @@ export default defineComponent({
     },
     getMusicDetails() {
       if (this.musiclist.length > 0) {
-        const param = { id: '' }
+        const param = { ids: '' }
         for (let i = 0; i < this.musiclist.length; i++) {
           param.id += this.musiclist[i]
           if (i < this.musiclist.length - 1) {
