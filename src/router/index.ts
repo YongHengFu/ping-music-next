@@ -12,20 +12,20 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'recommend',
         component: recommend,
-        meta: { title: 'PING' },
+        meta: { title: 'PING' }
       },
       {
         path: 'musicHall',
         component: musicHall,
-        meta: { title: 'PING' },
-      },
-    ],
-  },
+        meta: { title: 'PING' }
+      }
+    ]
+  }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
+  routes
 })
 
 export default router

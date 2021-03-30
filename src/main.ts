@@ -10,7 +10,7 @@ import App from './App.vue'
 Router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     // @ts-ignore
-    document.title = to.meta.title //根据路由动态显示页面title
+    document.title = to.meta.title // 根据路由动态显示页面title
   }
   next()
 })

@@ -25,18 +25,18 @@ export default defineComponent({
   name: 'BlockList',
   components: {
     RightOutlined,
-    Block,
+    Block
   },
   data() {
     return {
       list: [],
-      param: {},
+      param: {}
     }
   },
   computed: {
     blockNum: function() {
       return this.$store.state.blockNum
-    },
+    }
   },
   created() {
     this.getList()
@@ -49,8 +49,8 @@ export default defineComponent({
           this.list = res.playlists
         }
       })
-    },
-  },
+    }
+  }
 })
 </script>
 

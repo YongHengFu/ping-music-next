@@ -3,14 +3,14 @@ import request from '@/utils/request'
 export function homepage() {
   return request({
     url: '/homepage/block/page',
-    method: 'get',
+    method: 'get'
   })
 }
 
 export function getBanner() {
   return request({
     url: '/banner',
-    method: 'get',
+    method: 'get'
   })
 }
 
@@ -18,7 +18,7 @@ export function getPlayList_Qua(params:object) {
   return request({
     url: '/top/playlist/highquality',
     method: 'get',
-    params,
+    params
   })
 }
 
@@ -27,7 +27,7 @@ export function getNewSong(params:object) {
   return request({
     url: '/personalized/newsong',
     method: 'get',
-    params,
+    params
   })
 }
 
@@ -36,7 +36,7 @@ export function getMusicById(params:object) {
   return request({
     url: '/song/url',
     method: 'get',
-    params,
+    params
   })
 }
 
@@ -45,6 +45,6 @@ export function getMusicDetail(params:object) {
   return request({
     url: '/song/detail',
     method: 'get',
-    params,
+    params
   })
 }

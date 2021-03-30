@@ -27,7 +27,7 @@ export default defineComponent({
   name: 'Banner',
   components: {
     LeftCircleFilled,
-    RightCircleFilled,
+    RightCircleFilled
   },
   props: {
 
@@ -40,12 +40,12 @@ export default defineComponent({
         { position: 1, class: 'right' },
         { position: 2, class: 'right-out' },
         { position: 3, class: 'left-out' },
-        { position: 4, class: 'left' },
+        { position: 4, class: 'left' }
       ],
       show: [],
       banners: [],
       interval: null,
-      controlButton: false,
+      controlButton: false
     }
   },
   async created() {
@@ -197,8 +197,8 @@ export default defineComponent({
       } else {
         this.index++
       }
-    },
-  },
+    }
+  }
 })
 </script>
 

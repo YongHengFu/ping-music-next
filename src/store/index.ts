@@ -12,21 +12,21 @@ const store = createStore({
       currentTime: 0,
       volume: 0.6,
       mode: 0, // 0:列表循环 1：顺序播放 2：随机播放 3：单曲循环
-      mute: false,
+      mute: false
     },
     musicList: [],
     detailList: [{
       name: '聆听生活',
       artist: [{
-        name: 'PING',
+        name: 'PING'
       }],
       album: {
-        picUrl: '/src/assets/logo.png',
+        picUrl: '/src/assets/logo.png'
       },
-      duration: 0,
+      duration: 0
     }],
     currIndex: 0,
-    records: [],
+    records: []
   },
   mutations: {
     setBlockNum(state, num) {
@@ -50,7 +50,7 @@ const store = createStore({
     },
     setRecords(state, list) {
       state.records = list
-    },
+    }
   },
   getters: {
     getBlockNum(state) {
@@ -73,10 +73,10 @@ const store = createStore({
     },
     getRecords(state) {
       return state.records
-    },
+    }
   },
   actions: {},
-  modules: {},
+  modules: {}
 })
 
 export default store

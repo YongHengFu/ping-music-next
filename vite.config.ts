@@ -6,20 +6,20 @@ import { svgBuilder } from './src/plugins/svgBuilder'
 
 export default defineConfig({
   server: {
-    port: 6868,
+    port: 6868
     // open: true,
   },
   plugins: [vue(), svgBuilder('./src/assets/icons/svg/')],
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
-    },
+      '@': resolve(__dirname, './src')
+    }
   },
   css: {
     preprocessorOptions: {
       less: {
-        javascriptEnabled: true,
-      },
-    },
-  },
+        javascriptEnabled: true
+      }
+    }
+  }
 })

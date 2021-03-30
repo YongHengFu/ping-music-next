@@ -42,13 +42,13 @@ export default defineComponent({
     Banner,
     Tabs,
     BlockList,
-    MusicBlock,
+    MusicBlock
   },
   data() {
     return {
       homePageData: {},
       newSong: [],
-      newSongIdList: [],
+      newSongIdList: []
     }
   },
   async created() {
@@ -91,8 +91,8 @@ export default defineComponent({
         this.getNewSongData()
         // this.playAll()
       }
-    },
-  },
+    }
+  }
 })
 </script>
 

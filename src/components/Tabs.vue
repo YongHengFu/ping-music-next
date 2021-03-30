@@ -20,7 +20,7 @@ export default defineComponent({
     return {
       index: 0,
       tabList: ['精选', '排行榜', '歌手', '专辑', '视频', '电台'],
-      sliderLeft: { 'margin-left': '0px' },
+      sliderLeft: { 'margin-left': '0px' }
     }
   },
   methods: {
@@ -29,8 +29,8 @@ export default defineComponent({
         this.index = ind
         this.sliderLeft['margin-left'] = (100 * ind) + 'px'
       }
-    },
-  },
+    }
+  }
 })
 </script>
 

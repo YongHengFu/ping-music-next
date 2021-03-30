@@ -9,7 +9,7 @@
     <div class="duration" />
     <div class="buffered" :style="`right: ${(1- buffDura / totalDura) * 100}%`" />
     <div class="currentTime" :style="currStyle" />
-    <a-tooltip placement="top" :title="sliderFormat" :arrowPointAtCenter="true">
+    <a-tooltip placement="top" :title="sliderFormat" :arrow-point-at-center="true">
       <div
         v-show="!state||isPoint"
         class="point"
@@ -43,7 +43,7 @@ export default defineComponent({
       state: true,
       tipTime: 0,
       isPoint: false,
-      isTip: false,
+      isTip: false
     }
   },
   computed: {
@@ -79,7 +79,7 @@ export default defineComponent({
       currSeconds = currSeconds.substr(0, 2)
 
       return `${currMinute}:${currSeconds}`
-    },
+    }
   },
   watch: {
     currFormat() {
@@ -88,7 +88,7 @@ export default defineComponent({
         this.tipTime = this.currentDura
         this.currStyle = `right: ${this.move}%`
       }
-    },
+    }
     // buffDura() {
     //   this.buffStyle = `right: ${(1 - this.buffDura / this.totalDura) * 100}%`
     // },
@@ -136,8 +136,8 @@ export default defineComponent({
     },
     mouseup(e) {
       // console.log(this.mouseDown)
-    },
-  },
+    }
+  }
 })
 </script>
 

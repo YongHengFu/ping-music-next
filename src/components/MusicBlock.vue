@@ -27,15 +27,15 @@ export default defineComponent({
   },
   props: {
     song: {
-      type: Object,
+      type: Object
     },
     index: {
-      type: Number,
-    },
+      type: Number
+    }
   },
   data() {
     return {
-      data: {},
+      data: {}
     }
   },
   created() {
@@ -49,8 +49,8 @@ export default defineComponent({
     },
     clickArt() {
       this.$emit('handleMusicBlock', 1, this.index)
-    },
-  },
+    }
+  }
 })
 </script>
 

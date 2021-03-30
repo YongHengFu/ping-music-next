@@ -3,7 +3,7 @@ import { message } from 'ant-design-vue'
 
 const service = axios.create({
   baseURL: (import.meta.env.VITE_APP_BASE_URL) as string,
-  timeout: 10000,
+  timeout: 10000
 })
 service.interceptors.request.use((config) => config, (error) => Promise.reject(error))
 
@@ -28,7 +28,7 @@ service.interceptors.response.use(
     console.log(`err${error}`) // for debug
     message.error('网络异常，请重试！')
     return Promise.reject(error)
-  },
+  }
 )
 
 export default service

@@ -29,7 +29,7 @@ export default defineComponent({
       isPoint: false,
       volume: 0,
       volumeStyle: '',
-      right: 100,
+      right: 100
     }
   },
   watch: {
@@ -38,7 +38,7 @@ export default defineComponent({
         const param = { prop: 'mute', value: !this.$store.state.audio.mute }
         this.$store.commit('setAudio', param)
       }
-    },
+    }
   },
   mounted() {
     this.right = (1 - this.$store.state.audio.volume) * 100
@@ -72,8 +72,8 @@ export default defineComponent({
           this_.$emit('changeVolume', this_.volume)
         }
       }, false)
-    },
-  },
+    }
+  }
 })
 </script>
 

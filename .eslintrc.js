@@ -67,14 +67,14 @@ module.exports = {
         properties: 'always'
       }
     ],
-    'comma-dangle': [2, 'always-multiline'],
-    // 'comma-dangle': ['error', {
-    //   'arrays': 'never',
-    //   'objects': 'never',
-    //   'imports': 'never',
-    //   'exports': 'never',
-    //   'functions': 'never'
-    // }],
+    // 'comma-dangle': [2, 'always-multiline'],
+    'comma-dangle': ['error', {
+      'arrays': 'never',
+      'objects': 'never',
+      'imports': 'never',
+      'exports': 'never',
+      'functions': 'never'
+    }],
     'comma-spacing': [
       2,
       {

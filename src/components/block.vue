@@ -12,7 +12,7 @@
       <div v-if="isShow" class="mask" />
       <svg-icon v-if="isShow" class="play" name="play" @mouseenter="showPlay" @click="clickBlock" />
     </div>
-    <span class="title">{{content.name}}</span>
+    <span class="title">{{ content.name }}</span>
   </div>
 
 </template>
@@ -25,12 +25,12 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   props: {
     content: {
-      type: Object,
-    },
+      type: Object
+    }
   },
   data() {
     return {
-      isShow: false,
+      isShow: false
     }
   },
   methods: {
@@ -42,8 +42,8 @@ export default defineComponent({
     },
     hidePlay(): void {
       this.isShow = false
-    },
-  },
+    }
+  }
 })
 </script>
 

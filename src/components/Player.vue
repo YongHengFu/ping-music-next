@@ -21,15 +21,15 @@ export default defineComponent({
   name: 'Player',
   props: {
     jump: {
-      type: Number,
-    },
+      type: Number
+    }
   },
   data() {
     return {
       audio: null,
       index: -1,
       rand: [0],
-      prevIndex: 0,
+      prevIndex: 0
     }
   },
   computed: {
@@ -57,7 +57,7 @@ export default defineComponent({
     },
     records() {
       return this.$store.state.records
-    },
+    }
   },
   watch: {
     jump() {
@@ -89,7 +89,7 @@ export default defineComponent({
       this.index = 0
       this.$store.commit('setCurrIndex', this.index)
       this.getMusicDetails()
-    },
+    }
   },
   methods: {
     durationchange() {
@@ -207,7 +207,7 @@ export default defineComponent({
                 album: item.al,
                 mvId: item.mv,
                 duration: item.dt,
-                publishTime: item.publishTime,
+                publishTime: item.publishTime
               })
             }
             this.$store.commit('setDetailList', details)
@@ -228,8 +228,8 @@ export default defineComponent({
         list.push(id)
       }
       this.$store.commit('setRecords', list)
-    },
-  },
+    }
+  }
 })
 </script>
 

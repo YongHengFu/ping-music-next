@@ -53,7 +53,7 @@
         </a-layout-header>
         <a-layout-content id="content" class="content">
           <router-view :key="key" class="view" />
-          <ListDrawer :isShowDrawer="isShowDrawer" />
+          <ListDrawer :is-show-drawer="isShowDrawer" />
         </a-layout-content>
         <a-layout-footer class="footer">
           <ControlBar @showDrawer="showDrawer" />
@@ -86,7 +86,7 @@ import {
   MenuOutlined,
   UserOutlined,
   PlayCircleOutlined,
-  UpOutlined,
+  UpOutlined
 } from '@ant-design/icons-vue'
 
 interface item {
@@ -116,7 +116,7 @@ export default defineComponent({
     UpOutlined,
     // ProgressBar2,
     ControlBar,
-    ListDrawer,
+    ListDrawer
   },
   data() {
     return {
@@ -132,51 +132,51 @@ export default defineComponent({
           index: 0,
           label: '推荐',
           icon: 'FireOutlined',
-          path: '/0',
+          path: '/0'
         },
         {
           index: 1,
           label: '音乐馆',
           icon: 'CustomerServiceOutlined',
-          path: '/1',
+          path: '/1'
         },
         {
           index: 2,
           label: '视频',
           icon: 'VideoCameraOutlined',
-          path: '/2',
+          path: '/2'
         },
         {
           index: 3,
           label: '私人FM',
           icon: 'CrownOutlined',
-          path: '/3',
+          path: '/3'
         },
         {
           index: 4,
           label: '我喜欢',
           icon: 'HeartOutlined',
-          path: '/4',
+          path: '/4'
         },
         {
           index: 5,
           label: '本地歌曲',
           icon: 'DesktopOutlined',
-          path: '/5',
+          path: '/5'
         },
         {
           index: 6,
           label: '下载管理',
           icon: 'CloudDownloadOutlined',
-          path: '/6',
+          path: '/6'
         },
         {
           index: 7,
           label: '最近播放',
           icon: 'HistoryOutlined',
-          path: '/7',
-        },
-      ],
+          path: '/7'
+        }
+      ]
     }
   },
   computed: {
@@ -197,7 +197,7 @@ export default defineComponent({
     },
     key() {
       return this.$route.path
-    },
+    }
   },
   mounted() {
     const erd = elementResizeDetectorMaker()
@@ -234,8 +234,8 @@ export default defineComponent({
     },
     showDrawer() {
       this.isShowDrawer = !this.isShowDrawer
-    },
-  },
+    }
+  }
 })
 </script>
 
@@ -342,6 +342,5 @@ export default defineComponent({
 .discolour:hover {
   color: var(--primary-color);
 }
-
 
 </style>

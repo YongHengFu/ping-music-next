@@ -9,7 +9,7 @@ import { getQRCodeKey } from '../api/user'
 
 export default {
   components: {
-    Personalized,
+    Personalized
   },
   created() {
     // this.test()
@@ -19,8 +19,8 @@ export default {
       getQRCodeKey().then((res) => {
         console.log(res)
       })
-    },
-  },
+    }
+  }
 }
 </script>
 

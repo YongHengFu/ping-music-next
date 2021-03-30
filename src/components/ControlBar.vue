@@ -73,7 +73,7 @@
           class="discolour"
           style="font-size: 19px; margin: 0 10px"
         />
-        <svg-icon name="music-list" class="discolour" style="font-size: 22px"  @click="showDrawer"/>
+        <svg-icon name="music-list" class="discolour" style="font-size: 22px" @click="showDrawer" />
         <span style="font-size: 14px">{{ detailList.length }}</span>
       </div>
     </div>
@@ -90,7 +90,7 @@ export default defineComponent({
   components: {
     ProgressBar2,
     Player,
-    VolumeBar,
+    VolumeBar
   },
   data() {
     return {
@@ -98,7 +98,7 @@ export default defineComponent({
       totalFormat: '00:00',
       jump: 0,
       isVolumeBar: false,
-      modeList: ['order', 'loop', 'random', 'single'],
+      modeList: ['order', 'loop', 'random', 'single']
     }
   },
   computed: {
@@ -125,7 +125,7 @@ export default defineComponent({
     },
     currMusic() {
       return this.detailList[this.currIndex]
-    },
+    }
   },
   watch: {
     currentDura() {
@@ -133,7 +133,7 @@ export default defineComponent({
     },
     totalDura() {
       this.totalFormat = this.timeFormat(this.totalDura)
-    },
+    }
   },
   methods: {
     switchMode() {
@@ -191,8 +191,8 @@ export default defineComponent({
     },
     showDrawer() {
       this.$emit('showDrawer')
-    },
-  },
+    }
+  }
 })
 </script>
 

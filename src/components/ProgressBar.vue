@@ -19,14 +19,14 @@ import Player from '@/components/Player.vue'
 export default defineComponent({
   name: 'ProgressBar',
   components: {
-    Player,
+    Player
   },
   data() {
     return {
       progress: [0, 0],
       index: 0,
       time: 0,
-      jump: 0,
+      jump: 0
     }
   },
   computed: {
@@ -57,7 +57,7 @@ export default defineComponent({
       currSeconds = currSeconds.substr(0, 2)
 
       return `${currMinute}:${currSeconds}`
-    },
+    }
   },
   methods: {
     sliderFormat(): string {
@@ -93,8 +93,8 @@ export default defineComponent({
       this.index = 0
       this.progress[1] = value
       console.log('up')
-    },
-  },
+    }
+  }
 })
 </script>
 

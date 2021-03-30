@@ -21,7 +21,7 @@
             <span
               v-for="(item2,index2) of detailList.artist"
               :key="item2.id"
-            >{{ item2.name }}{{index2===detailList.artist.length-1?'':'/'}}</span>
+            >{{ item2.name }}{{ index2===detailList.artist.length-1?'':'/' }}</span>
           </div>
         </div>
         <span style="">{{ dtFormat(item.duration) }}</span>
@@ -36,13 +36,13 @@ export default defineComponent({
   name: 'ListDrawer',
   props: {
     isShowDrawer: {
-      type: Boolean,
-    },
+      type: Boolean
+    }
   },
   computed: {
     detailList() {
       return this.$store.state.detailList
-    },
+    }
   },
   methods: {
     dtFormat(dt) {
@@ -65,8 +65,8 @@ export default defineComponent({
       dtSeconds = dtSeconds.substr(0, 2)
 
       return `${dtMinute}:${dtSeconds}`
-    },
-  },
+    }
+  }
 })
 </script>
 

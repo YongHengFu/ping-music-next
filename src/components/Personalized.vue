@@ -18,7 +18,7 @@ export default {
   components: {
     NewBlock,
     DailyBlock,
-    FMBlcok,
+    FMBlcok
   },
   mounted() {
     // console.log(this.colorfulImg(document.getElementById('img')))
@@ -51,8 +51,8 @@ export default {
       rgb.b = (rgb.b / count) >> 0
       console.log(rgb)
       return rgb
-    },
-  },
+    }
+  }
 }
 </script>
 

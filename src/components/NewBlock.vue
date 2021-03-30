@@ -13,8 +13,8 @@ import Block from './block.vue'
 
 export default defineComponent({
   components: {
-    Block,
-  },
+    Block
+  }
 })
 </script>
 
