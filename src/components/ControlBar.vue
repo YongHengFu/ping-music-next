@@ -7,6 +7,7 @@
         <a-avatar
           shape="square"
           :size="50"
+          style="border: 1px solid #ededed"
           :src="currMusic.album.picUrl"
         />
         <div style="display: flex;flex-direction: column;margin-left: 10px">
@@ -72,7 +73,7 @@
           class="discolour"
           style="font-size: 19px; margin: 0 10px"
         />
-        <svg-icon name="music-list" class="discolour" style="font-size: 22px" />
+        <svg-icon name="music-list" class="discolour" style="font-size: 22px"  @click="showDrawer"/>
         <span style="font-size: 14px">{{ detailList.length }}</span>
       </div>
     </div>
@@ -187,6 +188,9 @@ export default defineComponent({
       if (this.$refs.player !== null) {
         this.$refs.player.next()
       }
+    },
+    showDrawer() {
+      this.$emit('showDrawer')
     },
   },
 })

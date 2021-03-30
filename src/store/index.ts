@@ -21,8 +21,9 @@ const store = createStore({
         name: 'PING',
       }],
       album: {
-        picUrl: '',
+        picUrl: '/src/assets/logo.png',
       },
+      duration: 0,
     }],
     currIndex: 0,
     records: [],

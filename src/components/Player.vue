@@ -206,6 +206,8 @@ export default defineComponent({
                 artist: item.ar,
                 album: item.al,
                 mvId: item.mv,
+                duration: item.dt,
+                publishTime: item.publishTime,
               })
             }
             this.$store.commit('setDetailList', details)

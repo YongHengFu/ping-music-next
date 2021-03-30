@@ -53,71 +53,10 @@
         </a-layout-header>
         <a-layout-content id="content" class="content">
           <router-view :key="key" class="view" />
+          <ListDrawer :isShowDrawer="isShowDrawer" />
         </a-layout-content>
         <a-layout-footer class="footer">
-<!--          <ProgressBar />-->
-<!--          <ProgressBar2 />-->
-<!--          <div>
-            <a-slider
-              v-model:value="time"
-              :min="0"
-              :max="totalDura"
-              :step="1"
-              :tip-formatter="sliderFormat"
-              @afteChange="sliderChange"
-            />
-          </div>-->
-<!--          <div class="control-bar">
-            <div class="bar-left">
-              <a-avatar shape="square" :size="50">
-                <template #icon><PlayCircleOutlined /></template>
-              </a-avatar>
-              <span style="margin: 0 10px; font-size: 16px">海阔天空</span>
-              <span>&#45;&#45;beyond</span>
-              <svg-icon
-                name="love"
-                class="discolour"
-                style="font-size: 19px; margin-left: 20px; color: #cccccc"
-              />
-            </div>
-            <div class="bar-center">
-              <svg-icon name="loop" class="discolour" style="font-size: 20px" />
-              <svg-icon
-                name="prev"
-                class="discolour prev-button"
-                style="font-size: 26px"
-              />
-              <svg-icon
-                :name="state ? 'pause' : 'play'"
-                style="font-size: 40px; color: var(&#45;&#45;primary-color)"
-                @click="changeState"
-              />
-              <svg-icon
-                name="next"
-                class="discolour next-button"
-                style="font-size: 26px"
-              />
-              <svg-icon
-                name="volume"
-                class="discolour"
-                style="font-size: 20px"
-              />
-            </div>
-            <div class="bar-right">
-              <span style="margin-right: 10px">{{ currFormat }} / {{ totalFormat }}</span>
-              <a-button size="small" style="font-size: 14px">
-                HQ
-                <UpOutlined style="font-size: 10px" />
-              </a-button>
-              <svg-icon
-                name="lyric"
-                class="discolour"
-                style="font-size: 19px; margin: 0 10px"
-              />
-              <svg-icon name="music-list" class="discolour" style="font-size: 22px" />
-            </div>
-          </div>-->
-          <ControlBar />
+          <ControlBar @showDrawer="showDrawer" />
         </a-layout-footer>
       </a-layout>
     </a-layout>
@@ -130,6 +69,7 @@ import { defineComponent } from 'vue'
 import elementResizeDetectorMaker from 'element-resize-detector'
 // import ProgressBar2 from '@/components/ProgressBar2.vue'
 import ControlBar from '@/components/ControlBar.vue'
+import ListDrawer from '@/components/ListDrawer.vue'
 
 import {
   FireOutlined,
@@ -155,14 +95,6 @@ interface item {
   icon: string;
   path: string;
 }
-//
-// interface dataType {
-//   state: boolean; // false：暂停  true：播放
-//   currentDura: number; // 当前播放进度
-//   totalDura: number; // 歌曲总时长
-//   pageIndex: number; //
-//   itemList: Array<item>;
-// }
 
 export default defineComponent({
   name: 'MainLayout',
@@ -184,6 +116,7 @@ export default defineComponent({
     UpOutlined,
     // ProgressBar2,
     ControlBar,
+    ListDrawer,
   },
   data() {
     return {
@@ -193,6 +126,7 @@ export default defineComponent({
       // totalDura: 232,
       time: 0,
       pageIndex: 0,
+      isShowDrawer: false,
       itemList: [
         {
           index: 0,
@@ -293,19 +227,13 @@ export default defineComponent({
       }
       this.timer = setTimeout(func, 300, element)
     },
-    // changeState(): void {
-    //   this.state = !this.state
-    // },
-    // sliderFormat(): string {
-    //   return this.currFormat
-    // },
-    // sliderChange(value: number) {
-    //   console.log(value)
-    // },
     pageChange(index: number) {
       this.$router.push({ path: '/musicHall' })
       console.log(this.$route.path)
       this.pageIndex = index
+    },
+    showDrawer() {
+      this.isShowDrawer = !this.isShowDrawer
     },
   },
 })
@@ -352,6 +280,7 @@ export default defineComponent({
   background: #fafafa;
   padding: 10px 2px;
   user-select: none;
+  padding: 0 2px 10px 2px;
 }
 
 .sider .logo {
@@ -406,37 +335,6 @@ export default defineComponent({
   /* border: 0; */
 }
 
-/*.control-bar {*/
-/*  display: flex;*/
-/*  flex-direction: row;*/
-/*  justify-content: space-between;*/
-/*  align-items: center;*/
-/*  padding: 0 20px;*/
-/*}*/
-
-/*.bar-left {*/
-/*  width: 25%;*/
-/*  display: flex;*/
-/*  flex-direction: row;*/
-/*  justify-content: flex-start;*/
-/*  align-items: center;*/
-/*}*/
-
-/*.bar-center {*/
-/*  display: flex;*/
-/*  flex-direction: row;*/
-/*  justify-content: center;*/
-/*  align-items: center;*/
-/*}*/
-
-/*.bar-right {*/
-/*  width: 25%;*/
-/*  display: flex;*/
-/*  flex-direction: row;*/
-/*  justify-content: flex-end;*/
-/*  align-items: center;*/
-/*}*/
-
 .discolour {
   color: rgb(102, 102, 102);
 }
@@ -445,13 +343,5 @@ export default defineComponent({
   color: var(--primary-color);
 }
 
-/*.prev-button {*/
-/*  color: #3f3f3f;*/
-/*  margin: 0 20px 0 30px;*/
-/*}*/
 
-/*.next-button {*/
-/*  color: #3f3f3f;*/
-/*  margin: 0 30px 0 20px;*/
-/*}*/
 </style>
