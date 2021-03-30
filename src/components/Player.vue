@@ -57,6 +57,9 @@ export default defineComponent({
     },
     records() {
       return this.$store.state.records
+    },
+    currIndex() {
+      return this.$store.state.currIndex
     }
   },
   watch: {
@@ -89,6 +92,9 @@ export default defineComponent({
       this.index = 0
       this.$store.commit('setCurrIndex', this.index)
       this.getMusicDetails()
+    },
+    currIndex() {
+      this.index = this.currIndex
     }
   },
   methods: {
@@ -206,7 +212,7 @@ export default defineComponent({
                 artist: item.ar,
                 album: item.al,
                 mvId: item.mv,
-                duration: item.dt,
+                duration: item.dt / 1000,
                 publishTime: item.publishTime
               })
             }
