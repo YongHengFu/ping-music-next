@@ -15,7 +15,7 @@
         <div style="color: #454545;margin-top: 5px;display: flex;align-items: center;justify-content: space-between">
           <span>{{ detailList.length }}首歌曲</span>
           <div style="font-size: 16px">
-            <svg-icon name="batch" style="margin-right: 10px"/>
+            <svg-icon name="batch" style="margin-right: 10px" />
             <svg-icon name="trash" />
           </div>
         </div>
@@ -46,6 +46,7 @@
           </div>
         </div>
         <div class="icons" :style="index===selectIndex?'width: 40%;display: flex;justify-content: flex-end;':''">
+<!--          <lottie :options="defaultOptions" :height="50" :width="50" />-->
           <svg-icon class="icon" :name="index===currIndex?'listPause':'listPlay'" />
           <svg-icon class="icon" name="love-line" />
           <svg-icon class="icon" name="more" />
@@ -58,6 +59,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import animationData from '@/assets/lottie/sonicWave.json'
 export default defineComponent({
   name: 'ListDrawer',
   props: {
@@ -67,7 +69,10 @@ export default defineComponent({
   },
   data() {
     return {
-      selectIndex: -1
+      selectIndex: -1,
+      defaultOptions: { animationData: animationData },
+      animationSpeed: 1,
+      anim: {}
     }
   },
   computed: {
