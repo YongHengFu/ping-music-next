@@ -9,11 +9,11 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.0.1",
-    "ant-design-vue": "^2.0.1",
+    "@lottiefiles/lottie-player": "^1.0.0",
+    "ant-design-vue": "^2.1.2",
     "axios": "^0.21.1",
     "element-resize-detector": "^1.2.2",
     "vue": "^3.0.10",
-    "vue-lottie": "^0.2.1",
     "vue-router": "^4.0.4",
     "vuex": "^4.0.0"
   },

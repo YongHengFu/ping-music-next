@@ -5,7 +5,6 @@ import '@/style/personal.css'
 import Router from './router'
 import Vuex from './store'
 import svgIcon from './components/svgIcon.vue'
-import lottie from 'vue-lottie'
 import App from './App.vue'
 
 Router.beforeEach((to, from, next) => {
@@ -21,5 +20,4 @@ app.use(Router)
 app.use(Vuex)
 app.use(Antd)
 app.component('SvgIcon', svgIcon)
-// app.component('lottie', lottie)
 app.mount('#app')

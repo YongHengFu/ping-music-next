@@ -25,7 +25,6 @@
         />
       </div>
     </div>
-
   </div>
 </template>
 
@@ -35,6 +34,8 @@ import Banner from '@/components/Banner.vue'
 import Tabs from '@/components/Tabs.vue'
 import BlockList from '@/components/BlockList.vue'
 import MusicBlock from '@/components/MusicBlock.vue'
+import '@lottiefiles/lottie-player'
+
 import { homepage, getNewSong, getMusicById } from '../api/music'
 export default defineComponent({
   name: 'MusicHall',

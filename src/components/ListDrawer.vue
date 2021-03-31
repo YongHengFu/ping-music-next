@@ -7,10 +7,10 @@
       :get-container="false"
       :mask="false"
       width="400"
-      :drawer-style="{'background': '#fafafa'}"
+      :drawer-style="{'background': '#fafafa','padding': '0'}"
       :wrap-style="{ position: 'absolute'}"
     >
-      <div style="margin: 20px">
+      <div style="margin: 5px 20px 10px 20px">
         <span class="h2">播放清单</span>
         <div style="color: #454545;margin-top: 5px;display: flex;align-items: center;justify-content: space-between">
           <span>{{ detailList.length }}首歌曲</span>
@@ -20,38 +20,47 @@
           </div>
         </div>
       </div>
-      <div
-        v-for="(item, index) of detailList"
-        :key="item.id"
-        class="container"
-        :style="index===selectIndex?'background: #efefef':''"
-        @click="selectItem(index)"
-        @dblclick="switchMusic(index)"
-      >
-        <div class="info" :style="index===selectIndex?'width: 60%':''">
-          <div style="display: flex;flex-direction: row;align-items: center">
-            <span class="musicName" :style="index===currIndex?'color: var(--primary-color)':''">{{ item.name }}</span>
-            <svg-icon
-              name="SQ"
-              style="font-size: 28px;height:16px;color: #1DCF9F;min-width: 28px;margin-left: 5px"
-            />
+      <div style="height:84vh;overflow-y: auto">
+        <div
+          v-for="(item, index) of detailList"
+          :key="item.id"
+          class="container"
+          :style="index===selectIndex?'background: #efefef':''"
+          @click="selectItem(index)"
+          @dblclick="switchMusic(index)"
+        >
+          <div class="info" :style="index===selectIndex?'width: 60%':''">
+            <div style="display: flex;flex-direction: row;align-items: center">
+              <span class="musicName" :style="index===currIndex?'color: var(--primary-color)':''">{{ item.name }}</span>
+              <svg-icon
+                name="SQ"
+                style="font-size: 28px;height:16px;color: #1DCF9F;min-width: 28px;margin-left: 5px"
+              />
+              <lottie-player
+                v-if="index===currIndex"
+                autoplay
+                loop
+                mode="bounce"
+                src="/src/assets/lottie/sonicWave.json"
+                style="width: 30px;height: 30px"
+              />
+            </div>
+            <div style="display: flex;flex-direction: row;justify-content: space-between">
+              <span class="artistName" :style="index===currIndex?'color: var(--primary-color)':''">
+                <template
+                  v-for="(item2,index2) of item.artist"
+                >{{ item2.name }}{{ index2===item.artist.length-1?'':'/' }}</template>
+              </span>
+              <span class="duration" :style="index===selectIndex?'display:none':''">{{ dtFormat(item.duration) }}</span>
+            </div>
           </div>
-          <div style="display: flex;flex-direction: row;justify-content: space-between">
-            <span class="artistName" :style="index===currIndex?'color: var(--primary-color)':''">
-              <template
-                v-for="(item2,index2) of item.artist"
-              >{{ item2.name }}{{ index2===item.artist.length-1?'':'/' }}</template>
-            </span>
-            <span class="duration" :style="index===selectIndex?'display:none':''">{{ dtFormat(item.duration) }}</span>
+          <div class="icons" :style="index===selectIndex?'width: 40%;display: flex;justify-content: flex-end;':''">
+            <!--          <lottie :options="defaultOptions" :height="50" :width="50" />-->
+            <svg-icon class="icon" :name="index===currIndex?'listPause':'listPlay'" />
+            <svg-icon class="icon" name="love-line" />
+            <svg-icon class="icon" name="more" />
           </div>
         </div>
-        <div class="icons" :style="index===selectIndex?'width: 40%;display: flex;justify-content: flex-end;':''">
-<!--          <lottie :options="defaultOptions" :height="50" :width="50" />-->
-          <svg-icon class="icon" :name="index===currIndex?'listPause':'listPlay'" />
-          <svg-icon class="icon" name="love-line" />
-          <svg-icon class="icon" name="more" />
-        </div>
-
       </div>
     </a-drawer>
   </div>
@@ -59,7 +68,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import animationData from '@/assets/lottie/sonicWave.json'
+import '@lottiefiles/lottie-player'
+// import animationData from '@/assets/lottie/sonicWave.json'
 export default defineComponent({
   name: 'ListDrawer',
   props: {
@@ -69,10 +79,10 @@ export default defineComponent({
   },
   data() {
     return {
-      selectIndex: -1,
-      defaultOptions: { animationData: animationData },
-      animationSpeed: 1,
-      anim: {}
+      selectIndex: -1
+      // defaultOptions: { animationData: animationData },
+      // animationSpeed: 1,
+      // anim: {}
     }
   },
   computed: {
@@ -119,7 +129,7 @@ export default defineComponent({
 
 <style scoped>
 ::v-deep .ant-drawer-body{
-  padding: 20px 0;
+  padding: 0;
 }
 .container{
   display: flex;
