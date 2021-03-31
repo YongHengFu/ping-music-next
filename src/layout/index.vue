@@ -132,13 +132,13 @@ export default defineComponent({
           index: 0,
           label: '推荐',
           icon: 'FireOutlined',
-          path: '/0'
+          path: '/recommend'
         },
         {
           index: 1,
           label: '音乐馆',
           icon: 'CustomerServiceOutlined',
-          path: '/1'
+          path: '/musicHall'
         },
         {
           index: 2,
@@ -174,7 +174,7 @@ export default defineComponent({
           index: 7,
           label: '最近播放',
           icon: 'HistoryOutlined',
-          path: '/7'
+          path: '/historyPlay'
         }
       ]
     }
@@ -228,8 +228,7 @@ export default defineComponent({
       this.timer = setTimeout(func, 300, element)
     },
     pageChange(index: number) {
-      this.$router.push({ path: '/musicHall' })
-      console.log(this.$route.path)
+      this.$router.push({ path: this.itemList[index].path })
       this.pageIndex = index
     },
     showDrawer() {

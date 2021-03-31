@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Layout from '@/layout/index.vue'
 import recommend from '@/pages/recommend.vue'
 import musicHall from '@/pages/musicHall.vue'
+import historyPlay from '@/pages/historyPlay.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -17,6 +18,11 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'musicHall',
         component: musicHall,
+        meta: { title: 'PING' }
+      },
+      {
+        path: 'historyPlay',
+        component: historyPlay,
         meta: { title: 'PING' }
       }
     ]

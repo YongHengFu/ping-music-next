@@ -55,7 +55,6 @@
             </div>
           </div>
           <div class="icons" :style="index===selectIndex?'width: 40%;display: flex;justify-content: flex-end;':''">
-            <!--          <lottie :options="defaultOptions" :height="50" :width="50" />-->
             <svg-icon class="icon" :name="index===currIndex?'listPause':'listPlay'" />
             <svg-icon class="icon" name="love-line" />
             <svg-icon class="icon" name="more" />
@@ -69,7 +68,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import '@lottiefiles/lottie-player'
-// import animationData from '@/assets/lottie/sonicWave.json'
 export default defineComponent({
   name: 'ListDrawer',
   props: {
@@ -80,9 +78,6 @@ export default defineComponent({
   data() {
     return {
       selectIndex: -1
-      // defaultOptions: { animationData: animationData },
-      // animationSpeed: 1,
-      // anim: {}
     }
   },
   computed: {
