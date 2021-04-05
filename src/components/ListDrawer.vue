@@ -41,7 +41,7 @@
                 autoplay
                 loop
                 mode="bounce"
-                src="/src/assets/lottie/sonicWave.json"
+                src="/src/assets/lottie/sonicWave2.json"
                 style="width: 30px;height: 30px"
               />
             </div>
@@ -140,14 +140,15 @@ export default defineComponent({
 }
 .icons{
   display: none;
-  color: #a7a7a7;
+  color: #575757;
 }
 .duration{
+  font-size: 12px;
   color: #b3b2b2;
 }
 .icon{
   margin: 0 5px;
-  font-size: 22px;
+  font-size: 20px;
 }
 .container:hover{
   background: #efefef;
@@ -165,7 +166,7 @@ export default defineComponent({
   display: none;
 }
 .musicName {
-  font-size: 16px;
+  font-size: 14px;
   color: #000000;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -173,7 +174,7 @@ export default defineComponent({
   display:block;
 }
 .artistName {
-  font-size: 14px;
+  font-size: 12px;
   color: #8e8e8e;
   overflow: hidden;
   text-overflow: ellipsis;

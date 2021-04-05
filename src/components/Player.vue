@@ -222,7 +222,6 @@ export default defineComponent({
       }
     },
     setRecords(id) {
-      console.log(id)
       const list = this.records
       const index = list.indexOf(id)
       if (index === -1) {

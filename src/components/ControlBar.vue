@@ -7,13 +7,15 @@
         <a-avatar
           shape="square"
           :size="50"
-          style="border: 1px solid #ededed"
-          :src="currMusic.album.picUrl"
+          style="border: 1px solid #ededed;"
+          :src="currMusic?currMusic.album.picUrl:'/src/assets/image/cover.png'"
         />
         <div style="display: flex;flex-direction: column;margin-left: 10px">
           <div>
-            <span style="font-size: 18px;font-weight: bolder">{{ currMusic.name }}</span>
+            <span style="font-size: 18px;font-weight: bolder">
+              {{ currMusic?currMusic.name:'Ping音乐' }}</span>
             <svg-icon
+              v-if="currMusic"
               name="love"
               class="discolour"
               style="font-size: 18px; margin-left: 20px; color: #cccccc"
@@ -21,12 +23,15 @@
           </div>
 
           <div>
-            <span
-              v-for="(item,index) of currMusic.artist"
-              :key="item.id"
-              class="discolour"
-              style="font-size: 14px;cursor: pointer"
-            >{{ item.name }}{{ index===currMusic.artist.length-1? '' : '/' }}</span>
+            <span v-if="!currMusic">FuYH</span>
+            <template v-else>
+              <span
+                v-for="(item,index) of currMusic.artist"
+                :key="item.id"
+                class="discolour"
+                style="font-size: 14px;cursor: pointer"
+              >{{ item.name }}{{ index===currMusic.artist.length-1? '' : '/' }}</span>
+            </template>
           </div>
         </div>
       </div>

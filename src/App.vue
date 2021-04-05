@@ -20,6 +20,7 @@ export default defineComponent({
 <style>
 :root{
   --primary-color: #1DCF9F;
+  /*--primary-color: rgb(244, 93, 93);*/
   --block-size: 160px;
   --block-num: 5;
 }

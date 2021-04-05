@@ -15,16 +15,7 @@ const store = createStore({
       mute: false
     },
     musicList: [],
-    detailList: [{
-      name: '聆听生活',
-      artist: [{
-        name: 'PING'
-      }],
-      album: {
-        picUrl: '/src/assets/logo.png'
-      },
-      duration: 0
-    }],
+    detailList: [],
     currIndex: 0,
     records: []
   },
