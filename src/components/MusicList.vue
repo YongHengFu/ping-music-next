@@ -32,7 +32,6 @@
                     <svg-icon name="love" style="color: #cccccc;margin-right: 15px" />{{ item.name }}</span>
                   <div class="icons" :style="index===selectIndex?'display: flex;justify-content: space-between;align-items: center;':''">
                     <svg-icon class="icon" :name="index===currIndex?'listPause':'listPlay'" />
-                    <svg-icon class="icon" name="love-line" />
                     <svg-icon class="icon" name="add" />
                     <svg-icon class="icon" name="more" />
                   </div>

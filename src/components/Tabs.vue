@@ -2,11 +2,11 @@
   <div class="tabs">
     <div
       v-for="(item,ind) of tabList"
-      :key="item"
+      :key="item.name"
       class="pane"
       :style="ind===index?'color:var(--primary-color)!important;':'color: rgb(69, 74, 80);'"
-      @click="change(ind)"
-    >{{ item }} </div>
+      @click="change(ind,item.name)"
+    >{{ item.table }} </div>
     <div class="slider" :style="sliderLeft">
       <div class="indicator" />
     </div>
@@ -19,15 +19,23 @@ export default defineComponent({
   data() {
     return {
       index: 0,
-      tabList: ['精选', '排行榜', '歌手', '专辑', '视频', '电台'],
+      tabList: [
+        { table: '精选', name: 'Featured' },
+        { table: '榜单', name: 'Leaderboard' },
+        { table: '歌手', name: 'Featured' },
+        { table: '专辑', name: 'Featured' },
+        { table: '视频', name: 'Featured' },
+        { table: '电台', name: 'Featured' }
+      ],
       sliderLeft: { 'margin-left': '0px' }
     }
   },
   methods: {
-    change(ind) {
+    change(ind, name) {
       if (ind !== this.index) {
         this.index = ind
         this.sliderLeft['margin-left'] = (100 * ind) + 'px'
+        this.$emit('changeTab', name)
       }
     }
   }

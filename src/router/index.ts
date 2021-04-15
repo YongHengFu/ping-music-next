@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Layout from '@/layout/index.vue'
 import recommend from '@/pages/recommend.vue'
-import musicHall from '@/pages/musicHall.vue'
+import musicHall from '@/pages/MusicHall/musicHall.vue'
 import historyPlay from '@/pages/historyPlay.vue'
 
 const routes: Array<RouteRecordRaw> = [

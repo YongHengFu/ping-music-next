@@ -1,18 +1,12 @@
 <template>
-  <div style="user-select: none;width: calc((var(--block-size) + 20px) * var(--block-num))">
-    <span class="h1">音乐馆</span>
-    <Tabs />
+  <div>
     <div style="position: relative;height: 250px">
       <Banner class="banner" />
     </div>
     <BlockList />
-    <span class="h2" style="margin-right: 10px">最新听
+    <p class="h2" style="margin-right: 10px">最新先听
       <a><svg-icon class="play-all" name="playAll" @click="playAll" /></a>
-    </span>
-    <!--    <span-->
-    <!--      style="font-size: 12px;border-radius: 20px;background: rgba(227,227,227,0.8);padding: 6px 12px"-->
-    <!--      @click="playAll"-->
-    <!--    ><svg-icon name="play-line" />播放全部</span>-->
+    </p>
     <div v-if="newSong.length>0">
       <div v-for="m of 3" :key="m" style="margin-bottom: 20px">
         <MusicBlock
@@ -31,17 +25,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Banner from '@/components/Banner.vue'
-import Tabs from '@/components/Tabs.vue'
 import BlockList from '@/components/BlockList.vue'
 import MusicBlock from '@/components/MusicBlock.vue'
-import '@lottiefiles/lottie-player'
 
-import { homepage, getNewSong, getMusicById } from '../api/music'
+import { homepage, getNewSong, getMusicById } from '../../../api/music'
+
 export default defineComponent({
-  name: 'MusicHall',
+  name: 'Featured',
   components: {
     Banner,
-    Tabs,
     BlockList,
     MusicBlock
   },
@@ -53,7 +45,6 @@ export default defineComponent({
     }
   },
   async created() {
-    // this.getHomePageData()
     await this.getNewSongData()
   },
   methods: {
