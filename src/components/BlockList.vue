@@ -1,6 +1,6 @@
 <template>
   <div v-if="list.length>0">
-    <div v-for="n of list.length/blockNum" :key="n">
+    <div v-for="n of Math.ceil(list.length/blockNum)" :key="n">
       <Block
         v-for="m of blockNum"
         :key="m"

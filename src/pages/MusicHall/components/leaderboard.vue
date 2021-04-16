@@ -1,21 +1,31 @@
 <template>
   <div v-if="topList.length>0">
     <div class="container">
+      <span class="h2">超级榜</span>
       <div class="super">
-        <span class="h2">超级榜</span>
-        <BoardBlock
-          v-for="item of superList"
-          :key="item.id"
-          :data="item"
-          class="block"
-        />
+        <div>
+          <BoardBlock
+            v-for="item of superList.slice(0,2)"
+            :key="item.id"
+            :data="item"
+            class="block"
+          />
+        </div>
+        <div>
+          <BoardBlock
+            v-for="item of superList.slice(2,4)"
+            :key="item.id"
+            :data="item"
+            class="block"
+          />
+        </div>
       </div>
       <div class="cloud">
         <span class="h2">云听榜</span>
         <BlockList :list="cloudList" />
       </div>
       <div class="area">
-        <span class="h2">地区榜</span>
+        <span class="h2">全球榜</span>
         <BlockList :list="areaList" />
       </div>
       <div class="pattern">
@@ -91,11 +101,13 @@ export default defineComponent({
 }
 .super{
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   flex-direction: row;
 }
 .block{
-  margin-right: 20px;
+  margin: 0 10px;
   margin-bottom: 20px;
+  width: calc((var(--block-size) + 20px)/2 * var(--block-num) - 20px);
 }
 </style>

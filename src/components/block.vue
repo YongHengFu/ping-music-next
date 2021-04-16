@@ -63,7 +63,7 @@ export default defineComponent({
 /*}*/
 
 .title{
-  font-size: 10px;
+  font-size: 14px;
   width: var(--block-size);
   overflow: hidden;
   text-overflow: ellipsis;
