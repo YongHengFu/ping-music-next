@@ -41,14 +41,5 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/*.banner{*/
-/*  position: absolute;*/
-/*  left: 50%;*/
-/*  transform: translateX(-50%);*/
-/*}*/
-/*.play-all{*/
-/*  font-size: 24px;*/
-/*  color: #000c17;*/
-/*  cursor: pointer;*/
-/*}*/
+
 </style>

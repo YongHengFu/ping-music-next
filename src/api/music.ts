@@ -48,3 +48,10 @@ export function getMusicDetail(params:object) {
     params
   })
 }
+
+export function getTopList() {
+  return request({
+    url: '/toplist/detail',
+    method: 'get'
+  })
+}
