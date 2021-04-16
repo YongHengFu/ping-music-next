@@ -5,7 +5,7 @@
 <!--      <span class="title">飙升</span>-->
     </div>
     <div class="list">
-      <p style="font-size: 26px;font-weight: bolder;margin-bottom: 15px">{{ data.name }}</p>
+      <p style="font-size: 22px;font-weight: bolder;margin-bottom: 10px">{{ data.name }}</p>
       <span v-for="(item,index) of data.tracks" :key="item.first" class="music">{{ index+1 }}&nbsp;&nbsp;&nbsp;{{ item.first }}-{{ item.second }}</span>
     </div>
   </div>
@@ -27,7 +27,7 @@ export default defineComponent({
 .container{
   display: flex;
   flex-direction: row;
-  background: #F0F0F0;
+  background: #f6f6f6;
   border-radius: 10px;
   width: 500px;
 }
@@ -52,11 +52,14 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   justify-content: center;
-  flex: 1.5;
+  flex: 1.8;
 }
 .music{
-  font-size: 18px;
+  font-size: 14px;
   margin-bottom: 10px;
   color: #525151;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
 }
 </style>
