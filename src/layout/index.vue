@@ -122,8 +122,6 @@ export default defineComponent({
     return {
       timer: null,
       state: false, // false:暂停 true:播放
-      // currentDura: 80,
-      // totalDura: 232,
       time: 0,
       pageIndex: 0,
       isShowDrawer: false,
@@ -199,6 +197,12 @@ export default defineComponent({
       return this.$route.path
     }
   },
+  watch: {
+
+  },
+  created() {
+    this.indexByRouter(this.$route.path)
+  },
   mounted() {
     const erd = elementResizeDetectorMaker()
     const this_ = this
@@ -230,6 +234,14 @@ export default defineComponent({
     pageChange(index: number) {
       this.$router.push({ path: this.itemList[index].path })
       this.pageIndex = index
+    },
+    indexByRouter(path) {
+      for (const [index, item] of this.itemList.entries()) {
+        if (item.path === path) {
+          this.pageIndex = index
+          return index
+        }
+      }
     },
     showDrawer() {
       this.isShowDrawer = !this.isShowDrawer

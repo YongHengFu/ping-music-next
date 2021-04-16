@@ -1,11 +1,15 @@
 .h1{
-    font-size: 36px;
+    font-size: 32px;
     font-weight: bolder;
+    display: block;
+    margin-bottom: 20px;
 }
 
 .h2{
-    font-size: 26px;
+    font-size: 24px;
     font-weight: bold;
+    display: block;
+    margin-bottom: 15px;
 }
 
 .h3{

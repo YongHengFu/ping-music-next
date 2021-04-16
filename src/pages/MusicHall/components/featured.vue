@@ -3,20 +3,25 @@
     <div style="position: relative;height: 250px">
       <Banner class="banner" />
     </div>
-    <BlockList />
-    <p class="h2" style="margin-right: 10px">最新先听
-      <a><svg-icon class="play-all" name="playAll" @click="playAll" /></a>
-    </p>
-    <div v-if="newSong.length>0">
-      <div v-for="m of 3" :key="m" style="margin-bottom: 20px">
-        <MusicBlock
-          v-for="n of 3"
-          :key="n"
-          style="display: inline-block"
-          :song="newSong[(n-1)+(m-1)*3]"
-          :index="(n-1)+(m-1)*3"
-          @handleMusicBlock="clickMusicBlock"
-        />
+    <div>
+      <span class="h2">精选专辑&nbsp;<RightOutlined style="font-size: 22px;text-align: center"/></span>
+      <BlockList :list="quaList" v-if="quaList.length>0"/>
+    </div>
+    <div>
+      <span class="h2" style="margin-right: 10px">最新先听
+        <a><svg-icon class="play-all" name="playAll" @click="playAll" /></a>
+      </span>
+      <div v-if="newSong.length>0">
+        <div v-for="m of 3" :key="m" style="margin-bottom: 20px">
+          <MusicBlock
+            v-for="n of 3"
+            :key="n"
+            style="display: inline-block"
+            :song="newSong[(n-1)+(m-1)*3]"
+            :index="(n-1)+(m-1)*3"
+            @handleMusicBlock="clickMusicBlock"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -24,15 +29,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { RightOutlined } from '@ant-design/icons-vue'
 import Banner from '@/components/Banner.vue'
 import BlockList from '@/components/BlockList.vue'
 import MusicBlock from '@/components/MusicBlock.vue'
 
-import { homepage, getNewSong, getMusicById } from '../../../api/music'
+import { homepage, getNewSong, getMusicById, getPlayList_Qua } from '../../../api/music'
 
 export default defineComponent({
   name: 'Featured',
   components: {
+    RightOutlined,
     Banner,
     BlockList,
     MusicBlock
@@ -40,17 +47,27 @@ export default defineComponent({
   data() {
     return {
       homePageData: {},
+      quaList: [],
       newSong: [],
       newSongIdList: []
     }
   },
-  async created() {
-    await this.getNewSongData()
+  created() {
+    this.getQuaList()
+    this.getNewSongData()
   },
   methods: {
     getHomePageData() {
       homepage().then((res) => {
         this.homePageData = res.data
+      })
+    },
+    getQuaList() {
+      this.param = { before: '', limit: 12 }
+      getPlayList_Qua(this.param).then((res) => {
+        if (res.code === 200) {
+          this.quaList = res.playlists
+        }
       })
     },
     getNewSongData() {

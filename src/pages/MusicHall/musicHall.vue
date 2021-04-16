@@ -1,6 +1,6 @@
 <template>
   <div style="user-select: none;width: calc((var(--block-size) + 20px) * var(--block-num))">
-    <p class="h1">音乐馆</p>
+    <span class="h1">音乐馆</span>
     <Tabs @changeTab="changeTab" />
     <component :is="currentTabComponent" />
   </div>
