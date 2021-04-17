@@ -3,6 +3,7 @@ import Layout from '@/layout/index.vue'
 import recommend from '@/pages/recommend.vue'
 import musicHall from '@/pages/MusicHall/musicHall.vue'
 import historyPlay from '@/pages/historyPlay.vue'
+import playList from '@/pages/playList.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -23,6 +24,11 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'historyPlay',
         component: historyPlay,
+        meta: { title: 'PING' }
+      },
+      {
+        path: 'playList',
+        component: playList,
         meta: { title: 'PING' }
       }
     ]

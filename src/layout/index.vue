@@ -160,7 +160,8 @@ export default defineComponent({
           index: 5,
           label: '本地歌曲',
           icon: 'DesktopOutlined',
-          path: '/5'
+          // path: '/5'
+          path: '/playList'
         },
         {
           index: 6,

@@ -17,7 +17,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -58,7 +58,7 @@ export default defineComponent({
 .musicBlock{
   position: relative;
   height: 60px;
-  width: 30%;
+  /*width: 30%;*/
   margin-right: 10px;
 }
 .musicBlock:hover{

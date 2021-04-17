@@ -63,8 +63,8 @@ export default defineComponent({
 }
 .cover{
   position: relative;
-  min-width: var(--block-size);
-  max-width: var(--block-size);
+  width: var(--block-size);
+  height: var(--block-size);
   border-radius: 10px;
   margin-right: 20px;
 }
@@ -107,7 +107,6 @@ export default defineComponent({
   align-items: center;
 }
 .number{
-  /*font-size: 14px;*/
   min-width: 14px;
   margin-right: 10px;
   color: red;

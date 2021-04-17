@@ -4,15 +4,14 @@
       <Banner class="banner" />
     </div>
     <div>
-      <span class="h2">精选专辑&nbsp;<RightOutlined style="font-size: 22px;text-align: center"/></span>
+      <span class="h2">精选专辑<RightOutlined style="font-size: 22px;text-align: center"/></span>
       <BlockList :list="quaList" v-if="quaList.length>0"/>
     </div>
     <div>
-      <span class="h2" style="margin-right: 10px">最新先听
-        <a><svg-icon class="play-all" name="playAll" @click="playAll" /></a>
+      <span class="h2" style="margin-right: 10px">最新先听<a><svg-icon class="play-all" name="playAll" @click="playAll" /></a>
       </span>
       <div v-if="newSong.length>0">
-        <div v-for="m of 3" :key="m" style="margin-bottom: 20px">
+        <div v-for="m of 3" :key="m" class="MusicBlock">
           <MusicBlock
             v-for="n of 3"
             :key="n"
@@ -115,5 +114,9 @@ export default defineComponent({
   font-size: 24px;
   color: #000c17;
   cursor: pointer;
+}
+.MusicBlock{
+  margin: 0 10px 20px 0;
+  width: calc((var(--block-size) + 20px)/3 * var(--block-num) - 20px);
 }
 </style>

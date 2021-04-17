@@ -24,9 +24,9 @@
         <span class="h2">云听榜</span>
         <BlockList :list="cloudList" />
       </div>
-      <div class="area">
+      <div class="global">
         <span class="h2">全球榜</span>
-        <BlockList :list="areaList" />
+        <BlockList :list="globalList" />
       </div>
       <div class="pattern">
         <span class="h2">花样榜</span>
@@ -53,7 +53,7 @@ export default defineComponent({
       topList: [],
       superList: [],
       cloudList: [],
-      areaList: [],
+      globalList: [],
       patternList: []
     }
   },
@@ -85,7 +85,7 @@ export default defineComponent({
               this.patternList.push(item)
               break
             default:
-              this.areaList.push(item)
+              this.globalList.push(item)
               break
           }
         }
@@ -106,8 +106,7 @@ export default defineComponent({
   flex-direction: row;
 }
 .block{
-  margin: 0 10px;
-  margin-bottom: 20px;
+  margin: 0 10px 20px 0;
   width: calc((var(--block-size) + 20px)/2 * var(--block-num) - 20px);
 }
 </style>
