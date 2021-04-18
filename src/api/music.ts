@@ -49,9 +49,19 @@ export function getMusicDetail(params:object) {
   })
 }
 
+// 获取排行榜信息
 export function getTopList() {
   return request({
     url: '/toplist/detail',
     method: 'get'
+  })
+}
+
+// 根据id获取歌单详情
+export function getListById(params:object) {
+  return request({
+    url: '/playlist/detail',
+    method: 'get',
+    params
   })
 }

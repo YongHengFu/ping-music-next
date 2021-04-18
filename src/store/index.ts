@@ -17,7 +17,8 @@ const store = createStore({
     musicList: [],
     detailList: [],
     currIndex: 0,
-    records: []
+    records: [],
+    loading: false
   },
   mutations: {
     setBlockNum(state, num) {
@@ -41,7 +42,10 @@ const store = createStore({
     },
     setRecords(state, list) {
       state.records = list
-    }
+    },
+    setLoading(state) {
+      state.loading = !state.loading
+    },
   },
   getters: {
     getBlockNum(state) {
@@ -64,6 +68,9 @@ const store = createStore({
     },
     getRecords(state) {
       return state.records
+    },
+    getLoading(state) {
+      return state.loading
     }
   },
   actions: {},

@@ -35,7 +35,8 @@ export default defineComponent({
   },
   methods: {
     clickBlock() {
-      console.log('click')
+      this.$router.push({ name: 'playList', params: { id: this.content.id }})
+      // this.$router.push({ path: '/historyPlay' })
     },
     showPlay(): void {
       this.isShow = true

@@ -4,11 +4,11 @@
       <Banner class="banner" />
     </div>
     <div>
-      <span class="h2">精选专辑<RightOutlined style="font-size: 22px;text-align: center"/></span>
-      <BlockList :list="quaList" v-if="quaList.length>0"/>
+      <span class="h2">精选专辑<RightOutlined style="font-size: 22px;text-align: center" /></span>
+      <BlockList v-if="quaList.length>0" :list="quaList" />
     </div>
     <div>
-      <span class="h2" style="margin-right: 10px">最新先听<a><svg-icon class="play-all" name="playAll" @click="playAll" /></a>
+      <span class="h2" style="margin-right: 10px">最新先听 <a><svg-icon class="play-all" name="playAll" @click="playAll" /></a>
       </span>
       <div v-if="newSong.length>0">
         <div v-for="m of 3" :key="m" class="MusicBlock">
@@ -34,7 +34,7 @@ import BlockList from '@/components/BlockList.vue'
 import MusicBlock from '@/components/MusicBlock.vue'
 
 import { homepage, getNewSong, getMusicById, getPlayList_Qua } from '../../../api/music'
-
+import '@lottiefiles/lottie-player'
 export default defineComponent({
   name: 'Featured',
   components: {
@@ -51,9 +51,11 @@ export default defineComponent({
       newSongIdList: []
     }
   },
-  created() {
-    this.getQuaList()
-    this.getNewSongData()
+  async created() {
+    this.$store.commit('setLoading')
+    await this.getQuaList()
+    await this.getNewSongData()
+    this.$store.commit('setLoading')
   },
   methods: {
     getHomePageData() {
@@ -61,17 +63,17 @@ export default defineComponent({
         this.homePageData = res.data
       })
     },
-    getQuaList() {
+    async getQuaList() {
       this.param = { before: '', limit: 12 }
-      getPlayList_Qua(this.param).then((res) => {
+      await getPlayList_Qua(this.param).then((res) => {
         if (res.code === 200) {
           this.quaList = res.playlists
         }
       })
     },
-    getNewSongData() {
+    async getNewSongData() {
       const param = { limit: 50 }
-      getNewSong(param).then((res) => {
+      await getNewSong(param).then((res) => {
         if (res.code === 200) {
           this.newSong = res.result
           for (const item of this.newSong) {
@@ -116,7 +118,9 @@ export default defineComponent({
   cursor: pointer;
 }
 .MusicBlock{
-  margin: 0 10px 20px 0;
-  width: calc((var(--block-size) + 20px)/3 * var(--block-num) - 20px);
+  /*margin: 0 10px 20px 0;*/
+  width: calc((var(--block-size) + 20px) * var(--block-num));
+  display: flex;
+  justify-content: space-between;
 }
 </style>

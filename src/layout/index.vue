@@ -52,7 +52,10 @@
           </div>
         </a-layout-header>
         <a-layout-content id="content" class="content">
-          <router-view :key="key" class="view" />
+          <Loading />
+          <keep-alive>
+            <router-view :key="key" class="view" />
+          </keep-alive>
           <ListDrawer :is-show-drawer="isShowDrawer" />
         </a-layout-content>
         <a-layout-footer class="footer">
@@ -68,6 +71,7 @@
 import { defineComponent } from 'vue'
 import elementResizeDetectorMaker from 'element-resize-detector'
 // import ProgressBar2 from '@/components/ProgressBar2.vue'
+import Loading from '@/components/Loading.vue'
 import ControlBar from '@/components/ControlBar.vue'
 import ListDrawer from '@/components/ListDrawer.vue'
 
@@ -116,7 +120,8 @@ export default defineComponent({
     UpOutlined,
     // ProgressBar2,
     ControlBar,
-    ListDrawer
+    ListDrawer,
+    Loading
   },
   data() {
     return {
@@ -160,8 +165,8 @@ export default defineComponent({
           index: 5,
           label: '本地歌曲',
           icon: 'DesktopOutlined',
-          // path: '/5'
-          path: '/playList'
+          path: '/5'
+          // path: '/playList'
         },
         {
           index: 6,

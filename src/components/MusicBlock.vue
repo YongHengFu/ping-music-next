@@ -58,8 +58,8 @@ export default defineComponent({
 .musicBlock{
   position: relative;
   height: 60px;
-  /*width: 30%;*/
-  margin-right: 10px;
+  width: 100%;
+  margin: 10px;
 }
 .musicBlock:hover{
   background: #e2e2e2;

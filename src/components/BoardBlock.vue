@@ -64,7 +64,6 @@ export default defineComponent({
 .cover{
   position: relative;
   width: var(--block-size);
-  height: var(--block-size);
   border-radius: 10px;
   margin-right: 20px;
 }

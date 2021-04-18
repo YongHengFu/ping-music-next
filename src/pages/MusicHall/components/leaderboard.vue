@@ -57,12 +57,14 @@ export default defineComponent({
       patternList: []
     }
   },
-  created() {
-    this.getTopListData()
+  async created() {
+    this.$store.commit('setLoading')
+    await this.getTopListData()
+    this.$store.commit('setLoading')
   },
   methods: {
-    getTopListData() {
-      getTopList().then((res) => {
+    async getTopListData() {
+      await getTopList().then((res) => {
         if (res.code === 200) {
           this.topList = res.list
           this.classify(res.list)

@@ -80,7 +80,7 @@ export default defineComponent({
 
 <style scoped>
 .row{
-  font-size: 15px;
+  font-size: 12px;
   color: #000000;
 }
 .row:hover{
@@ -96,9 +96,9 @@ export default defineComponent({
 .icons{
   display: none;
   color: #575757;
-  width: 100px;
-  height: 23px;
-  font-size: 18px;
+  width: 60px;
+  height: 15px;
+  font-size: 13px;
   margin-right: 10px;
 }
 
