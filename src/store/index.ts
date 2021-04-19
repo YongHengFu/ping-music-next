@@ -12,7 +12,8 @@ const store = createStore({
       currentTime: 0,
       volume: 0.6,
       mode: 0, // 0:列表循环 1：顺序播放 2：随机播放 3：单曲循环
-      mute: false
+      mute: false, // 是否静音,
+      lyric: '' // 歌词
     },
     musicList: [],
     detailList: [],
@@ -43,9 +44,9 @@ const store = createStore({
     setRecords(state, list) {
       state.records = list
     },
-    setLoading(state) {
-      state.loading = !state.loading
-    },
+    setLoading(state, value) {
+      state.loading = value
+    }
   },
   getters: {
     getBlockNum(state) {

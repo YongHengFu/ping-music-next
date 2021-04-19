@@ -70,9 +70,9 @@ export default defineComponent({
     }
   },
   async created() {
-    this.$store.commit('setLoading')
+    this.$store.commit('setLoading', true)
     await this.getListData(this.$route.params.id)
-    this.$store.commit('setLoading')
+    this.$store.commit('setLoading', false)
   },
   mounted() {
 

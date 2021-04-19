@@ -52,10 +52,10 @@ export default defineComponent({
     }
   },
   async created() {
-    this.$store.commit('setLoading')
+    this.$store.commit('setLoading', true)
     await this.getQuaList()
     await this.getNewSongData()
-    this.$store.commit('setLoading')
+    this.$store.commit('setLoading', false)
   },
   methods: {
     getHomePageData() {

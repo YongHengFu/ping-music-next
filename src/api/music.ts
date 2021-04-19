@@ -65,3 +65,12 @@ export function getListById(params:object) {
     params
   })
 }
+
+// 根据id获取歌词
+export function getLyricById(params:object) {
+  return request({
+    url: '/lyric',
+    method: 'get',
+    params
+  })
+}

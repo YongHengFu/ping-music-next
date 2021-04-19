@@ -58,9 +58,9 @@ export default defineComponent({
     }
   },
   async created() {
-    this.$store.commit('setLoading')
+    this.$store.commit('setLoading', true)
     await this.getTopListData()
-    this.$store.commit('setLoading')
+    this.$store.commit('setLoading', false)
   },
   methods: {
     async getTopListData() {

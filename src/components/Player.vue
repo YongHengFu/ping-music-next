@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { getMusicDetail } from '../api/music'
+import { getMusicDetail, getLyricById } from '../api/music'
 export default defineComponent({
   name: 'Player',
   props: {
@@ -34,7 +34,7 @@ export default defineComponent({
   },
   computed: {
     source() {
-      console.log(`https://music.163.com/song/media/outer/url?id=${this.musiclist[this.index]}.mp3`)
+      // console.log(`https://music.163.com/song/media/outer/url?id=${this.musiclist[this.index]}.mp3`)
       return `https://music.163.com/song/media/outer/url?id=${this.musiclist[this.index]}.mp3`
     },
     state() {
@@ -95,6 +95,7 @@ export default defineComponent({
     },
     currIndex() {
       this.index = this.currIndex
+      this.getLyric(this.currIndex)
     }
   },
   methods: {
@@ -233,6 +234,16 @@ export default defineComponent({
         list.push(id)
       }
       this.$store.commit('setRecords', list)
+    },
+    getLyric(index) {
+      const param = { id: this.musiclist[index] }
+      getLyricById(param).then((res) => {
+        if (res.code === 200) {
+          const param2 = { prop: 'lyric', value: res.lrc.lyric }
+          this.$store.commit('setAudio', param2)
+          // console.log(this.$store.state.audio.lyric)
+        }
+      })
     }
   }
 })

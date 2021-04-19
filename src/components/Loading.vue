@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loading" class="loading">
+  <div v-show="loading" class="loading">
     <lottie-player
       autoplay
       loop
@@ -26,6 +26,9 @@ export default defineComponent({
     loading() {
       return this.$store.state.loading
     }
+  },
+  created() {
+
   }
 })
 </script>
@@ -37,12 +40,12 @@ export default defineComponent({
   right: 0;
   top: 0;
   bottom: 0;
-  background: #FFFFFF;
+  background: #fafafa;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  opacity: 0.9;
+  opacity: 0.8;
   z-index: 5;
 }
 </style>

@@ -1,18 +1,19 @@
 <template>
   <div>
+    <playView />
     <router-view />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-
+import playView from '@/pages/playView.vue'
 // document.body.style.setProperty('--main-color', '#1DCF9F')
 
 export default defineComponent({
   name: 'App',
   components: {
-
+    playView
   }
 })
 </script>
