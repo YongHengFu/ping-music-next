@@ -4,7 +4,7 @@
       autoplay
       loop
       mode="bounce"
-      src="/src/assets/lottie/loading.json"
+      :src="LoadingAnimatiom"
       style="width: 150px;height: 150px"
     />
     <span style="font-size: 20px;text-align: center;margin-top: 15px;color: #8d8d8d">loading...</span>
@@ -14,11 +14,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import '@lottiefiles/lottie-player'
+import LoadingAnimatiom from '@/assets/lottie/loading.json'
 export default defineComponent({
   name: 'Loading',
   data() {
     return {
-
+      LoadingAnimatiom: LoadingAnimatiom
     }
   },
   computed: {

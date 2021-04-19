@@ -41,7 +41,7 @@
                 autoplay
                 loop
                 mode="bounce"
-                src="/src/assets/lottie/sonicWave2.json"
+                :src="playAnimation"
                 style="width: 30px;height: 30px"
               />
             </div>
@@ -68,6 +68,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import '@lottiefiles/lottie-player'
+import playAnimation from '@/assets/lottie/sonicWave.json'
 export default defineComponent({
   name: 'ListDrawer',
   props: {
@@ -77,6 +78,7 @@ export default defineComponent({
   },
   data() {
     return {
+      playAnimation: playAnimation,
       selectIndex: -1
     }
   },
