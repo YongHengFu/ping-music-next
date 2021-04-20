@@ -19,7 +19,8 @@ const store = createStore({
     detailList: [],
     currIndex: 0,
     records: [],
-    loading: false
+    loading: false,
+    showPlayView: false
   },
   mutations: {
     setBlockNum(state, num) {
@@ -46,6 +47,9 @@ const store = createStore({
     },
     setLoading(state, value) {
       state.loading = value
+    },
+    setShowPlayView(state, value) {
+      state.showPlayView = value
     }
   },
   getters: {
@@ -72,6 +76,9 @@ const store = createStore({
     },
     getLoading(state) {
       return state.loading
+    },
+    getShowPlayView(state) {
+      return state.showPlayView
     }
   },
   actions: {},

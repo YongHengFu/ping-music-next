@@ -95,11 +95,11 @@ export default defineComponent({
     },
     currIndex() {
       this.index = this.currIndex
-      this.getLyric(this.currIndex)
     }
   },
   methods: {
     durationchange() {
+      this.getLyric(this.index)
       const audio = document.getElementById('audio')
       const param = { prop: 'duration', value: audio.duration }
       this.$store.commit('setAudio', param)

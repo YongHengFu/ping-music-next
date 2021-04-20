@@ -1,6 +1,6 @@
 <template>
   <div style="position: relative">
-    <playView v-if="true" id="playView"/>
+    <playView id="playView" :style="{'z-index': showPlayView? '10':'-100'}" />
     <router-view />
   </div>
 </template>
@@ -14,6 +14,11 @@ export default defineComponent({
   name: 'App',
   components: {
     playView
+  },
+  computed: {
+    showPlayView() {
+      return this.$store.state.showPlayView
+    }
   }
 })
 </script>

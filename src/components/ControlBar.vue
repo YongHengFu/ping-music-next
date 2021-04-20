@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="position: absolute;z-index: 5000">
     <Player ref="player" :jump="jump" />
     <ProgressBar2 @jumpTo="jumpTo" />
     <div class="control-bar">
@@ -9,6 +9,7 @@
           :size="50"
           style="border: 1px solid #ededed;"
           :src="currMusic?currMusic.album.picUrl:'/src/assets/image/cover.png'"
+          @click="showPlayView"
         />
         <div style="display: flex;flex-direction: column;margin-left: 10px">
           <div>
@@ -141,6 +142,9 @@ export default defineComponent({
     }
   },
   methods: {
+    showPlayView() {
+      this.$store.commit('setShowPlayView', true)
+    },
     switchMode() {
       let param = {}
       if (this.mode !== this.modeList.length - 1) {
