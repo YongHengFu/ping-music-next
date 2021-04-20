@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <playView />
+  <div style="position: relative">
+    <playView v-if="true" id="playView"/>
     <router-view />
   </div>
 </template>
@@ -35,5 +35,12 @@ export default defineComponent({
 ::-webkit-scrollbar-thumb {
   background-color: #cccccc;
   border-radius: 20px;
+}
+#playView{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background: #ececec;
 }
 </style>
