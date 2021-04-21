@@ -1,6 +1,6 @@
 <template>
   <div
-    id="volumeBar"
+    :id="'volumeBar'+originKey"
     class="volumeBar"
     @mouseleave="showPoint"
     @mouseenter="showPoint"
@@ -23,6 +23,11 @@
 import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'VolumeBar',
+  props: {
+    originKey: {
+      type: String
+    }
+  },
   data() {
     return {
       state: true,
@@ -32,10 +37,18 @@ export default defineComponent({
       right: 100
     }
   },
+  computed: {
+    currVolume() {
+      return this.$store.state.audio.volume
+    }
+  },
   watch: {
+    currVolume() {
+      this.right = (1 - this.$store.state.audio.volume) * 100
+    },
     volume() {
       if (this.volume === 0) {
-        const param = { prop: 'mute', value: !this.$store.state.audio.mute }
+        const param = { prop: 'mute', value: true }
         this.$store.commit('setAudio', param)
       }
     }
@@ -48,17 +61,26 @@ export default defineComponent({
       this.isPoint = !this.isPoint
     },
     jumpPoint(e) {
-      this.right = (1 - (e.x - document.getElementById('volumeBar').offsetLeft) / 100) * 100
+      const offsetLeft = this.getElementLeft(document.getElementById('volumeBar' + this.originKey))
+      this.right = (1 - (e.x - offsetLeft) / 100) * 100
       this.right = this.right < 0 ? 0 : this.right
       this.right = this.right > 100 ? 100 : this.right
       this.volume = 1 - this.right / 100
-      this.$emit('changeVolume', this.volume)
+      const param = { prop: 'volume', value: this.volume }
+      this.$store.commit('setAudio', param)
+    },
+    getElementLeft(element) {
+      let offsetLeft = element.offsetLeft
+      const current = element.offsetParent // 获取父元素
+      offsetLeft += current.offsetLeft
+      return offsetLeft
     },
     mousedown() {
       this.state = false
       const this_ = this
       function move(e) {
-        this_.right = (1 - (e.x - document.getElementById('volumeBar').offsetLeft) / 100) * 100
+        const offsetLeft = this_.getElementLeft(document.getElementById('volumeBar' + this_.originKey))
+        this_.right = (1 - (e.x - offsetLeft) / 100) * 100
         this_.right = this_.right < 0 ? 0 : this_.right
         this_.right = this_.right > 100 ? 100 : this_.right
         this_.volume = 1 - this_.right / 100
@@ -69,7 +91,8 @@ export default defineComponent({
         await window.removeEventListener('mousemove', move, false)
         if (!this_.state) {
           this_.state = true
-          this_.$emit('changeVolume', this_.volume)
+          const param = { prop: 'volume', value: this_.volume }
+          this_.$store.commit('setAudio', param)
         }
       }, false)
     }
@@ -83,7 +106,7 @@ export default defineComponent({
   width: 100px;
   height: 3px;
   padding: 8px 0;
-  margin-left: 20px;
+  margin-left: 30px;
   border-radius: 30px;
   position: relative;
   z-index: 0;

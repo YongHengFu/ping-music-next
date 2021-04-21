@@ -191,7 +191,7 @@ export default defineComponent({
   right: 100%;
   transform: translate(50%,-50%);
   z-index: 5;
-  animation: point-shadow 1.5s infinite alternate-reverse;
+  animation: point-shadow 1.5s infinite alternate-reverse linear;
 }
 @keyframes  point-shadow {
   0% {
@@ -201,7 +201,7 @@ export default defineComponent({
     box-shadow: 0 0 5px 2px var(--primary-color);
   }
   100% {
-    box-shadow: 0 0 10px 3px var(--primary-color);
+    box-shadow: 0 0 5px 3px var(--primary-color);
   }
 }
 .tip {

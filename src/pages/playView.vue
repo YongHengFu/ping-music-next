@@ -1,6 +1,11 @@
 <template>
   <div class="view">
-    <button @click="showPlayView">down</button>
+    <div class="mask">
+      <img :src="coverImage" style="width: 100%;height: 100%;object-fit: contain">
+    </div>
+    <div>
+      <svg-icon name="down" style="font-size: 24px;margin: 20px 0 0 50px" @click="showPlayView" />
+    </div>
     <div id="container" class="container">
       <div class="left">
         <a-image :src="coverImage" class="cover" width="100%" />
@@ -11,7 +16,45 @@
           </div>
           <svg-icon name="love" />
         </div>
-        <div class="control" />
+        <div style="width: 100%">
+          <ProgressBar2 @jumpTo="jumpTo" />
+        </div>
+        <div class="control">
+          <div>
+            <svg-icon
+              :name="modeList[mode]"
+              class="discolour"
+              style="font-size: 20px;"
+              @click="switchMode"
+            />
+          </div>
+          <svg-icon
+            name="prev"
+            class="discolour prev-button"
+            style="font-size: 26px"
+            @click="prev"
+          />
+          <svg-icon
+            :name="state ? 'pause' : 'play'"
+            style="font-size: 40px; color: var(--primary-color)"
+            @click="changeState"
+          />
+          <svg-icon
+            name="next"
+            class="discolour next-button"
+            style="font-size: 26px"
+            @click="next"
+          />
+          <div class="volume">
+            <svg-icon
+              :name="mute?'volume_mute':'volume'"
+              class="discolour"
+              style="font-size: 20px"
+              @click="volumeMute"
+            />
+            <VolumeBar v-show="!mute" class="volumeBar" origin-key="playView" />
+          </div>
+        </div>
       </div>
       <div id="lyricScroll" ref="lyricScroll" class="right">
         <!--        <span-->
@@ -33,13 +76,13 @@
           :key="item.time"
           style="position: relative"
         >
-          <div style="display: inline-block;position: relative">
+          <div style="display: inline-block;position: relative;font-size: 20px">
             <span
-                class="lyric"
+              class="lyric"
             >{{ item.lyric }}</span>
             <span
-                :style="changeStyle(index)"
-                class="lyric2"
+              :style="changeStyle(index)"
+              class="lyric2"
             >{{ item.lyric }}</span>
           </div>
 
@@ -52,13 +95,22 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+// import { FullscreenOutlined } from '@ant-design/icons-vue'
+import ProgressBar2 from '@/components/ProgressBar2.vue'
+import VolumeBar from '@/components/VolumeBar.vue'
 import coverImage from '@/assets/image/cover.png'
 // import { getMusicDetail, getLyricById } from '../api/music'
 export default defineComponent({
   name: 'PlayView',
+  components: {
+    ProgressBar2,
+    VolumeBar
+  },
   data() {
     return {
       coverImage: coverImage,
+      isVolumeBar: false,
+      modeList: ['order', 'loop', 'random', 'single'],
       lyricList: [],
       lyricIndex: 0
     }
@@ -69,6 +121,21 @@ export default defineComponent({
     },
     currentDura() {
       return this.$store.state.audio.currentTime
+    },
+    state() {
+      return this.$store.state.audio.state
+    },
+    // currentDura() {
+    //   return this.$store.state.audio.currentTime
+    // },
+    totalDura() {
+      return this.$store.state.audio.duration
+    },
+    mode() {
+      return this.$store.state.audio.mode
+    },
+    mute() {
+      return this.$store.state.audio.mute
     }
   },
   watch: {
@@ -95,20 +162,42 @@ export default defineComponent({
   async created() {
     // if(this.lyric)
     // this.analyzeLyric(this.lyric)
-    // const rc = '[00:04.050]\n[00:12.570]难以忘记初次见你\n[00:16.860]一双迷人的眼睛\n[00:21.460]在我脑海里\n[00:23.960]你的身影 挥散不去\n[00:30.160]握你的双手感觉你的温柔\n[00:34.940]真的有点透不过气\n[00:39.680]你的天真 我想珍惜\n[00:43.880]看到你受委屈 我会伤心\n[00:48.180]喔\n[00:50.340]只怕我自己会爱上你\n[00:55.070]不敢让自己靠的太近\n[00:59.550]怕我没什么能够给你\n[03:07.730]我竟然又会遇见你\n[03:13.020]我真的真的不愿意\n[03:16.630]就这样陷入爱的陷阱\n[03:20.700]喔\n[04:03.000]\n'
-    // await this.analyzeLyric(rc)
+    const rc = '[00:04.050]\n[00:12.570]难以忘记初次见你\n[00:16.860]一双迷人的眼睛\n[00:21.460]在我脑海里\n[00:23.960]你的身影 挥散不去\n[00:30.160]握你的双手感觉你的温柔\n[00:34.940]真的有点透不过气\n[00:39.680]你的天真 我想珍惜\n[00:43.880]看到你受委屈 我会伤心\n[00:48.180]喔\n[00:50.340]只怕我自己会爱上你\n[00:55.070]不敢让自己靠的太近\n[00:59.550]怕我没什么能够给你\n[03:07.730]我竟然又会遇见你\n[03:13.020]我真的真的不愿意\n[03:16.630]就这样陷入爱的陷阱\n[03:20.700]喔\n[04:03.000]\n'
+    await this.analyzeLyric(rc)
   },
   mounted() {
-    // this.$nextTick(function() {
-    //   const viewHeight = document.getElementById('container')
-    //   console.log(viewHeight)
-    //   document.getElementById('ly0').style.marginTop = viewHeight / 2 + 'px'
-    //   document.getElementById('ly' + (this.lyricList.length - 1)).style.marginBottom = viewHeight / 2 + 'px'
-    // })
+
   },
   methods: {
     showPlayView() {
       this.$store.commit('setShowPlayView', false)
+    },
+    switchMode() {
+      let param = {}
+      if (this.mode !== this.modeList.length - 1) {
+        param = { prop: 'mode', value: this.mode + 1 }
+      } else {
+        param = { prop: 'mode', value: 0 }
+      }
+      this.$store.commit('setAudio', param)
+    },
+    changeState(): void {
+      const param = { prop: 'state', value: !this.state }
+      this.$store.commit('setAudio', param)
+    },
+    volumeMute() {
+      const param = { prop: 'mute', value: !this.$store.state.audio.mute }
+      this.$store.commit('setAudio', param)
+    },
+    prev() {
+      if (this.$refs.player !== null) {
+        this.$refs.player.prev()
+      }
+    },
+    next() {
+      if (this.$refs.player !== null) {
+        this.$refs.player.next()
+      }
     },
     analyzeLyric(lyric) {
       const ricList = lyric.split(/\n/)
@@ -150,8 +239,8 @@ export default defineComponent({
     changeStyle(index) {
       // const viewHeight = document.getElementById('lyricScroll').clientHeight
       const style = {}
-      if (index < this.lyricList.length -2) {
-        style.transition = 'width ' + (this.lyricList[index+1].time - this.lyricList[index].time) + 's linear'
+      if (index < this.lyricList.length - 2) {
+        style.transition = 'width ' + (this.lyricList[index + 1].time - this.lyricList[index].time) + 's linear'
         // console.log(index, (this.lyricList[index + 1].time - this.lyricList[index].time))
       }
       if (index === this.lyricIndex) {
@@ -193,6 +282,25 @@ export default defineComponent({
 <style scoped>
 .view{
   display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.mask{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: #fafafa;
+  filter: blur(100px);
+  z-index: -1;
+  animation: maskAnimation 2s infinite alternate linear;
+}
+@keyframes maskAnimation {
+  from{
+    filter: blur(50px) ;
+  }
+  to{
+    filter: blur(100px) hue-rotate(360deg) ;
+  }
 }
 .container{
   width: 100%;
@@ -211,14 +319,14 @@ export default defineComponent({
   width: 20%;
 }
 .right{
-  width: 40%;
+  width: 30%;
   height: 100%;
-  padding: 0 20px;
+  padding: 0 20px 0 20px;
   overflow-y: auto;
   overflow-x: hidden;
-  /*display: flex;*/
-  /*flex-direction: column;*/
-  /*justify-content: flex-start;*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   /*transition: 3s;*/
 }
 .cover{
@@ -236,6 +344,45 @@ export default defineComponent({
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
+}
+.control{
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.discolour {
+  color: rgb(102, 102, 102);
+}
+
+.discolour:hover {
+  color: var(--primary-color);
+}
+.prev-button {
+  color: #3f3f3f;
+  margin: 0 20px 0 30px;
+}
+
+.next-button {
+  color: #3f3f3f;
+  margin: 0 30px 0 20px;
+}
+.volume{
+  position: relative;
+}
+.volumeBar{
+  width: 0;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  transition: 0.3s;
+}
+.volume:hover .volumeBar{
+  width: 100px;
 }
 .lyric{
   padding: 5px 10px;

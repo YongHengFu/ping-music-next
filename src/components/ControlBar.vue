@@ -1,16 +1,20 @@
 <template>
-  <div style="position: absolute;z-index: 5000">
+  <div>
     <Player ref="player" :jump="jump" />
     <ProgressBar2 @jumpTo="jumpTo" />
     <div class="control-bar">
       <div class="bar-left">
-        <a-avatar
-          shape="square"
-          :size="50"
-          style="border: 1px solid #ededed;"
-          :src="currMusic?currMusic.album.picUrl:'/src/assets/image/cover.png'"
-          @click="showPlayView"
-        />
+        <div style="position: relative" class="avatar" @click="showPlayView">
+          <a-avatar
+            shape="square"
+            :size="50"
+            :src="currMusic?currMusic.album.picUrl:'/src/assets/image/cover.png'"
+          />
+          <div class="avatar-mask">
+            <svg-icon name="upShow" style="width: 100%;height: 100%;padding: 30%" />
+          </div>
+        </div>
+
         <div style="display: flex;flex-direction: column;margin-left: 10px">
           <div>
             <span style="font-size: 18px;font-weight: bolder">
@@ -37,11 +41,11 @@
         </div>
       </div>
       <div class="bar-center">
-        <div style="width: 150px;">
+        <div>
           <svg-icon
             :name="modeList[mode]"
             class="discolour"
-            style="font-size: 20px;float: right"
+            style="font-size: 20px;"
             @click="switchMode"
           />
         </div>
@@ -69,7 +73,7 @@
             style="font-size: 20px"
             @click="volumeMute"
           />
-          <VolumeBar v-show="!mute" class="volumeBar" @changeVolume="changeVolume" />
+          <VolumeBar  v-show="!mute" class="volumeBar" originKey="controlBar" />
         </div>
       </div>
       <div class="bar-right">
@@ -180,10 +184,6 @@ export default defineComponent({
       timeSeconds = timeSeconds.substr(0, 2)
       return `${timeMinute}:${timeSeconds}`
     },
-    changeVolume(value) {
-      const param = { prop: 'volume', value: value }
-      this.$store.commit('setAudio', param)
-    },
     volumeMute() {
       const param = { prop: 'mute', value: !this.$store.state.audio.mute }
       this.$store.commit('setAudio', param)
@@ -215,7 +215,6 @@ export default defineComponent({
 }
 
 .bar-left {
-  width: 28%;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -223,7 +222,6 @@ export default defineComponent({
 }
 
 .bar-center {
-  width: 44%;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -231,19 +229,27 @@ export default defineComponent({
 }
 
 .bar-right {
-  width: 28%;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
 }
-
-.discolour {
-  color: rgb(102, 102, 102);
+.avatar{
+  border: 1px solid #ededed;
 }
-
-.discolour:hover {
-  color: var(--primary-color);
+.avatar-mask{
+  position: absolute;
+  width: 100%;
+  height:100%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  opacity: 0.8;
+  background: #fafafa;
+  display: none;
+}
+.avatar:hover .avatar-mask{
+  display: block;
 }
 
 .prev-button {
@@ -256,12 +262,18 @@ export default defineComponent({
   margin: 0 30px 0 20px;
 }
 .volume{
-  width: 150px;
-  display: flex;
-  align-items: center;
+  /*width: 150px;*/
+  /*display: flex;*/
+  /*align-items: center;*/
+  position: relative;
 }
 .volumeBar{
   width: 0;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
   transition: 0.3s;
 }
 .volume:hover .volumeBar{
