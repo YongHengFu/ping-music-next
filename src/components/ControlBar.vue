@@ -1,7 +1,7 @@
 <template>
   <div>
     <Player ref="player" :jump="jump" />
-    <ProgressBar2 @jumpTo="jumpTo" />
+    <ProgressBar2 origin-key="controlBar" @jumpTo="jumpTo" />
     <div class="control-bar">
       <div class="bar-left">
         <div style="position: relative" class="avatar" @click="showPlayView">
@@ -73,7 +73,7 @@
             style="font-size: 20px"
             @click="volumeMute"
           />
-          <VolumeBar  v-show="!mute" class="volumeBar" originKey="controlBar" />
+          <VolumeBar v-show="!mute" class="volumeBar" origin-key="controlBar" />
         </div>
       </div>
       <div class="bar-right">
@@ -189,14 +189,12 @@ export default defineComponent({
       this.$store.commit('setAudio', param)
     },
     prev() {
-      if (this.$refs.player !== null) {
-        this.$refs.player.prev()
-      }
+      const param = { prop: 'prev', value: true }
+      this.$store.commit('setAudio', param)
     },
     next() {
-      if (this.$refs.player !== null) {
-        this.$refs.player.next()
-      }
+      const param = { prop: 'next', value: true }
+      this.$store.commit('setAudio', param)
     },
     showDrawer() {
       this.$emit('showDrawer')
@@ -215,6 +213,7 @@ export default defineComponent({
 }
 
 .bar-left {
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -222,6 +221,8 @@ export default defineComponent({
 }
 
 .bar-center {
+  width: 250px;
+  min-width: 250px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -229,6 +230,7 @@ export default defineComponent({
 }
 
 .bar-right {
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;

@@ -1,6 +1,6 @@
 <template>
   <div
-    id="progress-bar"
+    :id="'progress-bar'+originKey"
     class="progress-bar"
     @click="jumpPoint($event)"
     @mouseenter="isPoint=true"
@@ -32,6 +32,11 @@ export default defineComponent({
   name: 'ProgressBar2',
   components: {
 
+  },
+  props: {
+    originKey: {
+      type: String
+    }
   },
   data() {
     return {
@@ -98,10 +103,12 @@ export default defineComponent({
   },
   methods: {
     jumpPoint(e) {
-      const pro = document.getElementById('progress-bar')
+      const pro = document.getElementById('progress-bar' + this.originKey)
       const width = pro.offsetWidth
       const X = pro.offsetLeft
-      this.$emit('jumpTo', ((e.x - X) / width) * this.totalDura)
+      const param = { prop: 'jump', value: ((e.x - X) / width) * this.totalDura }
+      this.$store.commit('setAudio', param)
+      // this.$emit('jumpTo', ((e.x - X) / width) * this.totalDura)
       // this.jump = ((e.x - X) / width) * this.totalDura
     },
     mousedown(e) {
@@ -109,7 +116,7 @@ export default defineComponent({
       this.oldX = e.x
       const this_ = this
       function move(el) {
-        const pro = document.getElementById('progress-bar')
+        const pro = document.getElementById('progress-bar' + this_.originKey)
         const width = pro.offsetWidth
         const X = pro.offsetLeft
         let moveWidth = (1 - ((el.x - X) / width)) < 0 ? 0 : (1 - ((el.x - X) / width))
@@ -129,7 +136,9 @@ export default defineComponent({
           // const moveWidth = this_.move - ((el.x - this_.oldX) / width) * 100
           // this_.tipTime = (1 - (moveWidth / 100)) * this_.totalDura
           this_.state = true
-          this_.$emit('jumpTo', this_.tipTime)
+          const param = { prop: 'jump', value: this_.tipTime }
+          this_.$store.commit('setAudio', param)
+          // this_.$emit('jumpTo', this_.tipTime)
           // this_.jump = this_.tipTime
         }
       }, false)

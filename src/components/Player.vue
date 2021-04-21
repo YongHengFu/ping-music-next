@@ -20,9 +20,9 @@ import { getMusicDetail, getLyricById } from '../api/music'
 export default defineComponent({
   name: 'Player',
   props: {
-    jump: {
-      type: Number
-    }
+    // jump: {
+    //   type: Number
+    // }
   },
   data() {
     return {
@@ -49,6 +49,15 @@ export default defineComponent({
     mute() {
       return this.$store.state.audio.mute
     },
+    jump() {
+      return this.$store.state.audio.jump
+    },
+    isPrev() {
+      return this.$store.state.audio.prev
+    },
+    isNext() {
+      return this.$store.state.audio.next
+    },
     musiclist() {
       return this.$store.state.musicList
     },
@@ -64,11 +73,13 @@ export default defineComponent({
   },
   watch: {
     jump() {
-      let audio = document.getElementById('audio')
-      audio.currentTime = this.jump
-      audio = document.getElementById('audio')
-      if (audio.paused) {
-        audio.play()
+      if (this.jump >= 0) {
+        let audio = document.getElementById('audio')
+        audio.currentTime = this.jump
+        audio = document.getElementById('audio')
+        if (audio.paused) {
+          audio.play()
+        }
       }
     },
     state() {
@@ -77,6 +88,20 @@ export default defineComponent({
         audio.play()
       } else {
         audio.pause()
+      }
+    },
+    isPrev() {
+      if (this.isPrev) {
+        this.prev()
+        const param = { prop: 'prev', value: false }
+        this.$store.commit('setAudio', param)
+      }
+    },
+    isNext() {
+      if (this.isNext) {
+        this.next()
+        const param = { prop: 'next', value: false }
+        this.$store.commit('setAudio', param)
       }
     },
     volume() {

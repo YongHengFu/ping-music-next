@@ -13,6 +13,9 @@ const store = createStore({
       volume: 0.6,
       mode: 0, // 0:列表循环 1：顺序播放 2：随机播放 3：单曲循环
       mute: false, // 是否静音,
+      jump: -1,
+      prev: false,
+      next: false,
       lyric: '' // 歌词
     },
     musicList: [],

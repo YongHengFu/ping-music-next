@@ -1,23 +1,31 @@
 <template>
   <div class="view">
     <div class="mask">
-      <img :src="coverImage" style="width: 100%;height: 100%;object-fit: contain">
+      <img :src="currMusic?currMusic.album.picUrl:coverImage" style="width: 100%;height: 100%;object-fit: cover">
     </div>
     <div>
-      <svg-icon name="down" style="font-size: 24px;margin: 20px 0 0 50px" @click="showPlayView" />
+      <svg-icon name="down" style="font-size: 24px;margin: 20px 0 0 50px;color: #FFFFFF" @click="showPlayView" />
     </div>
     <div id="container" class="container">
       <div class="left">
-        <a-image :src="coverImage" class="cover" width="100%" />
+        <a-image :src="currMusic?currMusic.album.picUrl:coverImage" class="cover" width="100%" style="margin-bottom: 30px" />
         <div class="info">
           <div class="text">
-            <span>Ping音乐</span>
-            <span>FuYH</span>
+            <span style="color: #FFFFFF;font-size: 18px;font-weight: bolder">{{ currMusic ? currMusic.name : 'Ping音乐' }}</span>
+            <span v-if="!currMusic" style="color: #cccccc">FuYH</span>
+            <div v-else>
+              <span
+                v-for="(item,index) of currMusic.artist"
+                :key="item.id"
+                class="discolour"
+                style="color: #cccccc;cursor: pointer"
+              >{{ item.name }}{{ index===currMusic.artist.length-1? '' : '/' }}</span>
+            </div>
           </div>
           <svg-icon name="love" />
         </div>
         <div style="width: 100%">
-          <ProgressBar2 @jumpTo="jumpTo" />
+          <ProgressBar2 origin-key="playView" @jumpTo="jumpTo" />
         </div>
         <div class="control">
           <div>
@@ -76,7 +84,7 @@
           :key="item.time"
           style="position: relative"
         >
-          <div style="display: inline-block;position: relative;font-size: 20px">
+          <div style="display: inline-block;position: relative;font-size: 17px">
             <span
               class="lyric"
             >{{ item.lyric }}</span>
@@ -116,6 +124,15 @@ export default defineComponent({
     }
   },
   computed: {
+    detailList() {
+      return this.$store.state.detailList
+    },
+    currIndex() {
+      return this.$store.state.currIndex
+    },
+    currMusic() {
+      return this.detailList[this.currIndex]
+    },
     lyric() {
       return this.$store.state.audio.lyric
     },
@@ -190,14 +207,12 @@ export default defineComponent({
       this.$store.commit('setAudio', param)
     },
     prev() {
-      if (this.$refs.player !== null) {
-        this.$refs.player.prev()
-      }
+      const param = { prop: 'prev', value: true }
+      this.$store.commit('setAudio', param)
     },
     next() {
-      if (this.$refs.player !== null) {
-        this.$refs.player.next()
-      }
+      const param = { prop: 'next', value: true }
+      this.$store.commit('setAudio', param)
     },
     analyzeLyric(lyric) {
       const ricList = lyric.split(/\n/)
@@ -250,6 +265,7 @@ export default defineComponent({
           // style.transition = 'width 5' + 's linear'
         }
         style.visibility = 'visible'
+        style['line-height'] = '1'
         style.width = '100%'
       }
       // if (index === 0) {
@@ -280,6 +296,21 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+::-webkit-scrollbar {
+  display: none;
+  width: 6px; /* 纵向滚动条*/
+  height: 6px; /* 横向滚动条 */
+  background-color: #8e0e0e;
+}
+
+/*定义滑块*/
+::-webkit-scrollbar-thumb {
+  display: none;
+  background-color: #c93636;
+  border-radius: 20px;
+}
+
 .view{
   display: flex;
   flex-direction: column;
@@ -289,17 +320,17 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   position: absolute;
-  background: #fafafa;
-  filter: blur(100px);
+  background: #5a5a5a;
+  filter: blur(30px) opacity(0.5);
   z-index: -1;
-  animation: maskAnimation 2s infinite alternate linear;
+  /*animation: maskAnimation 2s infinite alternate linear;*/
 }
 @keyframes maskAnimation {
   from{
-    filter: blur(50px) ;
+    filter: blur(30px) ;
   }
   to{
-    filter: blur(100px) hue-rotate(360deg) ;
+    filter: blur(30px);
   }
 }
 .container{
@@ -330,7 +361,7 @@ export default defineComponent({
   /*transition: 3s;*/
 }
 .cover{
-
+  border-radius: 5px;
 }
 .info{
   width: 100%;
@@ -354,19 +385,19 @@ export default defineComponent({
   align-items: center;
 }
 .discolour {
-  color: rgb(102, 102, 102);
+  color: #FFFFFF;
 }
 
 .discolour:hover {
   color: var(--primary-color);
 }
 .prev-button {
-  color: #3f3f3f;
+  color: #FFFFFF;
   margin: 0 20px 0 30px;
 }
 
 .next-button {
-  color: #3f3f3f;
+  color: #FFFFFF;
   margin: 0 30px 0 20px;
 }
 .volume{
@@ -385,19 +416,18 @@ export default defineComponent({
   width: 100px;
 }
 .lyric{
+  line-height: 18px;
   padding: 5px 10px;
   user-select: none;
-  border-radius: 5px;
   display: inline-block;
+  color: #FFFFFF;
 }
-.lyric:hover{
-  background: #FFFFFF;
-}
+
 .lyric2{
+  line-height: 18px;
   color: var(--primary-color);
   padding: 5px 10px;
   user-select: none;
-  border-radius: 5px;
   position: absolute;
   display: inline-block;
   left: 0;
@@ -405,9 +435,8 @@ export default defineComponent({
   transform: translateY(-50%);
   visibility: hidden;
   width: 0;
-  text-overflow: clip;
-  overflow: hidden;
+  /*text-overflow: clip;*/
+  /*overflow: hidden;*/
   white-space:nowrap;
-  transition: width 10s linear;
 }
 </style>
