@@ -155,7 +155,6 @@ export default defineComponent({
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin-bottom: 5px;
   height: 12px;
   position: relative;
   z-index: 0;

@@ -8,7 +8,7 @@
           <a-avatar
             shape="square"
             :size="50"
-            :src="currMusic?currMusic.album.picUrl:'/src/assets/image/cover.png'"
+            :src="currMusic?currMusic.album.picUrl:coverImage"
           />
           <div class="avatar-mask">
             <svg-icon name="upShow" style="width: 100%;height: 100%;padding: 30%" />
@@ -95,6 +95,7 @@ import { defineComponent } from 'vue'
 import Player from '@/components/Player.vue'
 import ProgressBar2 from '@/components/ProgressBar2.vue'
 import VolumeBar from '@/components/VolumeBar.vue'
+import coverImage from '@/assets/image/cover.png'
 export default defineComponent({
   name: 'ControlBar',
   components: {
@@ -104,6 +105,7 @@ export default defineComponent({
   },
   data() {
     return {
+      coverImage: coverImage,
       currFormat: '00:00',
       totalFormat: '00:00',
       jump: 0,

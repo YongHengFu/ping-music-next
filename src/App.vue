@@ -1,6 +1,6 @@
 <template>
   <div style="position: relative">
-    <playView id="playView" :style="{'z-index': showPlayView? '10':'-100'}" />
+    <playView id="playView" v-if="showPlayView"  />
     <router-view />
   </div>
 </template>
@@ -46,6 +46,7 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   background: #404040;
+  z-index: 10;
   /*background: #fafafa;*/
 }
 </style>
