@@ -26,7 +26,7 @@
         </div>
         <div style="width: 100%;display: flex;align-items: center;color: #FFFFFF">
           <span>{{ currFormat }}</span>
-          <ProgressBar2 origin-key="playView" style="width: 100%;margin: 0 10px" @jumpTo="jumpTo" />
+          <ProgressBar2 origin-key="playView" style="width: 100%;margin: 0 10px" />
           <span>{{ totalFormat }}</span>
         </div>
         <div class="control">
@@ -66,19 +66,30 @@
           </div>
         </div>
       </div>
-      <div id="lyricScroll" ref="lyricScroll" class="right">
-        <div
-          v-for="(item,index) of lyricList"
-          :id="'ly'+index"
-          :key="item.time"
-          style="position: relative;font-size: 17px"
-        >
-          <span class="lyric">{{ item.lyric }}</span>
-          <span :id="'lyricCurr'+index" class="lyricCurr">{{ item.lyric }}</span>
+      <div class="right">
+        <div v-show="showDivider" class="divider">
+          <span>00:00&nbsp;&nbsp;&nbsp;· · · · ·</span>
+          <div style="display: flex;align-items: center">
+            <span>· · · · ·&nbsp;&nbsp;&nbsp;</span>
+            <a @click="jumpByLyric">
+              <svg-icon name="playAll" />
+            </a>
+          </div>
+        </div>
+        <div id="lyricScroll" ref="lyricScroll" class="lyricBlock" @wheel="wheelScroll">
+          <div
+            v-for="(item,index) of lyricList"
+            :id="'ly'+index"
+            :key="item.time"
+            style="position: relative;font-size: 17px"
+          >
+            <span class="lyric">{{ item.lyric }}</span>
+            <span :id="'lyricCurr'+index" class="lyricCurr">{{ item.lyric }}</span>
+          </div>
         </div>
       </div>
     </div>
-    <!--    <button @click="scroll">scroll</button>-->
+    <!--    <button @click="jumpByLyric">test</button>-->
   </div>
 </template>
 
@@ -89,6 +100,32 @@ import ProgressBar2 from '@/components/ProgressBar2.vue'
 import VolumeBar from '@/components/VolumeBar.vue'
 import coverImage from '@/assets/image/cover.png'
 // import { getMusicDetail, getLyricById } from '../api/music'
+function debounce(fn, wait) {
+  var timer = null
+  return function() {
+    var context = this
+    var args = arguments
+    if (timer) {
+      clearTimeout(timer)
+      timer = null
+    }
+    timer = setTimeout(function() {
+      fn.apply(context, args)
+    }, wait)
+  }
+}
+function throttle(func, wait) {
+  var previous = 0
+  return function() {
+    const now = Date.now()
+    const context = this
+    const args = arguments
+    if (now - previous > wait) {
+      func.apply(context, args)
+      previous = now
+    }
+  }
+}
 export default defineComponent({
   name: 'PlayView',
   components: {
@@ -105,7 +142,8 @@ export default defineComponent({
       lyricList: [],
       lyricIndex: 0,
       isJump: false,
-      prevRow: -1
+      prevRow: -1,
+      showDivider: false
     }
   },
   computed: {
@@ -156,17 +194,25 @@ export default defineComponent({
       this.totalFormat = this.timeFormat(this.totalDura)
     },
     state() {
-      const index = this.lyricIndex
-      const curr = document.getElementById('lyricCurr' + index)
-      if (!this.state) {
-        curr.style.width = curr.offsetWidth + 'px'
-      } else {
-        const time = this.lyricList[index + 1].time - this.currentDura
-        curr.style.transition = 'width ' + time + 's linear'
-        curr.style.width = '100%'
-      }
+      this.$nextTick(() => {
+        const index = this.lyricIndex
+        const curr = document.getElementById('lyricCurr' + index)
+        if (!this.state) {
+          curr.style.transition = '0s'
+          curr.style.width = curr.offsetWidth + 'px'
+        } else {
+          let time = 0
+          if (index < this.lyricList.length - 2) {
+            time = this.lyricList[index + 1].time - this.currentDura
+          } else {
+            time = this.totalDura - this.currentDura
+          }
+          curr.style.transition = 'width ' + time + 's linear'
+          curr.style.width = '100%'
+        }
+      })
     },
-    jump() {
+    async jump() {
       this.isJump = true
       const curr = this.currentDura
       if (this.jump >= 0) {
@@ -177,20 +223,26 @@ export default defineComponent({
               break
             }
           }
-        } else {
+        } else if (this.jump < this.lyricList[this.lyricList.length - 1].time) {
           for (let i = this.lyricIndex; i < this.lyricList.length; i++) {
             if (this.lyricList[i].time > this.jump) {
               this.lyricIndex = i - 2
               break
             }
           }
+        } else {
+          this.lyricIndex = this.lyricList.length - 2
         }
-
-        const width = (this.lyricList[this.lyricIndex + 2].time - this.jump) / (this.lyricList[this.lyricIndex + 2].time - this.lyricList[this.lyricIndex + 1].time)
+        let width = 0
+        if (this.lyricIndex < this.lyricList.length - 2) {
+          width = (this.lyricList[this.lyricIndex + 2].time - this.jump) / (this.lyricList[this.lyricIndex + 2].time - this.lyricList[this.lyricIndex + 1].time)
+        } else {
+          width = (this.totalDura - this.jump) / (this.totalDura - this.lyricList[this.lyricIndex + 1].time)
+        }
         const next = document.getElementById('lyricCurr' + (this.lyricIndex + 1))
         next.style.visibility = 'visible'
         next.style.width = (1 - width) * 100 + '%'
-        this.scroll()
+        await this.scroll()
         this.isJump = false
       }
     }
@@ -294,12 +346,12 @@ export default defineComponent({
       if (this.lyricIndex < this.lyricList.length - 1) {
         this.lyricIndex++
         this.Color(this.lyricIndex)
-        this.$nextTick(() => {
+        if (!this.showDivider) {
           const frist = document.getElementById('ly0').offsetTop
           const curr = document.getElementById('ly' + (this.lyricIndex)).offsetTop
           const lyricScroll = document.getElementById('lyricScroll')
           lyricScroll.scrollTo({ left: 0, top: curr - frist, behavior: 'smooth' })
-        })
+        }
       }
     },
     Color(index) {
@@ -312,7 +364,11 @@ export default defineComponent({
       this.prevRow = index
       let time = 0
       if (this.isJump) {
-        time = this.lyricList[index + 1].time - this.jump
+        if (index < this.lyricList.length - 1) {
+          time = this.lyricList[index + 1].time - this.jump
+        } else {
+          time = this.totalDura - this.jump
+        }
       } else {
         if (index < this.lyricList.length - 1) {
           time = this.lyricList[index + 1].time - this.lyricList[index].time
@@ -322,12 +378,67 @@ export default defineComponent({
       }
       this.$nextTick(() => {
         const curr = document.getElementById('lyricCurr' + index)
-        console.log(curr.style.width)
-        curr.style.transition = 'width ' + time + 's linear'
         curr.style.visibility = 'visible'
-        curr.style.width = '100%'
+        if (this.state) {
+          curr.style.transition = 'width ' + time + 's linear'
+          curr.style.width = '100%'
+        }
       })
-    }
+    },
+    jumpByLyric() {
+      const lyricScroll = document.getElementById('lyricScroll')
+      const currTop = lyricScroll.scrollTop
+      // const totalTop = lyricScroll.scrollHeight
+      for (let i = 0; i < this.lyricList.length; i++) {
+        const currRow = document.getElementById('ly' + i).offsetTop - document.getElementById('ly0').offsetTop
+        if (currTop < currRow) {
+          const param = { prop: 'jump', value: this.lyricList[i].time }
+          this.$store.commit('setAudio', param)
+          this.showDivider = false
+          break
+        }
+      }
+    },
+
+    wheelScroll(e) {
+      // const firefox = navigator.userAgent.indexOf('Firefox') != -1
+      // e = e || window.event
+      // if (e.stopPropagation) e.stopPropagation()
+      // else e.cancelBubble = true
+      // if (e.preventDefault) e.preventDefault()
+      // else e.returnValue = false
+      // const isUp = (firefox && e.detail < 0) || (!firefox && e.wheelDelta > 0)
+      // let distance = document.getElementById('ly1').offsetTop - document.getElementById('ly0').offsetTop
+      // distance = isUp ? -distance : distance
+      // const lyricScroll = document.getElementById('lyricScroll')
+      // lyricScroll.scrollTo({ left: 0, top: lyricScroll.scrollTop + distance, behavior: 'smooth' })
+      this.showDivider = true
+      this.hiddenDivider(this)
+    },
+    hiddenDivider: debounce((vm) => {
+      vm.showDivider = false
+      const frist = document.getElementById('ly0').offsetTop
+      const curr = document.getElementById('ly' + (vm.lyricIndex)).offsetTop
+      const lyricScroll = document.getElementById('lyricScroll')
+      lyricScroll.scrollTo({ left: 0, top: curr - frist, behavior: 'smooth' })
+    }, 2000),
+
+    manualScroll(e) {
+      const lyricScroll = document.getElementById('lyricScroll')
+      // const top = lyricScroll.scrollTop
+      const this_ = this
+      document.onmousemove = function(el) {
+        this_.manual(this_, el, e, lyricScroll)
+      }
+      document.onmouseup = function() {
+        document.onmousemove = null
+        document.onmouseup = null
+      }
+    },
+    manual: throttle((vm, el, e, lyricScroll) => {
+      const top = lyricScroll.scrollTop
+      lyricScroll.scrollTo({ left: 0, top: top - (el.y - e.y), behavior: 'smooth' })
+    }, 150)
   }
 })
 </script>
@@ -384,19 +495,37 @@ export default defineComponent({
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  width: 20%;
+  width: 25%;
+  margin-right: 5%;
 }
 .right{
-  width: 30%;
+  width: 40%;
   height: 100%;
-  padding: 35vh 20px 35vh 20px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+.lyricBlock{
+  max-width: 85%;
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  padding: 35vh 10%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  /*transition: 3s;*/
+}
+.divider{
+  width: 100%;
+  color: #FFFFFF;
+  position: absolute;
+  top: 50%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  /*transform: translateY(-50%);*/
 }
 .cover{
   border-radius: 5px;
@@ -454,17 +583,17 @@ export default defineComponent({
   width: 100px;
 }
 .lyric{
-  line-height: 18px;
-  padding: 5px 10px;
+  padding: 12px 10px;
   user-select: none;
   display: inline-block;
   color: #FFFFFF;
+  /*text-overflow: clip;*/
+  /*white-space:nowrap;*/
 }
 
 .lyricCurr{
-  line-height: 18px;
   color: var(--primary-color);
-  padding: 5px 10px;
+  padding: 12px 10px;
   user-select: none;
   position: absolute;
   display: inline-block;
