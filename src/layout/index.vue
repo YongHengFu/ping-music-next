@@ -54,9 +54,11 @@
         <a-layout-content id="content" class="content">
           <Loading />
           <keep-alive>
-            <router-view :key="key" class="view" />
+            <div style="width: 100%;height: 100%;overflow-y: scroll">
+              <router-view :key="key" class="view" />
+            </div>
           </keep-alive>
-          <ListDrawer :is-show-drawer="isShowDrawer" />
+          <ListDrawer :is-show-drawer="isShowDrawer"/>
         </a-layout-content>
         <a-layout-footer class="footer">
           <ControlBar @showDrawer="showDrawer" />
@@ -285,8 +287,7 @@ export default defineComponent({
 
 .layout .content {
   background: #fafafa;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .view{

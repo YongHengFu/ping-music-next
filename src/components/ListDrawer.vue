@@ -10,17 +10,17 @@
       :drawer-style="{'background': '#fafafa','padding': '0'}"
       :wrap-style="{ position: 'absolute'}"
     >
-      <div style="margin: 5px 20px 10px 20px">
+      <div style="height: 60px;position: absolute;width:100%;padding: 0 10px;top: 0;z-index: 2;background: #FAFAFA">
         <span class="h2">播放清单</span>
-        <div style="color: #454545;margin-top: 5px;display: flex;align-items: center;justify-content: space-between">
+        <div style="color: #454545;width:100%;display: flex;align-items: center;justify-content: space-between;background: #FAFAFA">
           <span>{{ detailList.length }}首歌曲</span>
-          <div style="font-size: 16px">
+          <div style="font-size: 12px;display: inline">
             <svg-icon name="batch" style="margin-right: 10px" />
             <svg-icon name="trash" />
           </div>
         </div>
       </div>
-      <div style="height:84vh;overflow-y: auto">
+      <div style="padding-top: 80px">
         <div
           v-for="(item, index) of detailList"
           :key="item.id"
