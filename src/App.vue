@@ -1,7 +1,9 @@
 <template>
   <div style="position: relative;width: 100vw;height: 100vh">
-    <playView id="playView" v-show="showPlayView" />
-    <router-view v-show="!showPlayView"/>
+    <transition name="playView">
+      <playView v-show="showPlayView" id="playView" />
+    </transition>
+    <router-view />
   </div>
 </template>
 
@@ -42,12 +44,20 @@ export default defineComponent({
   border-radius: 20px;
 }
 #playView{
-  /*position: absolute;*/
-  min-width: 1000px;
+  position: absolute;
+  min-width: 1200px;
   width: 100%;
   height: 100%;
   background: #404040;
   z-index: 100;
   /*background: #fafafa;*/
+}
+.playView-enter-from,
+.playView-leave-to{
+  transform: translateY(100%);
+}
+.playView-enter-active,
+.playView-leave-active{
+  transition: 0.3s;
 }
 </style>
