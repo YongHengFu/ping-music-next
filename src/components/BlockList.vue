@@ -13,7 +13,7 @@
 
 <script>
 import { defineComponent } from 'vue'
-import Block from './block.vue'
+import Block from './Cover.vue'
 export default defineComponent({
   name: 'BlockList',
   components: {
