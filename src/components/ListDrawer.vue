@@ -5,10 +5,12 @@
       :closable="false"
       :visible="isShowDrawer"
       :get-container="false"
-      :mask="false"
+      :mask-closable="true"
+      :mask="true"
       width="400"
       :drawer-style="{'background': '#fafafa','padding': '0'}"
       :wrap-style="{ position: 'absolute'}"
+      @close="closeDrawer"
     >
       <div style="height: 60px;position: absolute;width:100%;padding: 0 10px;top: 0;z-index: 2;background: #FAFAFA">
         <span class="h2">播放清单</span>
@@ -119,6 +121,9 @@ export default defineComponent({
       if (this.currIndex !== index) {
         this.$store.commit('setCurrIndex', index)
       }
+    },
+    closeDrawer() {
+      this.$emit('closeDrawer')
     }
   }
 })
@@ -127,6 +132,10 @@ export default defineComponent({
 <style scoped>
 ::v-deep .ant-drawer-body{
   padding: 0;
+}
+::v-deep .ant-drawer.ant-drawer-open .ant-drawer-mask {
+  height: 100%;
+  background: transparent;
 }
 .container{
   display: flex;

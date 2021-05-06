@@ -49,7 +49,7 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   background: #404040;
-  z-index: 100;
+  z-index: 10000;
   /*background: #fafafa;*/
 }
 .playView-enter-from,

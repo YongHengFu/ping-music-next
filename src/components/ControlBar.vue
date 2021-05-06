@@ -4,13 +4,12 @@
     <ProgressBar2 origin-key="controlBar" @jumpTo="jumpTo" />
     <div class="control-bar">
       <div class="bar-left">
-        <div style="position: relative" class="avatar" @click="showPlayView">
-          <a-avatar
-            shape="square"
-            :size="50"
+        <div style="position: relative" class="cover" @click="showPlayView">
+          <img
+            class="cover-image"
             :src="currMusic?currMusic.album.picUrl:coverImage"
           />
-          <div class="avatar-mask">
+          <div class="cover-mask">
             <svg-icon name="upShow" style="width: 100%;height: 100%;padding: 30%" />
           </div>
         </div>
@@ -52,7 +51,7 @@
         <svg-icon
           name="prev"
           class="discolour prev-button"
-          style="font-size: 26px"
+          style="font-size: 22px"
           @click="prev"
         />
         <svg-icon
@@ -63,7 +62,7 @@
         <svg-icon
           name="next"
           class="discolour next-button"
-          style="font-size: 26px"
+          style="font-size: 22px"
           @click="next"
         />
         <div class="volume">
@@ -238,22 +237,33 @@ export default defineComponent({
   justify-content: flex-end;
   align-items: center;
 }
-.avatar{
+.cover{
   border: 1px solid #ededed;
+  overflow: hidden;
 }
-.avatar-mask{
+.cover-image{
+  width: 50px;
+  height: 50px;
+  transition: 0.3s;
+  /*border-radius: 2px;*/
+}
+.cover-mask{
   position: absolute;
-  width: 100%;
-  height:100%;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%,-50%);
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
   opacity: 0.8;
-  background: #fafafa;
-  display: none;
+  /*background: #fafafa;*/
+  color: #FFFFFF;
+  transition: 0.3s;
+  opacity: 0;
 }
-.avatar:hover .avatar-mask{
-  display: block;
+.cover:hover .cover-image{
+  filter: blur(3px);
+}
+.cover:hover .cover-mask{
+  opacity: 1;
 }
 
 .prev-button {

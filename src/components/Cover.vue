@@ -1,7 +1,7 @@
 <template>
-  <div :style="{'background-image': 'url(' + url + ')'}" class="cover">
-<!--    <img :src="url" class="image">-->
-    <div class="play">
+  <div :style="{'background-image': 'url(' + url + ')'}" class="cover" @click="clickBlock">
+    <!--    <img :src="url" class="image">-->
+    <div class="play" @click.stop="">
       <svg-icon name="play-fill" class="play-icon" />
       <div :style="{'background-image': 'url(' + url + ')'}" class="mask" />
     </div>
@@ -18,11 +18,16 @@ export default defineComponent({
     content: Object
   },
   setup(props, ctx) {
-    const imgUrl = props?.content?.coverImgUrl ?? coverImage
+    const imgUrl = props.content?.coverImgUrl ?? coverImage
     document.body.style.setProperty('--imgUrl', imgUrl)
     document.body.style.setProperty('background-image', 'url(' + imgUrl + ')')
     return {
       url: imgUrl
+    }
+  },
+  methods: {
+    clickBlock() {
+      this.$router.push({ name: 'playList', params: { id: this.content?.id }})
     }
   }
 })
@@ -54,8 +59,8 @@ export default defineComponent({
   z-index: 0;
 }
 .play{
-  width: 30%;
-  height: 30%;
+  width: 25%;
+  height: 25%;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -70,8 +75,8 @@ export default defineComponent({
   visibility: visible;
 }
 .play:hover{
-  width: 35%;
-  height: 35%;
+  width: 28%;
+  height: 28%;
 }
 .mask{
   content: '';

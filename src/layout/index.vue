@@ -58,7 +58,7 @@
               <router-view :key="key" class="view" />
             </div>
           </keep-alive>
-          <ListDrawer :is-show-drawer="isShowDrawer"/>
+          <ListDrawer :is-show-drawer="isShowDrawer" @closeDrawer="isShowDrawer=false" />
         </a-layout-content>
         <a-layout-footer class="footer">
           <ControlBar @showDrawer="showDrawer" />
