@@ -1,9 +1,6 @@
 <template>
   <div v-if="data.id!==undefined" class="musicBlock">
-    <div class="cover" @click="clickSong">
-      <a-avatar shape="square" :size="60" :src="data.picUrl" />
-      <svg-icon class="play-icon" name="play-fill" />
-    </div>
+    <Block :image="data.picUrl" />
     <div class="info">
       <span class="song">{{ data.name }}</span>
       <svg-icon class="icon" name="SQ" />
@@ -19,11 +16,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-
+import Block from '@/components/MiniCover.vue'
 export default defineComponent({
   name: 'MusicBlock',
   components: {
-
+    Block
   },
   props: {
     song: {
