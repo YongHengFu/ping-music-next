@@ -19,7 +19,7 @@ export default defineComponent({
     let imgUrl = coverImage
     imgUrl = props?.image + '?param=100y100'
     const onPlay = () => {
-      ctx.emit('play')
+      // ctx.emit('play')
     }
     return {
       imgUrl,

@@ -1,6 +1,6 @@
 <template>
   <div v-if="data.id!==undefined" class="musicBlock">
-    <Block :image="data.picUrl" />
+    <Block :image="data.picUrl" @click="onPlay" />
     <div class="info">
       <span class="song">{{ data.name }}</span>
       <svg-icon class="icon" name="SQ" />
@@ -41,6 +41,9 @@ export default defineComponent({
     }
   },
   methods: {
+    onPlay() {
+      this.$emit('play')
+    },
     clickSong() {
       this.$emit('handleMusicBlock', 0, this.index)
     },

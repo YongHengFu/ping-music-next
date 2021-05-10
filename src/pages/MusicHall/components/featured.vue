@@ -95,6 +95,20 @@ export default defineComponent({
         })
       }
     },
+    playSingle(item) {
+      const songItem = {
+        id: item.id,
+        name: item.name,
+        artist: item.song.artists,
+        album: item.song.album,
+        mvId: item.song.mvid,
+        duration: item.song.duration / 1000,
+        publishTime: item.song.album.publishTime
+      }
+      this.$store.commit('insertMusicList', songItem.id)
+      this.$store.commit('insertDetailList', songItem)
+      this.$store.commit('setCurrIndex', this.$store.state.currIndex + 1)
+    },
     playAll() {
       if (this.newSongIdList.length > 0) {
         this.$store.commit('setMusicList', this.newSongIdList)
