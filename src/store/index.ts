@@ -39,6 +39,17 @@ const store = createStore({
     setMusicList(state, list) {
       state.musicList = list
     },
+    pushMusicList(state, item) { // 加入播放列表
+      // @ts-ignore
+      state.musicList.push(item)
+    },
+    insertMusicList(state, item) { // 插队（下一首播放）
+      // @ts-ignore
+      state.musicList.splice(state.audio.currIndex + 1, 1, item)
+    },
+    removeMusicList(state, index) { // 移出播放列表
+      state.musicList.splice(index, 1)
+    },
     setDetailList(state, list) {
       state.detailList = list
     },

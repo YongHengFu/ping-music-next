@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Player ref="player" :jump="jump" />
+    <Player ref="player"/>
     <ProgressBar2 origin-key="controlBar" @jumpTo="jumpTo" />
     <div class="control-bar">
       <div class="bar-left">
@@ -91,7 +91,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Player from '@/components/Player.vue'
+import Player from '@/components/Player2.vue'
 import ProgressBar2 from '@/components/ProgressBar2.vue'
 import VolumeBar from '@/components/VolumeBar.vue'
 import coverImage from '@/assets/image/cover.png'
