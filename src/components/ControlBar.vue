@@ -1,7 +1,7 @@
 <template>
   <div>
     <Player ref="player" />
-    <ProgressBar2 origin-key="controlBar" @jumpTo="jumpTo" />
+    <ProgressBar origin-key="controlBar" @jumpTo="jumpTo" />
     <div class="control-bar">
       <div class="bar-left">
         <div style="position: relative" class="cover" @click="showPlayView">
@@ -93,13 +93,13 @@
 import { defineComponent, computed, watch, ref } from 'vue'
 import { useStore } from 'vuex'
 import Player from '@/components/Player.vue'
-import ProgressBar2 from '@/components/ProgressBar2.vue'
+import ProgressBar from '@/components/ProgressBar.vue'
 import VolumeBar from '@/components/VolumeBar.vue'
 import coverImage from '@/assets/image/cover.png'
 export default defineComponent({
   name: 'ControlBar',
   components: {
-    ProgressBar2,
+    ProgressBar,
     Player,
     VolumeBar
   },
@@ -152,10 +152,10 @@ export default defineComponent({
       const param = { prop: 'state', value: !state.value }
       store.commit('setAudio', param)
     }
-    const jumpTo = (value) => {
+    const jumpTo = (value:number) => {
       jump.value = value
     }
-    const timeFormat = (time) => {
+    const timeFormat = (time:number) => {
       const timeM = time / 60
       const timeS = time % 60
       let timeMinute = ''
@@ -191,6 +191,7 @@ export default defineComponent({
     }
 
     return {
+      state,
       imgUrl,
       currMusic,
       modeList,
@@ -210,105 +211,6 @@ export default defineComponent({
       showDrawer
     }
   }
-/*  data() {
-    return {
-      coverImage: coverImage,
-      currFormat: '00:00',
-      totalFormat: '00:00',
-      jump: 0,
-      isVolumeBar: false,
-      modeList: ['order', 'loop', 'random', 'single']
-    }
-  },
-  computed: {
-    state() {
-      return this.$store.state.audio.state
-    },
-    currentDura() {
-      return this.$store.state.audio.currentTime
-    },
-    totalDura() {
-      return this.$store.state.audio.duration
-    },
-    mode() {
-      return this.$store.state.audio.mode
-    },
-    mute() {
-      return this.$store.state.audio.mute
-    },
-    detailList() {
-      return this.$store.state.detailList
-    },
-    currIndex() {
-      return this.$store.state.currIndex
-    },
-    currMusic() {
-      return this.detailList[this.currIndex]
-    }
-  },
-  watch: {
-    currentDura() {
-      this.currFormat = this.timeFormat(this.currentDura)
-    },
-    totalDura() {
-      this.totalFormat = this.timeFormat(this.totalDura)
-    }
-  },
-  methods: {
-    showPlayView() {
-      this.$store.commit('setShowPlayView', true)
-    },
-    switchMode() {
-      let param = {}
-      if (this.mode !== this.modeList.length - 1) {
-        param = { prop: 'mode', value: this.mode + 1 }
-      } else {
-        param = { prop: 'mode', value: 0 }
-      }
-      this.$store.commit('setAudio', param)
-    },
-    changeState(): void {
-      const param = { prop: 'state', value: !this.state }
-      this.$store.commit('setAudio', param)
-    },
-    jumpTo(value) {
-      this.jump = value
-    },
-    timeFormat(time) {
-      const timeM = time / 60
-      const timeS = time % 60
-      let timeMinute: string = ''
-      let timeSeconds: string = ''
-      if (timeM < 10) {
-        timeMinute = `0${timeM}`
-      } else {
-        timeMinute = `${timeM}`
-      }
-      if (timeS < 10) {
-        timeSeconds = `0${timeS}`
-      } else {
-        timeSeconds = `${timeS}`
-      }
-      timeMinute = timeMinute.substr(0, 2)
-      timeSeconds = timeSeconds.substr(0, 2)
-      return `${timeMinute}:${timeSeconds}`
-    },
-    volumeMute() {
-      const param = { prop: 'mute', value: !this.$store.state.audio.mute }
-      this.$store.commit('setAudio', param)
-    },
-    prev() {
-      const param = { prop: 'prev', value: true }
-      this.$store.commit('setAudio', param)
-    },
-    next() {
-      const param = { prop: 'next', value: true }
-      this.$store.commit('setAudio', param)
-    },
-    showDrawer() {
-      this.$emit('showDrawer')
-    }
-  }*/
 })
 </script>
 

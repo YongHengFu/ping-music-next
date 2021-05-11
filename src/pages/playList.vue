@@ -34,7 +34,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, watch, ref, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
 import MusicList from '@/components/MusicList.vue'
 
 import { getListById, getMusicDetail } from '@/api/music'
@@ -44,51 +46,34 @@ export default defineComponent({
   components: {
     MusicList
   },
-  data() {
-    return {
-      list: {},
-      listDatail: [],
-      loading: false,
-      isOverflow: false,
-      showAll: false
-    }
-  },
-  computed: {
+  setup() {
+    const route = useRoute()
+    const store = useStore()
+    const loading = ref(false)
+    const list = ref({})
+    const listDatail = ref([])
+    const isOverflow = ref(false)
+    const showAll = ref(false)
 
-  },
-  watch: {
-    loading() {
-      if (this.loading) {
-        const this_ = this
-        this.$nextTick(function() {
-          const description = document.getElementById('description')
-          if (description.scrollWidth > description.clientWidth) {
-            this_.isOverflow = true
-          }
-        })
-      }
-    }
-  },
-  async created() {
-    this.$store.commit('setLoading', true)
-    await this.getListData(this.$route.params.id)
-    this.$store.commit('setLoading', false)
-  },
-  mounted() {
-
-  },
-  methods: {
-    async  getListData(id) {
+    watch(loading, () => {
+      nextTick(() => {
+        const description = document.getElementById('description')
+        if (description.scrollWidth > description.clientWidth) {
+          isOverflow.value = true
+        }
+      })
+    })
+    const getListData = async(id) => {
       const param = { 'id': id }
       await getListById(param).then(async(res) => {
         if (res.code === 200) {
-          this.list = res.playlist
-          this.loading = true
-          await this.getListDetail(res.playlist.trackIds)
+          list.value = res.playlist
+          loading.value = true
+          await getListDetail(res.playlist.trackIds)
         }
       })
-    },
-    async getListDetail(list) {
+    }
+    const getListDetail = async(list) => {
       let ids = ''
       for (const item of list) {
         ids += item.id + ','
@@ -110,14 +95,24 @@ export default defineComponent({
               publishTime: item.publishTime
             })
           }
-          this.listDatail = details
+          listDatail.value = details
         }
       })
-      // getMusicDetail(param).then((res) => {
-      //   if (res.code === 200) {
-      //     this.listDatail = res.playlist
-      //   }
-      // })
+    }
+
+    const init = async() => {
+      store.commit('setLoading', true)
+      await getListData(route.params.id)
+      store.commit('setLoading', false)
+    }
+    init()
+
+    return {
+      loading,
+      isOverflow,
+      showAll,
+      list,
+      listDatail
     }
   }
 })

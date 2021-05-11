@@ -33,12 +33,12 @@
         <BlockList :list="patternList" />
       </div>
     </div>
-    -
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
+import { useStore } from 'vuex'
 import BoardBlock from '@/components/BoardBlock.vue'
 import BlockList from '@/components/BlockList.vue'
 import { getTopList } from '@/api/music'
@@ -48,35 +48,27 @@ export default defineComponent({
     BoardBlock,
     BlockList
   },
-  data() {
-    return {
-      topList: [],
-      superList: [],
-      cloudList: [],
-      globalList: [],
-      patternList: []
-    }
-  },
-  async created() {
-    this.$store.commit('setLoading', true)
-    await this.getTopListData()
-    this.$store.commit('setLoading', false)
-  },
-  methods: {
-    async getTopListData() {
-      await getTopList().then((res) => {
+  setup() {
+    const store = useStore()
+    const topList = ref(<any>[])
+    const superList = ref(<any>[])
+    const cloudList = ref(<any>[])
+    const globalList = ref(<any>[])
+    const patternList = ref(<any>[])
+    const getTopListData = async() => {
+      await getTopList().then((res:any) => {
         if (res.code === 200) {
-          this.topList = res.list
-          this.classify(res.list)
+          topList.value = res.list
+          classify(res.list)
         }
       })
-    },
-    classify(list) {
+    }
+    const classify = (list:any) => {
       for (const [index, item] of list.entries()) {
         if (index < 4) {
-          this.superList.push(item)
+          superList.value.push(item)
         } else if (item.name.indexOf('云音乐') !== -1) {
-          this.cloudList.push(item)
+          cloudList.value.push(item)
         } else {
           switch (item.name) {
             case '黑胶VIP爱听榜':
@@ -84,14 +76,29 @@ export default defineComponent({
             case '中国新乡村音乐排行榜':
             case '潜力爆款榜':
             case '听歌识曲榜':
-              this.patternList.push(item)
+              patternList.value.push(item)
               break
             default:
-              this.globalList.push(item)
+              globalList.value.push(item)
               break
           }
         }
       }
+    }
+
+    const init = async() => {
+      store.commit('setLoading', true)
+      await getTopListData()
+      store.commit('setLoading', false)
+    }
+    init()
+
+    return {
+      topList,
+      superList,
+      cloudList,
+      globalList,
+      patternList
     }
   }
 })

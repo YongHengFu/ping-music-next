@@ -70,9 +70,10 @@
 
 <script lang="ts">
 
-import { defineComponent } from 'vue'
+import { defineComponent, computed, ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 import elementResizeDetectorMaker from 'element-resize-detector'
-// import ProgressBar2 from '@/components/ProgressBar2.vue'
 import Loading from '@/components/Loading.vue'
 import ControlBar from '@/components/ControlBar.vue'
 import ListDrawer from '@/components/ListDrawer.vue'
@@ -120,76 +121,73 @@ export default defineComponent({
     UserOutlined,
     PlayCircleOutlined,
     UpOutlined,
-    // ProgressBar2,
     ControlBar,
     ListDrawer,
     Loading
   },
-  data() {
-    return {
-      timer: null,
-      state: false, // false:暂停 true:播放
-      time: 0,
-      pageIndex: 0,
-      isShowDrawer: false,
-      itemList: [
-        {
-          index: 0,
-          label: '推荐',
-          icon: 'FireOutlined',
-          path: '/recommend'
-        },
-        {
-          index: 1,
-          label: '音乐馆',
-          icon: 'CustomerServiceOutlined',
-          path: '/musicHall'
-        },
-        {
-          index: 2,
-          label: '视频',
-          icon: 'VideoCameraOutlined',
-          path: '/2'
-        },
-        {
-          index: 3,
-          label: '私人FM',
-          icon: 'CrownOutlined',
-          path: '/3'
-        },
-        {
-          index: 4,
-          label: '我喜欢',
-          icon: 'HeartOutlined',
-          path: '/4'
-        },
-        {
-          index: 5,
-          label: '本地歌曲',
-          icon: 'DesktopOutlined',
-          path: '/5'
-          // path: '/playList'
-        },
-        {
-          index: 6,
-          label: '下载管理',
-          icon: 'CloudDownloadOutlined',
-          path: '/6'
-        },
-        {
-          index: 7,
-          label: '最近播放',
-          icon: 'HistoryOutlined',
-          path: '/historyPlay'
-        }
-      ]
-    }
-  },
-  computed: {
-    menuList() {
-      const this_: any = this
+  setup() {
+    const route = useRoute()
+    const router = useRouter()
+    const store = useStore()
+    const pageIndex = ref(0)
+    const isShowDrawer = ref(false)
+    const itemList = [
+      {
+        index: 0,
+        label: '推荐',
+        icon: 'FireOutlined',
+        path: '/recommend'
+      },
+      {
+        index: 1,
+        label: '音乐馆',
+        icon: 'CustomerServiceOutlined',
+        path: '/musicHall'
+      },
+      {
+        index: 2,
+        label: '视频',
+        icon: 'VideoCameraOutlined',
+        path: '/2'
+      },
+      {
+        index: 3,
+        label: '私人FM',
+        icon: 'CrownOutlined',
+        path: '/3'
+      },
+      {
+        index: 4,
+        label: '我喜欢',
+        icon: 'HeartOutlined',
+        path: '/4'
+      },
+      {
+        index: 5,
+        label: '本地歌曲',
+        icon: 'DesktopOutlined',
+        path: '/5'
+        // path: '/playList'
+      },
+      {
+        index: 6,
+        label: '下载管理',
+        icon: 'CloudDownloadOutlined',
+        path: '/6'
+      },
+      {
+        index: 7,
+        label: '最近播放',
+        icon: 'HistoryOutlined',
+        path: '/historyPlay'
+      }
+    ]
+    // eslint-disable-next-line no-undef
+    let timer: (NodeJS.Timeout | null) = null
+
+    const menuList = computed(() => {
       return function(group: string) {
-        return this_.itemList.filter((item: item) => {
+        return itemList.filter((item: item) => {
           switch (group) {
             case 'a':
               return item.index < 4
@@ -200,59 +198,63 @@ export default defineComponent({
           }
         })
       }
-    },
-    key() {
-      return this.$route.path
-    }
-  },
-  watch: {
-
-  },
-  created() {
-    this.indexByRouter(this.$route.path)
-  },
-  mounted() {
-    const erd = elementResizeDetectorMaker()
-    const this_ = this
-
-    erd.listenTo(document.getElementById('content'), function(element) {
-      this_.debounce(function(ele) {
-        const width = ele.offsetWidth
-        let blockSize = (width / 5) - (width * (40 / 1000))
-        blockSize = blockSize > 240 ? 240 : blockSize
-        if (width - (blockSize + 20) * 6 > 40) {
-          this_.$store.commit('setBlockNum', 6)
-          document.documentElement.style.setProperty(`--block-num`, 6)
-        } else {
-          this_.$store.commit('setBlockNum', 5)
-          document.documentElement.style.setProperty(`--block-num`, 5)
-        }
-        document.documentElement.style.setProperty(`--block-size`, blockSize + 'px')
-      }, element)
     })
-  },
-  methods: {
 
-    debounce(func, element) {
-      if (this.timer) {
-        clearTimeout(this.timer)
+    const key = computed(() => route.path)
+
+    onMounted(() => {
+      indexByRouter(route.path)
+
+      const erd = elementResizeDetectorMaker()
+
+      erd.listenTo(document.getElementById('content'), function(element: any) {
+        debounce(function(ele: { offsetWidth: number }) {
+          const width = ele.offsetWidth
+          let blockSize = (width / 5) - (width * (40 / 1000))
+          blockSize = blockSize > 240 ? 240 : blockSize
+          if (width - (blockSize + 20) * 6 > 40) {
+            store.commit('setBlockNum', 6)
+            document.documentElement.style.setProperty(`--block-num`, 6 + '')
+          } else {
+            store.commit('setBlockNum', 5)
+            document.documentElement.style.setProperty(`--block-num`, 5 + '')
+          }
+          document.documentElement.style.setProperty(`--block-size`, blockSize + 'px')
+        }, element)
+      })
+    })
+
+    const debounce = (func: { (ele: { offsetWidth: number }): void; (...args: any[]): void }, element: any) => {
+      if (timer) {
+        clearTimeout(timer)
       }
-      this.timer = setTimeout(func, 300, element)
-    },
-    pageChange(index: number) {
-      this.$router.push({ path: this.itemList[index].path })
-      this.pageIndex = index
-    },
-    indexByRouter(path) {
-      for (const [index, item] of this.itemList.entries()) {
+      timer = setTimeout(func, 300, element)
+    }
+
+    const pageChange = (index: number) => {
+      router.push({ path: itemList[index].path })
+      pageIndex.value = index
+    }
+    const indexByRouter = (path:string) => {
+      for (const [index, item] of itemList.entries()) {
         if (item.path === path) {
-          this.pageIndex = index
+          pageIndex.value = index
           return index
         }
       }
-    },
-    showDrawer() {
-      this.isShowDrawer = !this.isShowDrawer
+    }
+    const showDrawer = () => {
+      isShowDrawer.value = !isShowDrawer.value
+    }
+
+    return {
+      pageIndex,
+      isShowDrawer,
+      itemList,
+      menuList,
+      key,
+      pageChange,
+      showDrawer
     }
   }
 })

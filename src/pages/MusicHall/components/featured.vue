@@ -50,15 +50,6 @@ export default defineComponent({
     const newSong = ref(<any>[])
     const newSongIdList = ref(<string[]>[])
 
-    const init = async() => {
-      store.commit('setLoading', true)
-      await getQuaList()
-      await getNewSongData()
-      store.commit('setLoading', false)
-    }
-
-    init()
-
     const getQuaList = async() => {
       const param = { before: '', limit: 12 }
       await getPlayList_Qua(param).then((res:any) => {
@@ -79,6 +70,14 @@ export default defineComponent({
         }
       })
     }
+
+    const init = async() => {
+      store.commit('setLoading', true)
+      await getQuaList()
+      await getNewSongData()
+      store.commit('setLoading', false)
+    }
+    init()
 
     const playSingle = (item:any) => {
       const songItem = {

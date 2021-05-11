@@ -26,7 +26,7 @@
         </div>
         <div style="width: 100%;display: flex;align-items: center;color: #FFFFFF">
           <span>{{ currFormat }}</span>
-          <ProgressBar2 origin-key="playView" style="width: 100%;margin: 0 10px" />
+          <ProgressBar origin-key="playView" style="width: 100%;margin: 0 10px" />
           <span>{{ totalFormat }}</span>
         </div>
         <div class="control">
@@ -95,8 +95,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-// import { FullscreenOutlined } from '@ant-design/icons-vue'
-import ProgressBar2 from '@/components/ProgressBar2.vue'
+import ProgressBar from '@/components/ProgressBar.vue'
 import VolumeBar from '@/components/VolumeBar.vue'
 import coverImage from '@/assets/image/cover.png'
 // import { getMusicDetail, getLyricById } from '../api/music'
@@ -129,7 +128,7 @@ function throttle(func, wait) {
 export default defineComponent({
   name: 'PlayView',
   components: {
-    ProgressBar2,
+    ProgressBar,
     VolumeBar
   },
   data() {
@@ -197,18 +196,20 @@ export default defineComponent({
       this.$nextTick(() => {
         const index = this.lyricIndex
         const curr = document.getElementById('lyricCurr' + index)
-        if (!this.state) {
-          curr.style.transition = '0s'
-          curr.style.width = curr.offsetWidth + 'px'
-        } else {
-          let time = 0
-          if (index < this.lyricList.length - 2) {
-            time = this.lyricList[index + 1].time - this.currentDura
+        if (curr !== null) {
+          if (!this.state) {
+            curr.style.transition = '0s'
+            curr.style.width = curr.offsetWidth + 'px'
           } else {
-            time = this.totalDura - this.currentDura
+            let time = 0
+            if (index < this.lyricList.length - 2) {
+              time = this.lyricList[index + 1].time - this.currentDura
+            } else {
+              time = this.totalDura - this.currentDura
+            }
+            curr.style.transition = 'width ' + time + 's linear'
+            curr.style.width = '100%'
           }
-          curr.style.transition = 'width ' + time + 's linear'
-          curr.style.width = '100%'
         }
       })
     },

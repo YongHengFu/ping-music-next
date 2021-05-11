@@ -8,7 +8,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
+import { useStore } from 'vuex'
 import playView from '@/pages/playView.vue'
 // document.body.style.setProperty('--main-color', '#1DCF9F')
 
@@ -17,9 +18,11 @@ export default defineComponent({
   components: {
     playView
   },
-  computed: {
-    showPlayView() {
-      return this.$store.state.showPlayView
+  setup() {
+    const store = useStore()
+    const showPlayView = computed(() => store.state.showPlayView)
+    return {
+      showPlayView
     }
   }
 })
