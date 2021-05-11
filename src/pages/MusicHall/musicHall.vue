@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import Tabs from '@/components/Tabs.vue'
 import Featured from '@/pages/MusicHall/components/featured.vue'
 import Leaderboard from '@/pages/MusicHall/components/leaderboard.vue'
@@ -21,20 +21,15 @@ export default defineComponent({
     Featured,
     Leaderboard
   },
-  data() {
-    return {
-      currentTabComponent: 'Featured'
+  setup() {
+    const currentTabComponent = ref('Featured')
+
+    const changeTab = (tabName:string) => {
+      currentTabComponent.value = tabName
     }
-  },
-  computed: {
-
-  },
-  created() {
-
-  },
-  methods: {
-    changeTab(tabName) {
-      this.currentTabComponent = tabName
+    return {
+      currentTabComponent,
+      changeTab
     }
   }
 })

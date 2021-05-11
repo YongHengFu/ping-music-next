@@ -12,23 +12,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
+import { useStore } from 'vuex'
 import '@lottiefiles/lottie-player'
 import LoadingAnimatiom from '@/assets/lottie/loading.json'
 export default defineComponent({
   name: 'Loading',
-  data() {
+  setup() {
+    const store = useStore()
+    const loading = computed(() => store.state.loading)
     return {
-      LoadingAnimatiom: LoadingAnimatiom
+      loading,
+      LoadingAnimatiom
     }
-  },
-  computed: {
-    loading() {
-      return this.$store.state.loading
-    }
-  },
-  created() {
-
   }
 })
 </script>

@@ -7,36 +7,40 @@
       :style="ind===index?'color:var(--primary-color)!important;':'color: rgb(69, 74, 80);'"
       @click="change(ind,item.name)"
     >{{ item.table }} </div>
-    <div class="slider" :style="sliderLeft">
+    <div class="slider" :style="'margin-left:'+left+'px'">
       <div class="indicator" />
     </div>
   </div></template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 export default defineComponent({
   name: 'Tabs',
-  data() {
-    return {
-      index: 0,
-      tabList: [
-        { table: '精选', name: 'Featured' },
-        { table: '榜单', name: 'Leaderboard' },
-        { table: '歌手', name: 'Featured' },
-        { table: '专辑', name: 'Featured' },
-        { table: '视频', name: 'Featured' },
-        { table: '电台', name: 'Featured' }
-      ],
-      sliderLeft: { 'margin-left': '0px' }
-    }
-  },
-  methods: {
-    change(ind, name) {
-      if (ind !== this.index) {
-        this.index = ind
-        this.sliderLeft['margin-left'] = (100 * ind) + 'px'
-        this.$emit('changeTab', name)
+  setup(props, ctx) {
+    const index = ref(0)
+    const left = ref(0)
+    const tabList = [
+      { table: '精选', name: 'Featured' },
+      { table: '榜单', name: 'Leaderboard' },
+      { table: '歌手', name: 'Featured' },
+      { table: '专辑', name: 'Featured' },
+      { table: '视频', name: 'Featured' },
+      { table: '电台', name: 'Featured' }
+    ]
+
+    const change = (ind:number, name:string) => {
+      if (ind !== index.value) {
+        index.value = ind
+        left.value = ind * 100
+        ctx.emit('changeTab', name)
       }
+    }
+
+    return {
+      index,
+      left,
+      tabList,
+      change
     }
   }
 })

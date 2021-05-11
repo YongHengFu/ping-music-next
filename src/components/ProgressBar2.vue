@@ -11,140 +11,114 @@
     <div class="currentTime" :style="currStyle" />
     <a-tooltip placement="top" :title="sliderFormat" :arrow-point-at-center="true">
       <div
-        v-show="!state||isPoint"
+        v-show="!active||isPoint"
         class="point"
         :style="currStyle"
         @mousedown="mousedown($event)"
-        @mouseup="mouseup($event)"
         @mouseenter="isTip=true"
         @mouseleave="isTip=false"
-      >
-        <!--      <span v-if="!state||isTip" class="tip" id="tipText">{{ sliderFormat }}</span>-->
-      </div>
+      />
     </a-tooltip>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-
+import { defineComponent, computed, watch, ref } from 'vue'
+import { useStore } from 'vuex'
 export default defineComponent({
   name: 'ProgressBar2',
-  components: {
-
-  },
   props: {
     originKey: {
       type: String
     }
   },
-  data() {
-    return {
-      buffStyle: '',
-      currStyle: '',
-      oldX: 0,
-      // jump: 0,
-      move: 50,
-      state: true,
-      tipTime: 0,
-      isPoint: false,
-      isTip: false
-    }
-  },
-  computed: {
-    currentDura() {
-      return this.$store.state.audio.currentTime
-    },
-    totalDura() {
-      return this.$store.state.audio.duration
-    },
-    buffDura() {
-      return this.$store.state.audio.buffered
-    },
-    currFormat() {
-      return ((1 - (this.currentDura / this.totalDura)) * 100)
-    },
-    sliderFormat(): string {
-      const currM = this.tipTime / 60
-      const currS = this.tipTime % 60
-      let currMinute: string = ''
-      let currSeconds: string = ''
-      if (currM < 10) {
-        currMinute = `0${currM}`
-      } else {
-        currMinute = `${currM}`
-      }
-      if (currS < 10) {
-        currSeconds = `0${currS}`
-      } else {
-        currSeconds = `${currS}`
-      }
+  setup(props, ctx) {
+    const store = useStore()
+    const active = ref(true)
+    const isPoint = ref(false)
+    const isTip = ref(false)
+    const currStyle = ref('')
+    let tipTime = 0
+    let move = 0
 
-      currMinute = currMinute.substr(0, 2)
-      currSeconds = currSeconds.substr(0, 2)
+    const currentDura = computed(() => store.state.audio.currentTime)
+    const totalDura = computed(() => store.state.audio.duration)
+    const buffDura = computed(() => store.state.audio.buffered)
+    const sliderFormat = computed(() => timeFormat(tipTime))
 
-      return `${currMinute}:${currSeconds}`
-    }
-  },
-  watch: {
-    currFormat() {
-      if (this.state) {
-        this.move = this.currFormat
-        this.tipTime = this.currentDura
-        this.currStyle = `right: ${this.move}%`
+    watch(currentDura, () => {
+      if (active.value) {
+        move = ((1 - (currentDura.value / totalDura.value)) * 100)
+        tipTime = currentDura.value
+        currStyle.value = `right: ${move}%`
       }
-    }
-    // buffDura() {
-    //   this.buffStyle = `right: ${(1 - this.buffDura / this.totalDura) * 100}%`
-    // },
-  },
-  mounted() {
+    })
 
-  },
-  methods: {
-    jumpPoint(e) {
-      const pro = document.getElementById('progress-bar' + this.originKey)
-      const width = pro.offsetWidth
-      const X = pro.offsetLeft
-      const param = { prop: 'jump', value: ((e.x - X) / width) * this.totalDura }
-      this.$store.commit('setAudio', param)
-      // this.$emit('jumpTo', ((e.x - X) / width) * this.totalDura)
-      // this.jump = ((e.x - X) / width) * this.totalDura
-    },
-    mousedown(e) {
-      this.state = false
-      this.oldX = e.x
-      const this_ = this
-      function move(el) {
-        const pro = document.getElementById('progress-bar' + this_.originKey)
+    const jumpPoint = (e:any) => {
+      const pro = document.getElementById('progress-bar' + props.originKey)
+      if (pro !== null) {
         const width = pro.offsetWidth
         const X = pro.offsetLeft
-        let moveWidth = (1 - ((el.x - X) / width)) < 0 ? 0 : (1 - ((el.x - X) / width))
-        moveWidth = (1 - ((el.x - X) / width)) > 1 ? 1 : moveWidth
-        this_.currStyle = `right: ${moveWidth * 100}%`
-        this_.tipTime = (1 - moveWidth) * this_.totalDura
+        const param = { prop: 'jump', value: ((e.x - X) / width) * totalDura.value }
+        store.commit('setAudio', param)
       }
-      window.addEventListener('mousemove', move, false)
+    }
 
-      window.addEventListener('mouseup', async function(el) {
-        await window.removeEventListener('mousemove', move, false)
-        if (!this_.state) {
-          // const pro = document.getElementById('progress-bar')
-          // const width = pro.offsetWidth
-          // const X = pro.offsetLeft
-          // const width = document.getElementById('progress-bar').offsetWidth
-          // const moveWidth = this_.move - ((el.x - this_.oldX) / width) * 100
-          // this_.tipTime = (1 - (moveWidth / 100)) * this_.totalDura
-          this_.state = true
-          const param = { prop: 'jump', value: this_.tipTime }
-          this_.$store.commit('setAudio', param)
-          // this_.$emit('jumpTo', this_.tipTime)
-          // this_.jump = this_.tipTime
+    const mousedown = (e:any) => {
+      active.value = false
+      function move(el:any) {
+        const pro = document.getElementById('progress-bar' + props.originKey)
+        if (pro !== null) {
+          const width = pro.offsetWidth
+          const X = pro.offsetLeft
+          let moveWidth = (1 - ((el.x - X) / width)) < 0 ? 0 : (1 - ((el.x - X) / width))
+          moveWidth = (1 - ((el.x - X) / width)) > 1 ? 1 : moveWidth
+          currStyle.value = `right: ${moveWidth * 100}%`
+          tipTime = (1 - moveWidth) * totalDura.value
         }
-      }, false)
-    },
-    mouseup(e) {
-      // console.log(this.mouseDown)
+      }
+
+      document.onmousemove = move
+      document.onmouseup = function() {
+        if (!active.value) {
+          active.value = true
+          const param = { prop: 'jump', value: tipTime }
+          store.commit('setAudio', param)
+        }
+        document.onmousemove = null
+        document.onmouseup = null
+      }
+    }
+
+    const timeFormat = (time:number) => {
+      const timeM = time / 60
+      const timeS = time % 60
+      let timeMinute = ''
+      let timeSeconds = ''
+      if (timeM < 10) {
+        timeMinute = `0${timeM}`
+      } else {
+        timeMinute = `${timeM}`
+      }
+      if (timeS < 10) {
+        timeSeconds = `0${timeS}`
+      } else {
+        timeSeconds = `${timeS}`
+      }
+      timeMinute = timeMinute.substr(0, 2)
+      timeSeconds = timeSeconds.substr(0, 2)
+      return `${timeMinute}:${timeSeconds}`
+    }
+    return {
+      active,
+      isPoint,
+      isTip,
+      currStyle,
+      buffDura,
+      totalDura,
+      sliderFormat,
+      jumpPoint,
+      mousedown
     }
   }
 })
@@ -179,7 +153,6 @@ export default defineComponent({
 .currentTime{
   background: var(--primary-color);
   height: 3px;
-  /*box-shadow: 0 0px 5px var(--primary-color);*/
   box-shadow:10px 0 20px -10px blue;
   position: absolute;
   left: 0;
@@ -211,18 +184,5 @@ export default defineComponent({
   100% {
     box-shadow: 0 0 5px 3px var(--primary-color);
   }
-}
-.tip {
-  background-color: black;
-  color: #fffFFF;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 10px;
-  opacity: 0.8;
-  position: absolute;
-  left: 50%;
-  top: -40px;
-  transform: translateX(-50%);
-  z-index: 6;
 }
 </style>

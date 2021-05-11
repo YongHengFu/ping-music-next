@@ -9,18 +9,19 @@
     <div class="countVolume" />
     <div class="currVolume" :style="{'right': right+'%'}" />
     <div
-      v-show="!state||isPoint"
+      v-show="!active||isPoint"
       id="point"
       class="point"
       :style="{'right': right+'%'}"
-      @mousedown="mousedown()"
+      @mousedown="mousedown"
       @click.stop=""
     />
   </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, computed, watch, ref, onMounted } from 'vue'
+import { useStore } from 'vuex'
 export default defineComponent({
   name: 'VolumeBar',
   props: {
@@ -28,73 +29,72 @@ export default defineComponent({
       type: String
     }
   },
-  data() {
-    return {
-      state: true,
-      isPoint: false,
-      volume: 0,
-      volumeStyle: '',
-      right: 100
-    }
-  },
-  computed: {
-    currVolume() {
-      return this.$store.state.audio.volume
-    }
-  },
-  watch: {
-    currVolume() {
-      this.right = (1 - this.$store.state.audio.volume) * 100
-    },
-    volume() {
-      if (this.volume === 0) {
+  setup(props, ctx) {
+    const store = useStore()
+    const active = ref(true)
+    const isPoint = ref(false)
+    let volume = 0
+    const right = ref(100)
+    onMounted(() => {
+      right.value = (1 - currVolume.value) * 100
+    })
+    const currVolume = computed(() => store.state.audio.volume)
+
+    watch(currVolume, () => {
+      right.value = (1 - currVolume.value) * 100
+      if (currVolume.value === 0) {
         const param = { prop: 'mute', value: true }
-        this.$store.commit('setAudio', param)
+        store.commit('setAudio', param)
       }
+    })
+
+    const showPoint = () => {
+      isPoint.value = !isPoint.value
     }
-  },
-  mounted() {
-    this.right = (1 - this.$store.state.audio.volume) * 100
-  },
-  methods: {
-    showPoint() {
-      this.isPoint = !this.isPoint
-    },
-    jumpPoint(e) {
-      const offsetLeft = this.getElementLeft(document.getElementById('volumeBar' + this.originKey))
-      this.right = (1 - (e.x - offsetLeft) / 100) * 100
-      this.right = this.right < 0 ? 0 : this.right
-      this.right = this.right > 100 ? 100 : this.right
-      this.volume = 1 - this.right / 100
-      const param = { prop: 'volume', value: this.volume }
-      this.$store.commit('setAudio', param)
-    },
-    getElementLeft(element) {
+    const jumpPoint = (e) => {
+      const offsetLeft = getElementLeft(document.getElementById('volumeBar' + props.originKey))
+      right.value = (1 - (e.x - offsetLeft) / 100) * 100
+      right.value = right.value < 0 ? 0 : right.value
+      right.value = right.value > 100 ? 100 : right.value
+      volume = 1 - right.value / 100
+      const param = { prop: 'volume', value: volume }
+      store.commit('setAudio', param)
+    }
+    const getElementLeft = (element) => {
       let offsetLeft = element.offsetLeft
       const current = element.offsetParent // 获取父元素
       offsetLeft += current.offsetLeft
       return offsetLeft
-    },
-    mousedown() {
-      this.state = false
-      const this_ = this
+    }
+    const mousedown = () => {
+      active.value = false
       function move(e) {
-        const offsetLeft = this_.getElementLeft(document.getElementById('volumeBar' + this_.originKey))
-        this_.right = (1 - (e.x - offsetLeft) / 100) * 100
-        this_.right = this_.right < 0 ? 0 : this_.right
-        this_.right = this_.right > 100 ? 100 : this_.right
-        this_.volume = 1 - this_.right / 100
+        const offsetLeft = getElementLeft(document.getElementById('volumeBar' + props.originKey))
+        right.value = (1 - (e.x - offsetLeft) / 100) * 100
+        right.value = right.value < 0 ? 0 : right.value
+        right.value = right.value > 100 ? 100 : right.value
+        volume = 1 - right.value / 100
       }
-      window.addEventListener('mousemove', move, false)
 
-      window.addEventListener('mouseup', async function(el) {
-        await window.removeEventListener('mousemove', move, false)
-        if (!this_.state) {
-          this_.state = true
-          const param = { prop: 'volume', value: this_.volume }
-          this_.$store.commit('setAudio', param)
+      document.onmousemove = move
+      document.onmouseup = function() {
+        if (!active.value) {
+          active.value = true
+          const param = { prop: 'volume', value: volume }
+          store.commit('setAudio', param)
         }
-      }, false)
+        document.onmousemove = null
+        document.onmouseup = null
+      }
+    }
+
+    return {
+      active,
+      right,
+      isPoint,
+      showPoint,
+      jumpPoint,
+      mousedown
     }
   }
 })

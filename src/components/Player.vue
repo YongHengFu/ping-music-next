@@ -1,10 +1,9 @@
 <template>
   <audio
-    id="audio"
+    ref="audio"
     :src="source"
     autoplay
     @durationchange="durationchange"
-    @loadeddata="loadeddata"
     @progress="progress"
     @canplay="canplay"
     @play="play"
@@ -15,219 +14,222 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { getMusicDetail, getLyricById } from '../api/music'
+import { defineComponent, computed, watch, ref } from 'vue'
+import { useStore } from 'vuex'
+import { getMusicDetail, getLyricById } from '@/api/music'
 export default defineComponent({
-  name: 'Player',
-  props: {
-    // jump: {
-    //   type: Number
-    // }
-  },
-  data() {
-    return {
-      audio: null,
-      index: -1,
-      rand: [0],
-      prevIndex: 0
-    }
-  },
-  computed: {
-    source() {
-      // console.log(`https://music.163.com/song/media/outer/url?id=${this.musiclist[this.index]}.mp3`)
-      return `https://music.163.com/song/media/outer/url?id=${this.musiclist[this.index]}.mp3`
-    },
-    state() {
-      return this.$store.state.audio.state
-    },
-    volume() {
-      return this.$store.state.audio.volume
-    },
-    mode() {
-      return this.$store.state.audio.mode
-    },
-    mute() {
-      return this.$store.state.audio.mute
-    },
-    jump() {
-      return this.$store.state.audio.jump
-    },
-    isPrev() {
-      return this.$store.state.audio.prev
-    },
-    isNext() {
-      return this.$store.state.audio.next
-    },
-    musiclist() {
-      return this.$store.state.musicList
-    },
-    detailList() {
-      return this.$store.state.detailList
-    },
-    records() {
-      return this.$store.state.records
-    },
-    currIndex() {
-      return this.$store.state.currIndex
-    }
-  },
-  watch: {
-    jump() {
-      if (this.jump >= 0) {
-        let audio = document.getElementById('audio')
-        audio.currentTime = this.jump
-        audio = document.getElementById('audio')
-        if (audio.paused) {
-          audio.play()
-        }
-      }
-    },
-    state() {
-      const audio = document.getElementById('audio')
-      if (this.state) {
-        audio.play()
-      } else {
-        audio.pause()
-      }
-    },
-    isPrev() {
-      if (this.isPrev) {
-        this.prev()
-        const param = { prop: 'prev', value: false }
-        this.$store.commit('setAudio', param)
-      }
-    },
-    isNext() {
-      if (this.isNext) {
-        this.next()
-        const param = { prop: 'next', value: false }
-        this.$store.commit('setAudio', param)
-      }
-    },
-    volume() {
-      const audio = document.getElementById('audio')
-      audio.volume = this.volume
-    },
-    mute() {
-      const audio = document.getElementById('audio')
-      audio.muted = !audio.muted
-    },
-    musiclist() {
-      // this.radomList = this.musiclist
-      this.index = 0
-      this.$store.commit('setCurrIndex', this.index)
-      this.getMusicDetails()
-    },
-    currIndex() {
-      this.index = this.currIndex
-    }
-  },
-  methods: {
-    durationchange() {
-      this.getLyric(this.index)
-      const audio = document.getElementById('audio')
-      const param = { prop: 'duration', value: audio.duration }
-      this.$store.commit('setAudio', param)
-    },
-    loadeddata() {
+  name: 'Player2',
+  setup() {
+    const store = useStore()
+    const audio:any = ref(null)
+    let rand = [0]
+    let prevIndex = 0
 
-    },
-    progress() {
-      const audio = document.getElementById('audio')
-      const param = { prop: 'buffered', value: audio.buffered.end(audio.buffered.length - 1) }
-      this.$store.commit('setAudio', param)
-    },
-    canplay() {
-      const audio = document.getElementById('audio')
-      audio.volume = this.$store.state.audio.volume
-      const this_ = this
-      audio.ontimeupdate = function() {
-        const param = { prop: 'currentTime', value: audio.currentTime }
-        this_.$store.commit('setAudio', param)
+    // 待播列表 [id]
+    const musicList = computed(() => store.state.musicList)
+
+    // 当前播放歌曲在列表中的位置
+    const currIndex = computed(() => store.state.currIndex)
+
+    // 播放记录
+    const records = computed(() => store.state.records)
+
+    // 待播列表 [详情]
+    // const detailList = computed(() => store.state.detailList)
+
+    /* ------Audio------*/
+
+    // 当前播放歌曲的url
+    const source = computed(() => `https://music.163.com/song/media/outer/url?id=${musicList.value[currIndex.value]}.mp3`)
+
+    // 播放状态：暂停or播放
+    const state = computed(() => store.state.audio.state)
+
+    // 音量
+    const volume = computed(() => store.state.audio.volume)
+
+    // 播放模式：顺序、循环、随机、单曲
+    const mode = computed(() => store.state.audio.mode)
+
+    // 是否静音
+    const mute = computed(() => store.state.audio.mute)
+
+    // 是否跳到某一时刻播放
+    const jump = computed(() => store.state.audio.jump)
+
+    // 是否切换至上一曲
+    const isPrev = computed(() => store.state.audio.prev)
+
+    // 是否切换至下一曲
+    const isNext = computed(() => store.state.audio.next)
+
+    watch(currIndex, () => {
+      if (musicList.value.length > 0) {
+        getLyric(currIndex.value)
       }
-    },
-    play() {
-      if (!this.state) {
+    })
+
+    watch(state, () => {
+      if (audio !== null) {
+        if (state.value) {
+          audio.value.play()
+        } else {
+          audio.value.pause()
+        }
+      }
+    })
+
+    watch(jump, () => {
+      if (jump.value >= 0) {
+        audio.value.currentTime = jump.value
+        if (audio.value.paused) {
+          audio.value.play()
+        }
+      }
+    })
+
+    watch(isPrev, () => {
+      if (isPrev.value) {
+        prev()
+        const param = { prop: 'prev', value: false }
+        store.commit('setAudio', param)
+      }
+    })
+
+    watch(isNext, () => {
+      if (isNext.value) {
+        next()
+        const param = { prop: 'next', value: false }
+        store.commit('setAudio', param)
+      }
+    })
+
+    watch(volume, () => {
+      audio.value.volume = volume.value
+    })
+
+    watch(mute, () => {
+      audio.value.muted = mute.value
+    })
+
+    watch(musicList, () => {
+      store.commit('setCurrIndex', 0)
+      getMusicDetails()
+    })
+
+    watch(musicList.value, () => {
+      // store.commit('setCurrIndex', 0)
+      // getMusicDetails()
+    })
+
+    const durationchange = () => {
+      const param = { prop: 'duration', value: audio.value.duration }
+      store.commit('setAudio', param)
+    }
+
+    const progress = () => {
+      const param = { prop: 'buffered', value: audio.value.buffered.end(audio.value.buffered.length - 1) }
+      store.commit('setAudio', param)
+    }
+
+    const canplay = () => {
+      audio.value.volume = store.state.audio.volume
+      audio.value.ontimeupdate = function() {
+        const param = { prop: 'currentTime', value: audio.value.currentTime }
+        store.commit('setAudio', param)
+      }
+    }
+
+    const play = () => {
+      if (!state.value) {
         const param = { prop: 'state', value: true }
-        this.$store.commit('setAudio', param)
+        store.commit('setAudio', param)
       }
-      this.setRecords(this.musiclist[this.index])
-    },
-    pause() {
-      if (this.state) {
+      setRecords(musicList.value[currIndex.value])
+    }
+
+    const pause = () => {
+      if (state.value) {
         const param = { prop: 'state', value: false }
-        this.$store.commit('setAudio', param)
+        store.commit('setAudio', param)
       }
-    },
-    ended() {
-      if (this.mode <= 1) {
-        if (this.index !== this.musiclist.length - 1) {
-          this.index++
-        } else if (this.mode === 0) {
-          this.index = 0
+    }
+
+    const ended = () => {
+      let index = currIndex.value
+      if (mode.value <= 1) {
+        if (index !== musicList.value.length - 1) {
+          index++
+        } else if (mode.value === 0) {
+          index = 0
         }
-      } else if (this.mode === 2) {
-        this.index = Math.floor(Math.random() * this.musiclist.length)
-        while (this.rand.includes(this.index)) {
-          this.index = Math.floor(Math.random() * this.musiclist.length)
+      } else if (mode.value === 2) {
+        index = Math.floor(Math.random() * musicList.value.length)
+        while (rand.includes(index)) {
+          index = Math.floor(Math.random() * musicList.value.length)
         }
-        this.rand.push(this.index)
-        if (this.rand.length === this.musiclist.length) {
-          this.rand = []
+        rand.push(index)
+        if (rand.length === musicList.value.length) {
+          rand = []
         }
       } else {
-        const audio = document.getElementById('audio')
         if (audio !== null) {
-          audio.play()
+          audio.value.play()
         }
       }
-      this.$store.commit('setCurrIndex', this.index)
-    },
-    error() {
-      this.next()
-    },
-    prev() {
-      if (this.prevIndex !== 0) {
-        const ind = this.musiclist.indexOf(this.records[this.prevIndex - 1])
+      store.commit('setCurrIndex', index)
+    }
+
+    const error = () => {
+      next()
+    }
+
+    const prev = () => {
+      let index = currIndex.value
+      if (prevIndex !== 0) {
+        const ind = musicList.value.indexOf(records.value[prevIndex - 1])
         if (ind !== -1) {
-          this.index = ind
-        } else if (this.index !== 0) {
-          this.index--
+          index = ind
+        } else if (index !== 0) {
+          index--
         } else {
-          this.index = this.musiclist.length - 1
+          index = musicList.value.length - 1
         }
       }
-      this.$store.commit('setCurrIndex', this.index)
-    },
-    next() {
-      if (this.mode === 2) {
-        this.index = Math.floor(Math.random() * this.musiclist.length)
-        while (this.rand.includes(this.index)) {
-          this.index = Math.floor(Math.random() * this.musiclist.length)
+      store.commit('setCurrIndex', index)
+    }
+
+    const next = () => {
+      let index = currIndex.value
+      if (mode.value === 2) {
+        index = Math.floor(Math.random() * musicList.value.length)
+        while (rand.includes(index)) {
+          index = Math.floor(Math.random() * musicList.value.length)
         }
-        this.rand.push(this.index)
-        if (this.rand.length === this.musiclist.length) {
-          this.rand = []
+        rand.push(index)
+        if (rand.length === musicList.value.length) {
+          rand = []
         }
       } else {
-        if (this.index !== this.musiclist.length - 1) {
-          this.index++
+        if (index !== musicList.value.length - 1) {
+          index++
         } else {
-          this.index = 0
+          index = 0
         }
       }
-      this.$store.commit('setCurrIndex', this.index)
-    },
-    getMusicDetails() {
-      if (this.musiclist.length > 0) {
+      store.commit('setCurrIndex', index)
+    }
+
+    const getMusicDetails = () => {
+      if (musicList.value.length > 0) {
         const param = { ids: '' }
-        for (let i = 0; i < this.musiclist.length; i++) {
-          param.ids += this.musiclist[i]
-          if (i < this.musiclist.length - 1) {
+        for (let i = 0; i < musicList.value.length; i++) {
+          param.ids += musicList.value[i]
+          if (i < musicList.value.length - 1) {
             param.ids += ','
           }
         }
-        getMusicDetail(param).then((res) => {
+        getMusicDetail(param).then((res:any) => {
           if (res.code === 200) {
             const songs = res.songs
             const details = []
@@ -242,38 +244,46 @@ export default defineComponent({
                 publishTime: item.publishTime
               })
             }
-            this.$store.commit('setDetailList', details)
+            store.commit('setDetailList', details)
           }
         })
       }
-    },
-    setRecords(id) {
-      const list = this.records
+    }
+
+    const setRecords = (id:string) => {
+      const list = records.value
       const index = list.indexOf(id)
       if (index === -1) {
         list.push(id)
-        this.prevIndex = list.length - 1
+        prevIndex = list.length - 1
       } else {
         list.splice(index, 1)
-        this.prevIndex = index
+        prevIndex = index
         list.push(id)
       }
-      this.$store.commit('setRecords', list)
-    },
-    getLyric(index) {
-      const param = { id: this.musiclist[index] }
-      getLyricById(param).then((res) => {
+      store.commit('setRecords', list)
+    }
+
+    const getLyric = (index:number) => {
+      getLyricById({ id: musicList.value[index] }).then((res:any) => {
         if (res.code === 200) {
-          const param2 = { prop: 'lyric', value: res.lrc.lyric }
-          this.$store.commit('setAudio', param2)
-          // console.log(this.$store.state.audio.lyric)
+          const param = { prop: 'lyric', value: res.lrc.lyric }
+          store.commit('setAudio', param)
         }
       })
+    }
+
+    return {
+      audio,
+      source,
+      durationchange,
+      progress,
+      canplay,
+      play,
+      pause,
+      ended,
+      error
     }
   }
 })
 </script>
-
-<style scoped>
-
-</style>

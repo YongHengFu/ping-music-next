@@ -53,7 +53,7 @@
                   v-for="(item2,index2) of item.artist"
                 >{{ item2.name }}{{ index2===item.artist.length-1?'':'/' }}</template>
               </span>
-              <span class="duration" :style="index===selectIndex?'display:none':''">{{ dtFormat(item.duration) }}</span>
+              <span class="duration" :style="index===selectIndex?'display:none':''">{{ timeFormat(item.duration) }}</span>
             </div>
           </div>
           <div class="icons" :style="index===selectIndex?'width: 40%;display: flex;justify-content: flex-end;':''">
@@ -68,7 +68,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
+import { useStore } from 'vuex'
 import '@lottiefiles/lottie-player'
 import playAnimation from '@/assets/lottie/sonicWave.json'
 export default defineComponent({
@@ -78,52 +79,54 @@ export default defineComponent({
       type: Boolean
     }
   },
-  data() {
+  setup(props, ctx) {
+    const store = useStore()
+    const selectIndex = ref(-1)
+
+    const detailList = computed(() => store.state.detailList)
+    const currIndex = computed(() => store.state.currIndex)
+
+    const selectItem = (index:number) => {
+      selectIndex.value = index
+    }
+    const switchMusic = (index:number) => {
+      if (currIndex.value !== index) {
+        store.commit('setCurrIndex', index)
+      }
+    }
+    const closeDrawer = () => {
+      ctx.emit('closeDrawer')
+    }
+
+    const timeFormat = (time:number) => {
+      const timeM = time / 60
+      const timeS = time % 60
+      let timeMinute = ''
+      let timeSeconds = ''
+      if (timeM < 10) {
+        timeMinute = `0${timeM}`
+      } else {
+        timeMinute = `${timeM}`
+      }
+      if (timeS < 10) {
+        timeSeconds = `0${timeS}`
+      } else {
+        timeSeconds = `${timeS}`
+      }
+      timeMinute = timeMinute.substr(0, 2)
+      timeSeconds = timeSeconds.substr(0, 2)
+      return `${timeMinute}:${timeSeconds}`
+    }
+
     return {
-      playAnimation: playAnimation,
-      selectIndex: -1
-    }
-  },
-  computed: {
-    detailList() {
-      return this.$store.state.detailList
-    },
-    currIndex() {
-      return this.$store.state.currIndex
-    }
-  },
-  methods: {
-    dtFormat(dt) {
-      const dtM = dt / 60
-      const dtS = dt % 60
-      let dtMinute: string = ''
-      let dtSeconds: string = ''
-      if (dtM < 10) {
-        dtMinute = `0${dtM}`
-      } else {
-        dtMinute = `${dtM}`
-      }
-      if (dtS < 10) {
-        dtSeconds = `0${dtS}`
-      } else {
-        dtSeconds = `${dtS}`
-      }
-
-      dtMinute = dtMinute.substr(0, 2)
-      dtSeconds = dtSeconds.substr(0, 2)
-
-      return `${dtMinute}:${dtSeconds}`
-    },
-    selectItem(index) {
-      this.selectIndex = index
-    },
-    switchMusic(index) {
-      if (this.currIndex !== index) {
-        this.$store.commit('setCurrIndex', index)
-      }
-    },
-    closeDrawer() {
-      this.$emit('closeDrawer')
+      playAnimation,
+      selectIndex,
+      detailList,
+      currIndex,
+      selectItem,
+      switchMusic,
+      closeDrawer,
+      timeFormat
     }
   }
 })

@@ -19,7 +19,6 @@
             :song="newSong[(n-1)+(m-1)*3]"
             :index="(n-1)+(m-1)*3"
             @play="playSingle(newSong[(n-1)+(m-1)*3])"
-            @handleMusicBlock="clickMusicBlock"
           />
         </div>
       </div>
@@ -28,13 +27,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
+import { useStore } from 'vuex'
 import { RightOutlined } from '@ant-design/icons-vue'
 import Banner from '@/components/Banner.vue'
 import BlockList from '@/components/BlockList.vue'
 import MusicBlock from '@/components/MusicBlock.vue'
 
-import { homepage, getNewSong, getMusicById, getPlayList_Qua } from '../../../api/music'
+import { getNewSong, getPlayList_Qua } from '@/api/music'
 import '@lottiefiles/lottie-player'
 export default defineComponent({
   name: 'Featured',
@@ -44,58 +44,43 @@ export default defineComponent({
     BlockList,
     MusicBlock
   },
-  data() {
-    return {
-      homePageData: {},
-      quaList: [],
-      newSong: [],
-      newSongIdList: []
+  setup() {
+    const store = useStore()
+    const quaList = ref(<any>[])
+    const newSong = ref(<any>[])
+    const newSongIdList = ref(<string[]>[])
+
+    const init = async() => {
+      store.commit('setLoading', true)
+      await getQuaList()
+      await getNewSongData()
+      store.commit('setLoading', false)
     }
-  },
-  async created() {
-    this.$store.commit('setLoading', true)
-    await this.getQuaList()
-    await this.getNewSongData()
-    this.$store.commit('setLoading', false)
-  },
-  methods: {
-    getHomePageData() {
-      homepage().then((res) => {
-        this.homePageData = res.data
-      })
-    },
-    async getQuaList() {
-      this.param = { before: '', limit: 12 }
-      await getPlayList_Qua(this.param).then((res) => {
+
+    init()
+
+    const getQuaList = async() => {
+      const param = { before: '', limit: 12 }
+      await getPlayList_Qua(param).then((res:any) => {
         if (res.code === 200) {
-          this.quaList = res.playlists
+          quaList.value = res.playlists
         }
       })
-    },
-    async getNewSongData() {
+    }
+    const getNewSongData = async() => {
       const param = { limit: 50 }
-      await getNewSong(param).then((res) => {
+      await getNewSong(param).then((res:any) => {
         if (res.code === 200) {
-          this.newSong = res.result
-          for (const item of this.newSong) {
-            this.newSongIdList.push(item.id)
+          newSong.value = res.result
+          for (const item of newSong.value) {
+            newSongIdList.value.push(item.id)
           }
           // this.$store.state.commit('setMusicList', this.newSongIdList)
         }
       })
-    },
-    async clickMusicBlock(type, index) {
-      if (type === 0) {
-        const param = { id: this.newSong[index].id }
-        await getMusicById(param).then((res) => {
-          if (res.code === 200) {
-            const param = { prop: 'src', value: res.data[0].url }
-            this.$store.commit('setAudio', param)
-          }
-        })
-      }
-    },
-    playSingle(item) {
+    }
+
+    const playSingle = (item:any) => {
       const songItem = {
         id: item.id,
         name: item.name,
@@ -105,17 +90,25 @@ export default defineComponent({
         duration: item.song.duration / 1000,
         publishTime: item.song.album.publishTime
       }
-      this.$store.commit('insertMusicList', songItem.id)
-      this.$store.commit('insertDetailList', songItem)
-      this.$store.commit('setCurrIndex', this.$store.state.currIndex + 1)
-    },
-    playAll() {
-      if (this.newSongIdList.length > 0) {
-        this.$store.commit('setMusicList', this.newSongIdList)
+      store.commit('insertMusicList', songItem.id)
+      store.commit('insertDetailList', songItem)
+      store.commit('setCurrIndex', store.state.currIndex + 1)
+    }
+
+    const playAll = () => {
+      if (newSongIdList.value.length > 0) {
+        store.commit('setMusicList', newSongIdList.value)
       } else {
-        this.getNewSongData()
-        // this.playAll()
+        getNewSongData()
       }
+    }
+
+    return {
+      quaList,
+      newSong,
+      newSongIdList,
+      playSingle,
+      playAll
     }
   }
 })
@@ -133,7 +126,6 @@ export default defineComponent({
   cursor: pointer;
 }
 .MusicBlock{
-  /*margin: 0 10px 20px 0;*/
   width: calc((var(--block-size) + 20px) * var(--block-num));
   display: flex;
   justify-content: space-between;
