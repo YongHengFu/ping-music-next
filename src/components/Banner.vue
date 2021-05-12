@@ -7,7 +7,6 @@
         <a-image
           :src="show[n-1].imageUrl"
           style="border-radius: 5px;"
-          fallback="data:image/png;base64,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"
         />
       </div>
       <div class="points">
@@ -19,9 +18,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { LeftCircleFilled, RightCircleFilled } from '@ant-design/icons-vue'
-import { getBanner } from '../api/music'
+import { getBanner } from '@/api/music'
 
 export default defineComponent({
   name: 'Banner',
@@ -29,76 +28,63 @@ export default defineComponent({
     LeftCircleFilled,
     RightCircleFilled
   },
-  props: {
+  setup() {
+    const index = ref(0)
+    const item = ref([
+      { position: 0, class: 'middle' },
+      { position: 1, class: 'right' },
+      { position: 2, class: 'right-out' },
+      { position: 3, class: 'left-out' },
+      { position: 4, class: 'left' }
+    ])
+    const show = ref(<any>[])
+    const banners = ref(<any>[])
+    // eslint-disable-next-line no-undef
+    let interval: NodeJS.Timeout | null = null
+    const controlButton = ref(false)
 
-  },
-  data() {
-    return {
-      index: 0,
-      item: [
-        { position: 0, class: 'middle' },
-        { position: 1, class: 'right' },
-        { position: 2, class: 'right-out' },
-        { position: 3, class: 'left-out' },
-        { position: 4, class: 'left' }
-      ],
-      show: [],
-      banners: [],
-      interval: null,
-      controlButton: false
-    }
-  },
-  async created() {
-    await this.getBannerData()
-    if (this.banners.length > 0) {
-      this.init()
-    }
-  },
-  mounted() {
-
-  },
-  methods: {
-    async getBannerData() {
-      await getBanner().then((res) => {
+    const getBannerData = async() => {
+      await getBanner().then((res:any) => {
         if (res.code === 200) {
-          this.banners = res.banners
+          banners.value = res.banners
         }
       })
-    },
-    init() {
-      for (let i = 0; i < this.banners.length; i++) {
-        this.banners[i].No = i
+    }
+    const bannersInit = () => {
+      for (let i = 0; i < banners.value.length; i++) {
+        banners.value[i].No = i
       }
-      this.show = this.banners.slice(0, 5)
-      this.show.push(this.banners[this.banners.length - 1])
-      this.initPrev()
-      this.initNext()
-      this.autoExe()
-    },
-    leave() {
-      this.controlButton = false
-      this.autoExe()
-    },
-    enter() {
-      this.controlButton = true
-      this.stopExe()
-    },
+      show.value = banners.value.slice(0, 5)
+      show.value.push(banners.value[banners.value.length - 1])
+      initPrev()
+      initNext()
+      autoExe()
+    }
+    const leave = () => {
+      controlButton.value = false
+      autoExe()
+    }
+    const enter = () => {
+      controlButton.value = true
+      stopExe()
+    }
     // 定时轮播
-    autoExe() {
-      const this_ = this
+    const autoExe = () => {
       function exeNext() {
-        this_.next()
+        next()
       }
-      if (this.interval == null) {
-        this.interval = setInterval(exeNext, 3000)
+      if (interval == null) {
+        interval = setInterval(exeNext, 3000)
       }
-    },
+    }
     // 停止轮播
-    stopExe() {
-      clearInterval(this.interval)
-      this.interval = null
-    },
-    initPrev() {
+    const stopExe = () => {
+      if (interval !== null) {
+        clearInterval(interval)
+        interval = null
+      }
+    }
+    const initPrev = () => {
       let NoM = ''
       let positionM = 0
       let NoL = ''
@@ -106,28 +92,28 @@ export default defineComponent({
       let positionLO = 0
 
       for (let i = 0; i < 5; i++) {
-        if (this.item[i].class === 'middle') {
-          positionM = this.item[i].position
-          NoM = this.show[positionM].No
-        } else if (this.item[i].class === 'left') {
-          positionL = this.item[i].position
-          NoL = this.show[positionL].No
-        } else if (this.item[i].class === 'left-out' || this.item[i].class === 'left-out-no') {
-          positionLO = this.item[i].position
+        if (item.value[i].class === 'middle') {
+          positionM = item.value[i].position
+          NoM = show.value[positionM].No
+        } else if (item.value[i].class === 'left') {
+          positionL = item.value[i].position
+          NoL = show.value[positionL].No
+        } else if (item.value[i].class === 'left-out' || item.value[i].class === 'left-out-no') {
+          positionLO = item.value[i].position
         }
       }
-      if (NoL < NoM && NoL === this.banners[0].No) {
-        this.show[positionLO] = this.banners[this.banners.length - 1]
+      if (NoL < NoM && NoL === banners.value[0].No) {
+        show.value[positionLO] = banners.value[banners.value.length - 1]
       } else {
-        for (const [index, dataItem] of this.banners.entries()) {
+        for (const [index, dataItem] of banners.value.entries()) {
           if (dataItem.No === NoL) {
-            this.show[positionLO] = this.banners[index - 1]
+            show.value[positionLO] = banners.value[index - 1]
             break
           }
         }
       }
-    },
-    initNext() {
+    }
+    const initNext = () => {
       let NoM = ''
       let positionM = 0
       let NoR = ''
@@ -135,68 +121,88 @@ export default defineComponent({
       let positionRO = 0
 
       for (let i = 0; i < 5; i++) {
-        if (this.item[i].class === 'middle') {
-          positionM = this.item[i].position
-          NoM = this.show[positionM].No
-        } else if (this.item[i].class === 'right') {
-          positionR = this.item[i].position
-          NoR = this.show[positionR].No
-        } else if (this.item[i].class === 'right-out' || this.item[i].class === 'right-out-no') {
-          positionRO = this.item[i].position
+        if (item.value[i].class === 'middle') {
+          positionM = item.value[i].position
+          NoM = show.value[positionM].No
+        } else if (item.value[i].class === 'right') {
+          positionR = item.value[i].position
+          NoR = show.value[positionR].No
+        } else if (item.value[i].class === 'right-out' || item.value[i].class === 'right-out-no') {
+          positionRO = item.value[i].position
         }
       }
-      if (NoR > NoM && NoR === this.banners[this.banners.length - 1].No) {
-        this.show[positionRO] = this.banners[0]
+      if (NoR > NoM && NoR === banners.value[banners.value.length - 1].No) {
+        show.value[positionRO] = banners.value[0]
       } else {
-        for (const [index, dataItem] of this.banners.entries()) {
+        for (const [index, dataItem] of banners.value.entries()) {
           if (dataItem.No === NoR) {
-            this.show[positionRO] = this.banners[index + 1]
+            show.value[positionRO] = banners.value[index + 1]
             break
           }
         }
       }
-    },
-    prev() {
-      this.initPrev()
+    }
+    const prev = () => {
+      initPrev()
       for (let i = 0; i < 5; i++) {
-        if (this.item[i].class === 'right-out') {
-          this.item[i].class = 'right-out-no'
-        } else if (this.item[i].class === 'left-out-no') {
-          this.item[i].class = 'left-out'
+        if (item.value[i].class === 'right-out') {
+          item.value[i].class = 'right-out-no'
+        } else if (item.value[i].class === 'left-out-no') {
+          item.value[i].class = 'left-out'
         }
       }
-      const tran:string = this.item[0].class
-      this.item[0].class = this.item[1].class
-      this.item[1].class = this.item[2].class
-      this.item[2].class = this.item[3].class
-      this.item[3].class = this.item[4].class
-      this.item[4].class = tran
-      if (this.index === 0) {
-        this.index = this.banners.length - 1
+      const tran:string = item.value[0].class
+      item.value[0].class = item.value[1].class
+      item.value[1].class = item.value[2].class
+      item.value[2].class = item.value[3].class
+      item.value[3].class = item.value[4].class
+      item.value[4].class = tran
+      if (index.value === 0) {
+        index.value = banners.value.length - 1
       } else {
-        this.index--
+        index.value--
       }
-    },
-    next() {
-      this.initNext()
+    }
+    const next = () => {
+      initNext()
       for (let i = 0; i < 5; i++) {
-        if (this.item[i].class === 'left-out') {
-          this.item[i].class = 'left-out-no'
-        } else if (this.item[i].class === 'right-out-no') {
-          this.item[i].class = 'right-out'
+        if (item.value[i].class === 'left-out') {
+          item.value[i].class = 'left-out-no'
+        } else if (item.value[i].class === 'right-out-no') {
+          item.value[i].class = 'right-out'
         }
       }
-      const tran:string = this.item[0].class
-      this.item[0].class = this.item[4].class
-      this.item[4].class = this.item[3].class
-      this.item[3].class = this.item[2].class
-      this.item[2].class = this.item[1].class
-      this.item[1].class = tran
-      if (this.index === this.banners.length - 1) {
-        this.index = 0
+      const tran:string = item.value[0].class
+      item.value[0].class = item.value[4].class
+      item.value[4].class = item.value[3].class
+      item.value[3].class = item.value[2].class
+      item.value[2].class = item.value[1].class
+      item.value[1].class = tran
+      if (index.value === banners.value.length - 1) {
+        index.value = 0
       } else {
-        this.index++
+        index.value++
       }
+    }
+
+    const init = async() => {
+      await getBannerData()
+      if (banners.value.length > 0) {
+        bannersInit()
+      }
+    }
+    init()
+
+    return {
+      index,
+      item,
+      show,
+      banners,
+      controlButton,
+      leave,
+      enter,
+      prev,
+      next
     }
   }
 })

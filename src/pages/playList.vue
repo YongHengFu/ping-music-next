@@ -51,21 +51,21 @@ export default defineComponent({
     const store = useStore()
     const loading = ref(false)
     const list = ref({})
-    const listDatail = ref([])
+    const listDatail = ref(<any>[])
     const isOverflow = ref(false)
     const showAll = ref(false)
 
     watch(loading, () => {
       nextTick(() => {
         const description = document.getElementById('description')
-        if (description.scrollWidth > description.clientWidth) {
+        if (description !== null && description.scrollWidth > description.clientWidth) {
           isOverflow.value = true
         }
       })
     })
-    const getListData = async(id) => {
+    const getListData = async(id:string) => {
       const param = { 'id': id }
-      await getListById(param).then(async(res) => {
+      await getListById(param).then(async(res:any) => {
         if (res.code === 200) {
           list.value = res.playlist
           loading.value = true
@@ -73,14 +73,14 @@ export default defineComponent({
         }
       })
     }
-    const getListDetail = async(list) => {
+    const getListDetail = async(list:any) => {
       let ids = ''
       for (const item of list) {
         ids += item.id + ','
       }
       ids = ids.slice(0, ids.length - 1)
       const param = { 'ids': ids }
-      await getMusicDetail(param).then((res) => {
+      await getMusicDetail(param).then((res:any) => {
         if (res.code === 200) {
           const songs = res.songs
           const details = []
@@ -102,7 +102,7 @@ export default defineComponent({
 
     const init = async() => {
       store.commit('setLoading', true)
-      await getListData(route.params.id)
+      await getListData(<string>route.params.id)
       store.commit('setLoading', false)
     }
     init()

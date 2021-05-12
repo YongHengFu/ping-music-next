@@ -36,14 +36,14 @@ export default defineComponent({
     const open = (id:string) => {
       router.push({ name: 'playList', params: { id: id }})
     }
-    const play = (id) => {
+    const play = (id:string) => {
       getListData(id)
     }
     const blockNum = computed(():number => store.state.blockNum)
 
-    const getListData = (id) => {
+    const getListData = (id:string) => {
       const param = { 'id': id }
-      getListById(param).then((res) => {
+      getListById(param).then((res:any) => {
         if (res.code === 200) {
           const ids = []
           for (const item of res.playlist.trackIds) {
