@@ -16,7 +16,7 @@
 <script lang="ts">
 import { defineComponent, computed, watch, ref } from 'vue'
 import { useStore } from 'vuex'
-import { getMusicDetail, getLyricById } from '@/api/music'
+import { getMusicDetail } from '@/api/music'
 export default defineComponent({
   name: 'Player2',
   setup() {
@@ -62,12 +62,6 @@ export default defineComponent({
 
     // 是否切换至下一曲
     const isNext = computed(() => store.state.audio.next)
-
-    watch(currIndex, () => {
-      if (musicList.value.length > 0) {
-        getLyric(currIndex.value)
-      }
-    })
 
     watch(state, () => {
       if (audio !== null) {
@@ -262,15 +256,6 @@ export default defineComponent({
         list.push(id)
       }
       store.commit('setRecords', list)
-    }
-
-    const getLyric = (index:number) => {
-      getLyricById({ id: musicList.value[index] }).then((res:any) => {
-        if (res.code === 200) {
-          const param = { prop: 'lyric', value: res.lrc.lyric }
-          store.commit('setAudio', param)
-        }
-      })
     }
 
     return {

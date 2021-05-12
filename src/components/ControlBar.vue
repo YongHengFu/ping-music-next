@@ -120,10 +120,6 @@ export default defineComponent({
     const currIndex = computed(() => store.state.currIndex)
     const currMusic = computed(() => detailList.value[currIndex.value])
 
-    watch(mute, () => {
-      console.log(mute.value)
-    })
-
     watch(currentDura, () => {
       currFormat.value = timeFormat(currentDura.value)
     })

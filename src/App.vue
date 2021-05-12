@@ -10,7 +10,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
-import playView from '@/pages/playView.vue'
+import playView from '@/pages/playView/playView.vue'
 // document.body.style.setProperty('--main-color', '#1DCF9F')
 
 export default defineComponent({
