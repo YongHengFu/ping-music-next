@@ -1,14 +1,14 @@
 <template>
   <div class="view">
     <div class="mask">
-      <img :src="currMusic?currMusic.album.picUrl:coverImage" style="width: 100%;height: 100%;object-fit: cover">
+      <img :src="imgUrl" style="width: 100%;height: 100%;object-fit: cover">
     </div>
     <div>
       <svg-icon name="down" style="font-size: 24px;margin: 20px 0 0 50px;color: #FFFFFF" @click="showPlayView" />
     </div>
     <div id="container" class="container">
       <div class="left">
-        <a-image :src="currMusic?currMusic.album.picUrl:coverImage" class="cover" width="100%" style="margin-bottom: 30px" />
+        <a-image :src="imgUrl" class="cover" width="100%" style="margin-bottom: 30px" />
         <ControlBarMini />
       </div>
       <div class="right">
@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, watch, ref } from 'vue'
 import { useStore } from 'vuex'
 import ControlBarMini from './components/ControlBarMini.vue'
 import Lyric from './components/Lyric.vue'
@@ -36,6 +36,11 @@ export default defineComponent({
     const detailList = computed(() => store.state.detailList)
     const currIndex = computed(() => store.state.currIndex)
     const currMusic = computed(() => detailList.value[currIndex.value])
+    const imgUrl = ref(coverImage)
+
+    watch(currMusic, () => {
+      imgUrl.value = currMusic.value?.album?.picUrl + '?param=500y500'
+    })
 
     const showPlayView = () => {
       store.commit('setShowPlayView', false)
@@ -44,6 +49,7 @@ export default defineComponent({
     return {
       coverImage,
       currMusic,
+      imgUrl,
       showPlayView
     }
   }

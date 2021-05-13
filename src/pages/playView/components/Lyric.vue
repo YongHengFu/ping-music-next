@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="divider">
+    <div v-show="showDivider" class="divider">
       <div class="divider-left">
         <span>{{ dividerTime }}</span>
         <div v-for="n of 5" :key="n" class="mini-point" :style="'opacity:'+(10-n)/10" />
@@ -10,7 +10,7 @@
         <svg-icon name="play" style="font-size: 26px;color: var(--primary-color);cursor: pointer" @click="jumpByLyric" />
       </div>
     </div>
-    <div ref="lyricBlock" class="lyricBlock" @wheel="wheelScroll">
+    <div ref="lyricBlock" class="lyricBlock" @wheel="wheelScroll" @mousedown="drag">
       <span v-if="lyricList.length===0" style="font-size: 20px;color: #FFFFFF;text-align: center">FOREVER LOVE<br>FuYH</span>
       <div
         v-for="(item,index) of lyricList"
@@ -74,28 +74,30 @@ export default defineComponent({
     })
 
     watch(state, () => {
-      const currIndex = lys.value[index.value]
-      if (currIndex) {
-        if (!state.value) {
-          currIndex.style.transition = 'background-size 0s'
-          let progress = 0
-          if (index.value < lyricList.value.length - 1) {
-            progress = (lyricList.value[index.value + 1].time - currTime.value) / (lyricList.value[index.value + 1].time - lyricList.value[index.value].time)
+      nextTick(() => {
+        const currIndex = lys.value[index.value]
+        if (currIndex) {
+          if (!state.value) {
+            currIndex.style.transition = 'background-size 0s'
+            let progress = 0
+            if (index.value < lyricList.value.length - 1) {
+              progress = (lyricList.value[index.value + 1].time - currTime.value) / (lyricList.value[index.value + 1].time - lyricList.value[index.value].time)
+            } else {
+              progress = (totalTime.value - currTime.value) / (totalTime.value - lyricList.value[index.value].time)
+            }
+            currIndex.style['background-size'] = (1 - progress) * 100 + '%'
           } else {
-            progress = (totalTime.value - currTime.value) / (totalTime.value - lyricList.value[index.value].time)
+            let time = 0
+            if (index.value < lyricList.value.length - 1) {
+              time = lyricList.value[index.value + 1].time - currTime.value
+            } else {
+              time = totalTime.value - currTime.value
+            }
+            currIndex.style.transition = 'background-size ' + time + 's ease-out'
+            currIndex.style['background-size'] = '100%'
           }
-          currIndex.style['background-size'] = (1 - progress) * 100 + '%'
-        } else {
-          let time = 0
-          if (index.value < lyricList.value.length - 1) {
-            time = lyricList.value[index.value + 1].time - currTime.value
-          } else {
-            time = totalTime.value - currTime.value
-          }
-          currIndex.style.transition = 'background-size' + time + 's ease-out'
-          currIndex.style['background-size'] = '100%'
         }
-      }
+      })
     })
 
     const getJumpIndex = () => {
@@ -118,24 +120,26 @@ export default defineComponent({
     }
 
     watch(jump, () => {
-      isJump = true
-      if (jump.value >= 0) {
-        const jumpIndex = getJumpIndex()
-        if (jumpIndex !== -1) {
-          index.value = jumpIndex
-          const currIndex = lys.value[index.value]
-          let progress = 0
-          if (index.value < lyricList.value.length - 1) {
-            progress = (lyricList.value[index.value + 1].time - jump.value) / (lyricList.value[index.value + 1].time - lyricList.value[index.value].time)
-          } else {
-            progress = (totalTime.value - jump.value) / (totalTime.value - lyricList.value[index.value].time)
+      nextTick(() => {
+        isJump = true
+        if (jump.value >= 0) {
+          const jumpIndex = getJumpIndex()
+          if (jumpIndex !== -1) {
+            index.value = jumpIndex
+            const currIndex = lys.value[index.value]
+            let progress = 0
+            if (index.value < lyricList.value.length - 1) {
+              progress = (lyricList.value[index.value + 1].time - jump.value) / (lyricList.value[index.value + 1].time - lyricList.value[index.value].time)
+            } else {
+              progress = (totalTime.value - jump.value) / (totalTime.value - lyricList.value[index.value].time)
+            }
+            currIndex.style.transition = 'background-size 0s'
+            currIndex.style['background-size'] = (1 - progress) * 100 + '%'
+            lyricScroll(index.value)
           }
-          currIndex.style.transition = 'background-size 0s'
-          currIndex.style['background-size'] = (1 - progress) * 100 + '%'
-          lyricScroll(index.value)
         }
-      }
-      isJump = false
+        isJump = false
+      })
     })
 
     const getLyricStr = (id:string) => {
@@ -172,6 +176,7 @@ export default defineComponent({
 
     const analyzeLyric = (lyricStr:string) => {
       lyricList.value = []
+      const list = []
       const ricList = lyricStr.split(/\n/)
       const regTime = /\[\d{2}:\d{2}.\d{1,3}\]/
       for (const item of ricList) {
@@ -181,13 +186,14 @@ export default defineComponent({
           const lyric = item.replace(timeStr[0], '')
           if (lyric.trim() !== '') {
             const lyricItem = { time: time, lyric: lyric }
-            lyricList.value.push(lyricItem)
+            list.push(lyricItem)
           } else {
             const lyricItem = { time: time, lyric: '&nbsp;' }
-            lyricList.value.push(lyricItem)
+            list.push(lyricItem)
           }
         }
       }
+      lyricList.value = list
     }
 
     const lyricScroll = (index: number) => {
@@ -226,8 +232,8 @@ export default defineComponent({
         }
       }
       nextTick(() => {
-        if (!state.value) {
-          lys.value[index].style.transition = time + 's ease-out'
+        if (state.value) {
+          lys.value[index].style.transition = 'background-size ' + time + 's ease-out'
           lys.value[index].style['background-size'] = '100%'
         }
       })
@@ -293,11 +299,27 @@ export default defineComponent({
         }
       }
       // const curr:number = lyricBlock.value.scrollTop
-      nextTick(() => {
+      const currTop:number = lyricBlock.value?.scrollTop
+      const unit:number = lys.value[1].offsetTop - lys.value[0].offsetTop
+      lyricBlock.value.scrollTo({ left: 0, top: (currTop + (direction ? unit : -unit)) })
+      showDivider.value = true
+      for (let i = 0; i < lyricList.value.length; i++) {
+        const currRow = lys.value[i]?.offsetTop - lys.value[0]?.offsetTop
+        if (currTop < currRow) {
+          dividerTime.value = timeFormat(lyricList.value[i].time)
+          break
+        }
+      }
+      hiddenDivider()
+    }
+
+    const drag = (e) => {
+      showDivider.value = true
+      const top:number = lyricBlock.value?.scrollTop
+      document.onmousemove = (el) => {
+        hiddenDivider()
+        lyricBlock.value.scrollTo({ left: 0, top: top + (e.y - el.y) })
         const currTop:number = lyricBlock.value?.scrollTop
-        const unit:number = lys.value[1].offsetTop - lys.value[0].offsetTop
-        lyricBlock.value.scrollTo({ left: 0, top: (currTop + (direction ? unit : -unit)) })
-        showDivider.value = true
         for (let i = 0; i < lyricList.value.length; i++) {
           const currRow = lys.value[i]?.offsetTop - lys.value[0]?.offsetTop
           if (currTop < currRow) {
@@ -305,8 +327,12 @@ export default defineComponent({
             break
           }
         }
-      })
-      hiddenDivider()
+      }
+
+      document.onmouseup = function() {
+        document.onmousemove = null
+        document.onmouseup = null
+      }
     }
 
     const debounce = (fn: { (): void; apply?: any }, wait: number | undefined) => {
@@ -327,7 +353,7 @@ export default defineComponent({
 
     const hiddenDivider = debounce(() => {
       showDivider.value = false
-      const first = lys.value[0].offsetTop
+      const first = lys.value[0]?.offsetTop
       const curr = lys.value[index.value]?.offsetTop
       lyricBlock.value?.scrollTo({ left: 0, top: curr - first, behavior: 'smooth' })
     }, 2000)
@@ -346,7 +372,7 @@ export default defineComponent({
     }*/
 
     onMounted(() => {
-      analyzeLyric(lyricStr)
+      // analyzeLyric(lyricStr)
     })
 
     return {
@@ -357,7 +383,8 @@ export default defineComponent({
       showDivider,
       dividerTime,
       jumpByLyric,
-      wheelScroll
+      wheelScroll,
+      drag
     }
   }
 })
@@ -387,7 +414,7 @@ export default defineComponent({
   align-items: center;
   padding: 12px 0;
   z-index: 0;
-  /*transform: translateY(-50%);*/
+  transform: translateY(-50%);
 }
 .divider-left{
   width: 15%;
@@ -419,9 +446,10 @@ export default defineComponent({
   justify-content: space-between;
   align-items: center;
   scrollbar-width: none; /*隐藏滚动条 Firefox浏览器*/
+  /*box-shadow: 0 0px 50px rgba(64,64,64,1) inset;*/
   z-index: 1;
 }
-.lyricBlock:after{
+/*.lyricBlock:after{
   content: '';
   position: absolute;
   top: 0;
@@ -429,9 +457,9 @@ export default defineComponent({
   right: 15%;
   bottom: 0;
   z-index: -1;
-  background: rgba(64,64,64,0.8);
+  background: rgba(64,64,64,0.1);
   filter: blur(10px);
-}
+}*/
 .lyric{
   font-size: 17px;
   line-height: 35px;
