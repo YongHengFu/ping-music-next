@@ -10,7 +10,13 @@
         <svg-icon name="play" style="font-size: 26px;color: var(--primary-color);cursor: pointer" @click="jumpByLyric" />
       </div>
     </div>
-    <div ref="lyricBlock" class="lyricBlock" @wheel="wheelScroll" @mousedown="drag">
+    <div
+      ref="lyricBlock"
+      class="lyricBlock"
+      @mousedown="drag"
+      @mouseenter="createMonitor"
+      @mouseleave="cancelMonitor"
+    >
       <span v-if="lyricList.length===0" style="font-size: 20px;color: #FFFFFF;text-align: center">FOREVER LOVE<br>FuYH</span>
       <div
         v-for="(item,index) of lyricList"
@@ -279,26 +285,21 @@ export default defineComponent({
       else e.cancelBubble = true
       if (e.preventDefault) e.preventDefault()
       else e.returnValue = false
-      if (e.wheelDelta) { // 判断浏览器IE，谷歌滑轮事件
+      if (e.wheelDelta) { // 判断Chrome滑轮事件
         if (e.wheelDelta > 0) { // 当滑轮向上滚动时
-          console.log('上')
           direction = false
         }
         if (e.wheelDelta < 0) { // 当滑轮向下滚动时
-          console.log('下')
           direction = true
         }
       } else if (e.detail) { // Firefox滑轮事件
         if (e.detail > 0) { // 当滑轮向上滚动时
-          console.log('上')
-          direction = false
-        }
-        if (e.detail < 0) { // 当滑轮向下滚动时
-          console.log('下')
           direction = true
         }
+        if (e.detail < 0) { // 当滑轮向下滚动时
+          direction = false
+        }
       }
-      // const curr:number = lyricBlock.value.scrollTop
       const currTop:number = lyricBlock.value?.scrollTop
       const unit:number = lys.value[1].offsetTop - lys.value[0].offsetTop
       lyricBlock.value.scrollTo({ left: 0, top: (currTop + (direction ? unit : -unit)) })
@@ -371,6 +372,18 @@ export default defineComponent({
       }
     }*/
 
+    // 鼠标移入歌词范围时，开始对鼠标滚轮监听
+    const createMonitor = () => {
+      lyricBlock.value.addEventListener('mousewheel', wheelScroll)
+      lyricBlock.value.addEventListener('DOMMouseScroll', wheelScroll)
+    }
+
+    // 鼠标移出歌词范围时，取消对鼠标滚轮的监听
+    const cancelMonitor = () => {
+      lyricBlock.value.removeEventListener('mousewheel', wheelScroll)
+      lyricBlock.value.removeEventListener('DOMMouseScroll', wheelScroll)
+    }
+
     onMounted(() => {
       // analyzeLyric(lyricStr)
     })
@@ -384,6 +397,8 @@ export default defineComponent({
       dividerTime,
       jumpByLyric,
       wheelScroll,
+      createMonitor,
+      cancelMonitor,
       drag
     }
   }
