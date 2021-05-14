@@ -128,26 +128,24 @@ export default defineComponent({
     }
 
     watch(jump, () => {
-      nextTick(() => {
+      if (jump.value >= 0) {
         isJump = true
-        if (jump.value >= 0) {
-          const jumpIndex = getJumpIndex()
-          if (jumpIndex !== -1) {
-            index.value = jumpIndex
-            const currIndex = lys.value[index.value]
-            let progress = 0
-            if (index.value < lyricList.value.length - 1) {
-              progress = (lyricList.value[index.value + 1].time - jump.value) / (lyricList.value[index.value + 1].time - lyricList.value[index.value].time)
-            } else {
-              progress = (totalTime.value - jump.value) / (totalTime.value - lyricList.value[index.value].time)
-            }
-            currIndex.style.transition = 'background-size 0s'
-            currIndex.style['background-size'] = (1 - progress) * 100 + '%'
-            lyricScroll(index.value)
+        const jumpIndex = getJumpIndex()
+        if (jumpIndex !== -1) {
+          index.value = jumpIndex
+          const currIndex = lys.value[index.value]
+          let progress = 0
+          if (index.value < lyricList.value.length - 1) {
+            progress = (lyricList.value[index.value + 1].time - jump.value) / (lyricList.value[index.value + 1].time - lyricList.value[index.value].time)
+          } else {
+            progress = (totalTime.value - jump.value) / (totalTime.value - lyricList.value[index.value].time)
           }
+          currIndex.style.transition = 'background-size 0s'
+          currIndex.style['background-size'] = (1 - progress) * 100 + '%'
+          lyricScroll(index.value)
         }
         isJump = false
-      })
+      }
     })
 
     const getLyricStr = (id:string) => {
@@ -248,7 +246,6 @@ export default defineComponent({
     }
 
     const jumpByLyric = () => {
-      console.log(dividerTime.value)
       const param = { prop: 'jump', value: dividerTime.value }
       store.commit('setAudio', param)
     }
@@ -379,7 +376,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      analyzeLyric(lyricStr)
+      // analyzeLyric(lyricStr)
     })
 
     return {
