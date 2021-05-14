@@ -84,15 +84,6 @@ export default defineComponent({
   background: #5a5a5a;
   filter: blur(30px) opacity(0.5);
   z-index: -1;
-  /*animation: maskAnimation 2s infinite alternate linear;*/
-}
-@keyframes maskAnimation {
-  from{
-    filter: blur(30px) ;
-  }
-  to{
-    filter: blur(200px);
-  }
 }
 .container{
   width: 100%;

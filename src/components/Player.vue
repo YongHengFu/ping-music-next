@@ -79,6 +79,8 @@ export default defineComponent({
         if (audio.value.paused) {
           audio.value.play()
         }
+        const param = { prop: 'jump', value: -1 }
+        store.commit('setAudio', param)
       }
     })
 

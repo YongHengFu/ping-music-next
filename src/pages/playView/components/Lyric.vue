@@ -2,7 +2,7 @@
   <div class="container">
     <div v-show="showDivider" class="divider">
       <div class="divider-left">
-        <span>{{ dividerTime }}</span>
+        <span>{{ timeFormat(dividerTime) }}</span>
         <div v-for="n of 5" :key="n" class="mini-point" :style="'opacity:'+(10-n)/10" />
       </div>
       <div class="divider-right">
@@ -17,6 +17,7 @@
       @mouseenter="createMonitor"
       @mouseleave="cancelMonitor"
     >
+      <div style="min-height: 35vh;width: 100%" />
       <span v-if="lyricList.length===0" style="font-size: 20px;color: #FFFFFF;text-align: center">FOREVER LOVE<br>FuYH</span>
       <div
         v-for="(item,index) of lyricList"
@@ -25,6 +26,7 @@
       >
         <span :ref="el => { if (el) lys[index] = el }" class="lyric" v-html="item.lyric" />
       </div>
+      <div style="min-height: 35vh;width: 100%" />
     </div>
   </div>
 </template>
@@ -47,7 +49,7 @@ export default defineComponent({
     const lyricList = ref(<any>[])
     const index = ref(-1)
     const showDivider = ref(false)
-    const dividerTime = ref('00:00')
+    const dividerTime = ref(0)
     let prevIndex = -1
     let isJump = false
 
@@ -246,16 +248,9 @@ export default defineComponent({
     }
 
     const jumpByLyric = () => {
-      const currTop = lyricBlock.value.scrollTop
-      for (let i = 0; i < lyricList.value.length; i++) {
-        const currRow = lys.value[i].offsetTop - lys.value[0].offsetTop
-        if (currTop < currRow) {
-          const param = { prop: 'jump', value: lyricList.value[i].time }
-          store.commit('setAudio', param)
-          showDivider.value = false
-          break
-        }
-      }
+      console.log(dividerTime.value)
+      const param = { prop: 'jump', value: dividerTime.value }
+      store.commit('setAudio', param)
     }
 
     const timeFormat = (time:number) => {
@@ -278,9 +273,8 @@ export default defineComponent({
       return `${timeMinute}:${timeSeconds}`
     }
 
-    const wheelScroll = (e) => {
+    const wheelScroll = (e: { stopPropagation: () => void; cancelBubble: boolean; preventDefault: () => void; returnValue: boolean; wheelDelta: number; detail: number }) => {
       let direction = false // false: 上  true:下
-      // e = e || window.event
       if (e.stopPropagation) e.stopPropagation()
       else e.cancelBubble = true
       if (e.preventDefault) e.preventDefault()
@@ -307,14 +301,14 @@ export default defineComponent({
       for (let i = 0; i < lyricList.value.length; i++) {
         const currRow = lys.value[i]?.offsetTop - lys.value[0]?.offsetTop
         if (currTop < currRow) {
-          dividerTime.value = timeFormat(lyricList.value[i].time)
+          dividerTime.value = lyricList.value[i].time
           break
         }
       }
       hiddenDivider()
     }
 
-    const drag = (e) => {
+    const drag = (e: { y: number }) => {
       showDivider.value = true
       const top:number = lyricBlock.value?.scrollTop
       document.onmousemove = (el) => {
@@ -324,7 +318,7 @@ export default defineComponent({
         for (let i = 0; i < lyricList.value.length; i++) {
           const currRow = lys.value[i]?.offsetTop - lys.value[0]?.offsetTop
           if (currTop < currRow) {
-            dividerTime.value = timeFormat(lyricList.value[i].time)
+            dividerTime.value = lyricList.value[i].time
             break
           }
         }
@@ -385,7 +379,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      // analyzeLyric(lyricStr)
+      analyzeLyric(lyricStr)
     })
 
     return {
@@ -395,6 +389,7 @@ export default defineComponent({
       index,
       showDivider,
       dividerTime,
+      timeFormat,
       jumpByLyric,
       wheelScroll,
       createMonitor,
@@ -455,7 +450,7 @@ export default defineComponent({
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 35vh 0;
+  /*padding: 35vh 0;*/
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -467,13 +462,15 @@ export default defineComponent({
 /*.lyricBlock:after{
   content: '';
   position: absolute;
-  top: 0;
+  top: 90%;
   left: 15%;
   right: 15%;
   bottom: 0;
-  z-index: -1;
-  background: rgba(64,64,64,0.1);
-  filter: blur(10px);
+  z-index: 1;
+  background: rgba(64,64,64,0.5);
+  filter: blur(30px);
+  !*box-shadow:inset 0px 100px 100px -100px rgba(64,64,64,1), inset 0px -100px 100px -100px rgba(64,64,64,1);*!
+  !*box-shadow: 0 0px 50px 50px rgba(64,64,64,1) inset;*!
 }*/
 .lyric{
   font-size: 17px;
