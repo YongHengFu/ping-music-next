@@ -76,6 +76,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   position: relative;
+  user-select: none;
 }
 .mask{
   width: 100%;
