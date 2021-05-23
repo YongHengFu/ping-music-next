@@ -1,19 +1,10 @@
 <template>
   <div class="container">
-    <div class="cover">
-      <div
-        @click="clickBlock"
-        @mouseenter="showPlay"
-        @mouseleave="hidePlay"
-      >
-        <a-image
-          :src="data.coverImgUrl"
-          :preview="false"
-          style="border-radius: 10px;z-index: 0"
-        />
+    <div :style="{'background-image': 'url(' + imgUrl + ')'}" class="cover" @click="onOpen">
+      <div class="play" @click.stop="onPlay">
+        <svg-icon name="play-fill" class="play-icon" />
+        <div :style="{'background-image': 'url(' + imgUrl + ')'}" class="mask" />
       </div>
-      <div v-if="isShow" class="mask" />
-      <svg-icon v-if="isShow" class="play" name="play" @mouseenter="showPlay" @click="clickBlock" />
     </div>
     <div class="list">
       <p style="font-size: 22px;font-weight: bolder;margin-bottom: 10px">{{ data.name }}</p>
@@ -27,6 +18,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import coverImage from '@/assets/image/cover2.jpg'
 export default defineComponent({
   name: 'BoardBlock',
   components: { },
@@ -35,20 +27,19 @@ export default defineComponent({
       type: Object
     }
   },
-  data() {
-    return {
-      isShow: false
+  setup(props, ctx) {
+    let imgUrl = coverImage
+    imgUrl = props?.data?.coverImgUrl + '?param=300y300'
+    const onOpen = () => {
+      ctx.emit('open')
     }
-  },
-  methods: {
-    clickBlock() {
-      console.log('click')
-    },
-    showPlay(): void {
-      this.isShow = true
-    },
-    hidePlay(): void {
-      this.isShow = false
+    const onPlay = () => {
+      ctx.emit('play')
+    }
+    return {
+      imgUrl,
+      onOpen,
+      onPlay
     }
   }
 })
@@ -60,41 +51,63 @@ export default defineComponent({
   flex-direction: row;
   background: #efefef;
   border-radius: 10px;
+  cursor: pointer;
 }
 .cover{
   position: relative;
-  width: var(--block-size);
-  border-radius: 10px;
+  min-width: var(--block-size);
+  height: var(--block-size);
+  border-radius: 8px;
+  transition: 0.2s;
+  background-size: cover;
+  cursor: pointer;
   margin-right: 20px;
 }
-.mask{
-  pointer-events:none;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-  background: rgba(83, 82, 82, 0.5);
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%,-50%);
-  z-index: 1;
-}
 .play{
+  width: 25%;
+  height: 25%;
   position: absolute;
-  left: 50%;
   top: 50%;
+  left: 50%;
   transform: translate(-50%,-50%);
-  width: calc(var(--block-size)/4);
-  height: calc(var(--block-size)/4);
-  margin: auto;
-  color: #FFFFFF;
-  z-index: 2;
+  overflow: hidden;
+  border-radius: 50%;
+  background: rgb(191, 189, 189);
+  visibility: hidden;
+  transition: width 0.2s, height 0.2s;
+}
+.cover:hover .play{
+  visibility: visible;
 }
 .play:hover{
-  color: var(--primary-color);
+  width: 28%;
+  height: 28%;
+}
+.mask{
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  filter: blur(12px);
+  background: rgba(134, 133, 133, 0.9);
+  background-position: center;
+  background-size: 300%;
+  z-index: 1;
+}
+.play-icon{
+  width: 60%;
+  height: 60%;
+  color: #FFFFFF;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  z-index: 2;
 }
 .list{
-  width: calc(100% - var(--block-size));
+  width: calc(100% - var(--block-size) - 20px);
   display: flex;
   flex-direction: column;
   justify-content: center;

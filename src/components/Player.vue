@@ -4,7 +4,7 @@
     :src="source"
     autoplay
     @durationchange="durationchange"
-    @progress="progress"
+
     @canplay="canplay"
     @play="play"
     @pause="pause"
@@ -109,8 +109,8 @@ export default defineComponent({
     })
 
     watch(musicList, () => {
-      store.commit('setCurrIndex', 0)
       getMusicDetails()
+      store.commit('setCurrIndex', 0)
     })
 
     watch(musicList.value, () => {

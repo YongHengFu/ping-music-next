@@ -1,6 +1,7 @@
 <template>
   <div style="padding: 10px 30px;user-select: none;">
     <Personalized />
+
   </div>
 </template>
 <script lang="ts">

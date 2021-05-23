@@ -40,9 +40,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-:root{
-  --imgUrl: '/src/assets/image/cover2.jpg'
-}
 .cover{
   position: relative;
   width: var(--block-size);
@@ -50,6 +47,7 @@ export default defineComponent({
   border-radius: 8px;
   transition: 0.2s;
   background-size: cover;
+  cursor: pointer;
 }
 .cover:hover{
   transform: translateY(-10px);

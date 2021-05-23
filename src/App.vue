@@ -1,8 +1,6 @@
 <template>
-  <div style="position: relative;width: 100vw;height: 100vh">
-    <transition name="playView">
-      <playView v-show="showPlayView" id="playView" />
-    </transition>
+  <div style="position: relative;width: 100vw;height: 100vh;overflow: hidden">
+    <playView id="playView" :style="showPlayView?'':'transform:translateY(110%)'" />
     <router-view />
   </div>
 </template>
@@ -53,6 +51,7 @@ export default defineComponent({
   height: 100%;
   background: #404040;
   z-index: 10000;
+  transition: 0.5s;
   /*background: #fafafa;*/
 }
 .playView-enter-from,
@@ -62,5 +61,13 @@ export default defineComponent({
 .playView-enter-active,
 .playView-leave-active{
   transition: 0.3s;
+}
+
+.discolour {
+  cursor: pointer;
+  color: rgb(102, 102, 102);
+}
+.discolour:hover {
+  color: var(--primary-color);
 }
 </style>

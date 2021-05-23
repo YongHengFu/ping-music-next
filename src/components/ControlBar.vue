@@ -32,9 +32,11 @@
               <span
                 v-for="(item,index) of currMusic?.artist"
                 :key="item.id"
-                class="discolour"
                 style="font-size: 14px;cursor: pointer"
-              >{{ item?.name }}{{ index===currMusic?.artist.length-1? '' : '/' }}</span>
+              >
+                <span class="discolour">{{ item?.name }}</span>
+                <span v-if="index!==currMusic?.artist.length-1">/</span>
+              </span>
             </template>
           </div>
         </div>
@@ -56,7 +58,7 @@
         />
         <svg-icon
           :name="state ? 'pause' : 'play'"
-          style="font-size: 40px; color: var(--primary-color)"
+          style="font-size: 40px; color: var(--primary-color);cursor: pointer"
           @click="changeState"
         />
         <svg-icon
@@ -96,6 +98,7 @@ import Player from '@/components/Player.vue'
 import ProgressBar from '@/components/ProgressBar.vue'
 import VolumeBar from '@/components/VolumeBar.vue'
 import coverImage from '@/assets/image/cover.png'
+import timeFormat from '@/utils/timeFormat'
 export default defineComponent({
   name: 'ControlBar',
   components: {
@@ -129,7 +132,7 @@ export default defineComponent({
     })
 
     watch(currMusic, () => {
-      imgUrl.value = currMusic.value?.album?.picUrl + '?param=300y300'
+      imgUrl.value = currMusic.value?.album?.picUrl + '?param=500y500'
     })
 
     const showPlayView = () => {
@@ -150,25 +153,6 @@ export default defineComponent({
     }
     const jumpTo = (value:number) => {
       jump.value = value
-    }
-    const timeFormat = (time:number) => {
-      const timeM = time / 60
-      const timeS = time % 60
-      let timeMinute = ''
-      let timeSeconds = ''
-      if (timeM < 10) {
-        timeMinute = `0${timeM}`
-      } else {
-        timeMinute = `${timeM}`
-      }
-      if (timeS < 10) {
-        timeSeconds = `0${timeS}`
-      } else {
-        timeSeconds = `${timeS}`
-      }
-      timeMinute = timeMinute.substr(0, 2)
-      timeSeconds = timeSeconds.substr(0, 2)
-      return `${timeMinute}:${timeSeconds}`
     }
     const volumeMute = () => {
       const param = { prop: 'mute', value: !mute.value }
@@ -298,11 +282,5 @@ export default defineComponent({
 }
 .volume:hover .volumeBar{
   width: 100px;
-}
-.discolour {
-  color: rgb(102, 102, 102);
-}
-.discolour:hover {
-  color: var(--primary-color);
 }
 </style>

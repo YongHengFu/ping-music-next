@@ -43,5 +43,6 @@ export default defineComponent({
   align-items: center;
   opacity: 0.8;
   z-index: 5;
+  color: #1DCF9F;
 }
 </style>

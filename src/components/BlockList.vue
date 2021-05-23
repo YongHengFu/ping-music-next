@@ -34,7 +34,7 @@ export default defineComponent({
     const router = useRouter()
     const store = useStore()
     const open = (id:string) => {
-      router.push({ name: 'playList', params: { id: id }})
+      router.push('/playList/' + id)
     }
     const play = (id:string) => {
       getListData(id)

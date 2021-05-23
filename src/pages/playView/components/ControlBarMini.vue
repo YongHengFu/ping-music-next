@@ -9,7 +9,7 @@
             v-for="(item,index) of currMusic?.artist"
             :key="item.id"
             class="discolour"
-            style="color: #cccccc;cursor: pointer"
+            style="color: #FFFFFF"
           >{{ item?.name }}{{ index===currMusic?.artist?.length-1? '' : '/' }}</span>
         </div>
       </div>
@@ -25,7 +25,7 @@
         <svg-icon
           :name="modeList[mode]"
           class="discolour"
-          style="font-size: 20px;"
+          style="font-size: 20px;color: #FFFFFF"
           @click="switchMode"
         />
       </div>
@@ -50,7 +50,7 @@
         <svg-icon
           :name="mute?'volume_mute':'volume'"
           class="discolour"
-          style="font-size: 20px"
+          style="font-size: 20px;color: #FFFFFF"
           @click="volumeMute"
         />
         <VolumeBar v-show="!mute" class="volumeBar" origin-key="playView" />
@@ -64,6 +64,7 @@ import { computed, defineComponent, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import ProgressBar from '@/components/ProgressBar.vue'
 import VolumeBar from '@/components/VolumeBar.vue'
+import timeFormat from '@/utils/timeFormat'
 export default defineComponent({
   name: 'ControlBarMini',
   components: {
@@ -110,25 +111,6 @@ export default defineComponent({
     }
     const jumpTo = (value:number) => {
       jump.value = value
-    }
-    const timeFormat = (time:number) => {
-      const timeM = time / 60
-      const timeS = time % 60
-      let timeMinute = ''
-      let timeSeconds = ''
-      if (timeM < 10) {
-        timeMinute = `0${timeM}`
-      } else {
-        timeMinute = `${timeM}`
-      }
-      if (timeS < 10) {
-        timeSeconds = `0${timeS}`
-      } else {
-        timeSeconds = `${timeS}`
-      }
-      timeMinute = timeMinute.substr(0, 2)
-      timeSeconds = timeSeconds.substr(0, 2)
-      return `${timeMinute}:${timeSeconds}`
     }
     const volumeMute = () => {
       const param = { prop: 'mute', value: !mute.value }
@@ -193,13 +175,6 @@ export default defineComponent({
   flex-direction: row;
   justify-content: center;
   align-items: center;
-}
-.discolour {
-  color: #FFFFFF;
-}
-
-.discolour:hover {
-  color: var(--primary-color);
 }
 .prev-button {
   color: #FFFFFF;

@@ -40,6 +40,7 @@
               />
               <lottie-player
                 v-if="index===currIndex"
+                ref="player"
                 autoplay
                 loop
                 mode="bounce"
@@ -68,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue'
+import { defineComponent, computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import '@lottiefiles/lottie-player'
 import playAnimation from '@/assets/lottie/sonicWave.json'
@@ -82,6 +83,7 @@ export default defineComponent({
   setup(props, ctx) {
     const store = useStore()
     const selectIndex = ref(-1)
+    const player = ref()
 
     const detailList = computed(() => store.state.detailList)
     const currIndex = computed(() => store.state.currIndex)
@@ -118,7 +120,18 @@ export default defineComponent({
       return `${timeMinute}:${timeSeconds}`
     }
 
+    const state = computed(() => store.state.audio.state)
+
+    watch(state, () => {
+      if (state.value) {
+        player.value.play()
+      } else {
+        player.value.pause()
+      }
+    })
+
     return {
+      player,
       playAnimation,
       selectIndex,
       detailList,

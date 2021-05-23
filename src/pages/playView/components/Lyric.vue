@@ -129,7 +129,7 @@ export default defineComponent({
     }
 
     watch(jump, () => {
-      if (jump.value >= 0) {
+      if (jump.value >= 0 && lyricList.value.length > 0) {
         isJump = true
         const jumpIndex = getJumpIndex()
         if (jumpIndex !== -1) {
@@ -156,7 +156,11 @@ export default defineComponent({
           if (lyricStr !== '') {
             analyzeLyric(lyricStr)
           }
+        } else {
+          getLyricStr(musicId.value)
         }
+      }).catch(() => {
+        getLyricStr(musicId.value)
       })
     }
 

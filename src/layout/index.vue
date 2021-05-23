@@ -53,11 +53,19 @@
         </a-layout-header>
         <a-layout-content id="content" class="content">
           <Loading />
-          <keep-alive>
-            <div style="width: 100%;height: 100%;overflow-y: scroll">
-              <router-view :key="key" class="view" />
-            </div>
-          </keep-alive>
+          <!--          <div style="width: 100%;height: 100%;overflow-y: scroll">-->
+          <!--            <router-view :key="key" class="view" />-->
+          <!--          </div>-->
+          <div style="width: 100%;height: 100%;overflow-y: scroll">
+            <router-view v-slot="{ Component }" :key="key" class="view">
+              <transition>
+                <keep-alive>
+                  <component :is="Component" />
+                </keep-alive>
+              </transition>
+            </router-view>
+          </div>
+
           <ListDrawer :is-show-drawer="isShowDrawer" @closeDrawer="isShowDrawer=false" />
         </a-layout-content>
         <a-layout-footer class="footer">
@@ -354,13 +362,4 @@ export default defineComponent({
   /* box-shadow: none; */
   /* border: 0; */
 }
-
-.discolour {
-  color: rgb(102, 102, 102);
-}
-
-.discolour:hover {
-  color: var(--primary-color);
-}
-
 </style>

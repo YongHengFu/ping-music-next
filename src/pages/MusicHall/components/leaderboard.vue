@@ -9,6 +9,9 @@
             :key="item.id"
             :data="item"
             class="block"
+            @open="open(item?.id)"
+            @play="play(item?.id)"
+            @click="open(item?.id)"
           />
         </div>
         <div>
@@ -17,6 +20,9 @@
             :key="item.id"
             :data="item"
             class="block"
+            @open="open(item?.id)"
+            @play="play(item?.id)"
+            @click="open(item?.id)"
           />
         </div>
       </div>
@@ -38,10 +44,11 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import BoardBlock from '@/components/BoardBlock.vue'
 import BlockList from '@/components/BlockList.vue'
-import { getTopList } from '@/api/music'
+import { getListById, getTopList } from '@/api/music'
 export default defineComponent({
   name: 'Leaderboard',
   components: {
@@ -50,11 +57,33 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
+    const router = useRouter()
     const topList = ref(<any>[])
     const superList = ref(<any>[])
     const cloudList = ref(<any>[])
     const globalList = ref(<any>[])
     const patternList = ref(<any>[])
+
+    const open = (id:string) => {
+      router.push('/playList/' + id)
+    }
+    const play = (id:string) => {
+      getListData(id)
+    }
+
+    const getListData = (id:string) => {
+      const param = { 'id': id }
+      getListById(param).then((res:any) => {
+        if (res.code === 200) {
+          const ids = []
+          for (const item of res.playlist.trackIds) {
+            ids.push(item.id)
+          }
+          store.commit('setMusicList', ids)
+        }
+      })
+    }
+
     const getTopListData = async() => {
       await getTopList().then((res:any) => {
         if (res.code === 200) {
@@ -98,7 +127,9 @@ export default defineComponent({
       superList,
       cloudList,
       globalList,
-      patternList
+      patternList,
+      open,
+      play
     }
   }
 })
@@ -115,7 +146,7 @@ export default defineComponent({
   flex-direction: row;
 }
 .block{
-  margin: 0 10px 20px 0;
+  margin: 15px 10px;
   width: calc((var(--block-size) + 20px)/2 * var(--block-num) - 20px);
 }
 </style>
