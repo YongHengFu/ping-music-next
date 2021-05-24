@@ -15,7 +15,6 @@
           <MusicBlock
             v-for="n of 3"
             :key="n"
-            style="display: inline-block"
             :song="newSong[(n-1)+(m-1)*3]"
             :index="(n-1)+(m-1)*3"
             @play="playSingle(newSong[(n-1)+(m-1)*3])"

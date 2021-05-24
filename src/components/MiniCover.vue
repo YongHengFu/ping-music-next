@@ -1,6 +1,6 @@
 <template>
-  <div style="position: relative;overflow: hidden;border-radius: 8px;">
-    <div :style="{'background-image': 'url(' + imgUrl + ')','filter': isCurr?'blur(3px)':''}" class="cover" @click="onPlay">
+  <div style="position: relative;overflow: hidden;">
+    <div :style="{'background-image': 'url(' + imgUrl + ')'}" class="cover" @click="onPlay">
       <div v-if="!isCurr" class="play">
         <svg-icon name="play-fill" class="play-icon" />
         <div :style="{'background-image': 'url(' + imgUrl + ')'}" class="mask" />
@@ -42,9 +42,9 @@ export default defineComponent({
     watch(state, () => {
       if (props.isCurr) {
         if (state.value) {
-          player.value.play()
+          player.value?.play()
         } else {
-          player.value.pause()
+          player.value?.pause()
         }
       }
     })
@@ -69,6 +69,7 @@ export default defineComponent({
   height: 50px;
   background-size: cover;
   cursor: pointer;
+  border-radius: 8px;
 }
 .play{
   width: 50%;
@@ -119,6 +120,7 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(85, 85, 85, 0.25);
+  background: rgba(62, 62, 62, 0.75);
+  border-radius: 8px;
 }
 </style>

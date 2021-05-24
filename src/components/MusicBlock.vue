@@ -3,13 +3,18 @@
     <Block :image="data.picUrl" @click="onPlay" />
     <div class="info">
       <span class="song">{{ data.name }}</span>
-      <svg-icon class="icon" name="SQ" />
-      <div class="artists" @click="clickArt">
+      <!--      <div style="display: flex;align-items: center">-->
+      <!--        <svg-icon class="icon" name="SQ" />-->
+      <div class="artists">
         <span
           v-for="(item,index) of data.song.artists"
           :key="item.id"
-        >{{ index===data.song.artists.length-1?item.name : item.name+'/' }}</span>
+        >
+          <span class="discolour">{{ item?.name }}</span>
+          <span v-if="index!==data.song.artists.length-1">/</span>
+        </span>
       </div>
+      <!--      </div>-->
     </div>
   </div>
 </template>
@@ -56,65 +61,28 @@ export default defineComponent({
 
 <style scoped>
 .musicBlock{
-  position: relative;
-  height: 60px;
+  display: flex;
+  flex-direction: row;
   width: 100%;
-  margin: 10px;
+  padding: 10px;
 }
 .musicBlock:hover{
-  background: #e2e2e2;
-  border-radius: 5px;
+  background: #ececef;
+  border-radius: 10px;
 }
-.cover{
-  width: 60px;
-  height: 60px;
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-}
-.play-icon{
-  color: var(--primary-color);
-  background: rgba(255,255,255,0.95);
-  /*filter: blur(1px);*/
-  padding: 5px 5px 5px 6px;
-  border-radius: 50%;
-  font-size: 30px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0.9;
-}
+
 .info{
-  height: 60px;
-  position: absolute;
-  left: 70px;
-  top: 50%;
-  transform: translateY(-40%);
+  display: flex;
+  flex-direction: column;
+  margin-left: 15px;
 }
 .song{
-  font-size:14px;
-  display: block;
-  cursor: pointer;
-  padding-bottom: 10px;
+  font-size: 15px;
+  font-weight: bold;
 }
 
 .icon{
   font-size: 28px;
-  height:16px;
   color: #1DCF9F;
-}
-.artists{
-  display: inline-block;
-  font-size: 13px;
-  font-weight:300;
-  margin-left: 1px;
-  padding: 0;
-  cursor: pointer;
-}
-.artists:hover{
-  text-decoration: underline;
 }
 </style>

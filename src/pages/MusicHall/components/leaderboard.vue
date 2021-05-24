@@ -146,7 +146,7 @@ export default defineComponent({
   flex-direction: row;
 }
 .block{
-  margin: 15px 10px;
+  margin: 20px 10px;
   width: calc((var(--block-size) + 20px)/2 * var(--block-num) - 20px);
 }
 </style>

@@ -124,9 +124,9 @@ export default defineComponent({
 
     watch(state, () => {
       if (state.value) {
-        player.value.play()
+        player.value?.play()
       } else {
-        player.value.pause()
+        player.value?.pause()
       }
     })
 

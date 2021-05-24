@@ -52,6 +52,10 @@ export default defineComponent({
   background: #efefef;
   border-radius: 10px;
   cursor: pointer;
+  transition: 0.2s;
+}
+.container:hover{
+  transform: translateY(-10px);
 }
 .cover{
   position: relative;

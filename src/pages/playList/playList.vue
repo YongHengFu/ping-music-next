@@ -39,8 +39,9 @@
       </div>
     </div>
     <div class="playList">
-      <PlayItem v-for="(item,index) of listDatail" :key="item.id" :list-item="item" @dblclick="playSelect(index)" />
+      <PlayItem v-for="(item,index) of listDatail" :key="item.id" :list-item="item" @dblclick="playSelect(index)" @contextmenu="showMenu" />
     </div>
+    <ContextMenu v-if="isShowMenu" :point-x="pointX" :point-y="pointY"/>
   </div>
 </template>
 
@@ -49,12 +50,14 @@ import { defineComponent, watch, ref, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import PlayItem from '@/pages/playList/components/PlayItem.vue'
+import ContextMenu from '@/components/ContextMenu.vue'
 import { getListById, getMusicDetail } from '@/api/music'
 
 export default defineComponent({
   name: 'PlayList',
   components: {
-    PlayItem
+    PlayItem,
+    ContextMenu
   },
   setup() {
     const route = useRoute()
@@ -64,6 +67,9 @@ export default defineComponent({
     const listDatail = ref(<any>[])
     const isOverflow = ref(false)
     const showAll = ref(false)
+    const isShowMenu = ref(false)
+    const pointX = ref(0)
+    const pointY = ref(0)
 
     watch(loading, () => {
       nextTick(() => {
@@ -131,6 +137,14 @@ export default defineComponent({
       store.commit('setCurrIndex', index)
     }
 
+    const showMenu = (e: { preventDefault: () => void; x: number; y: number }) => {
+      e.preventDefault()
+      isShowMenu.value = true
+      pointX.value = e.x
+      pointY.value = e.y
+      console.log(e.x, e.y)
+    }
+
     const init = async() => {
       store.commit('setLoading', true)
       await getListData(<string>route.params.id)
@@ -144,9 +158,13 @@ export default defineComponent({
       showAll,
       list,
       listDatail,
+      isShowMenu,
+      pointX,
+      pointY,
       DateFormat,
       playAll,
-      playSelect
+      playSelect,
+      showMenu
     }
   }
 })

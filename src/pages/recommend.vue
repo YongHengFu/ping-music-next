@@ -1,16 +1,18 @@
 <template>
   <div style="padding: 10px 30px;user-select: none;">
     <Personalized />
-
+    <ContextMenu />
   </div>
 </template>
 <script lang="ts">
 import Personalized from '@/components/Personalized.vue'
+import ContextMenu from '@/components/ContextMenu.vue'
 import { getQRCodeKey } from '../api/user'
 
 export default {
   components: {
-    Personalized
+    Personalized,
+    ContextMenu
   },
   created() {
     // this.test()
