@@ -39,9 +39,9 @@
       </div>
     </div>
     <div class="playList">
-      <PlayItem v-for="(item,index) of listDatail" :key="item.id" :list-item="item" @dblclick="playSelect(index)" @contextmenu="showMenu" />
+      <PlayItem v-for="(item,index) of listDatail" :key="item.id" :list-item="item" @dblclick="playSelect(index)" @contextmenu="(e)=>showMenu(e,item)" />
     </div>
-    <ContextMenu v-if="isShowMenu" :point-x="pointX" :point-y="pointY"/>
+    <ContextMenu v-show="isShowMenu" :point-x="pointX" :point-y="pointY" :info="menuInfo" />
   </div>
 </template>
 
@@ -70,6 +70,7 @@ export default defineComponent({
     const isShowMenu = ref(false)
     const pointX = ref(0)
     const pointY = ref(0)
+    const menuInfo = ref()
 
     watch(loading, () => {
       nextTick(() => {
@@ -137,12 +138,13 @@ export default defineComponent({
       store.commit('setCurrIndex', index)
     }
 
-    const showMenu = (e: { preventDefault: () => void; x: number; y: number }) => {
+    const showMenu = (e: { preventDefault: () => void; x: number; y: number }, item) => {
       e.preventDefault()
       isShowMenu.value = true
       pointX.value = e.x
       pointY.value = e.y
-      console.log(e.x, e.y)
+      menuInfo.value = item
+      // console.log(e.x, e.y)
     }
 
     const init = async() => {
@@ -161,6 +163,7 @@ export default defineComponent({
       isShowMenu,
       pointX,
       pointY,
+      menuInfo,
       DateFormat,
       playAll,
       playSelect,

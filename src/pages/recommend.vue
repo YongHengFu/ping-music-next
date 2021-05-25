@@ -1,7 +1,7 @@
 <template>
   <div style="padding: 10px 30px;user-select: none;">
     <Personalized />
-    <ContextMenu />
+<!--    <ContextMenu />-->
   </div>
 </template>
 <script lang="ts">

@@ -1,10 +1,19 @@
 <template>
-  <div class="menu" :style="{ top: pointY+'px', left:pointX+'px' }">
+  <div ref="menu" class="menu" :style="{ top: y+'px', left: x+'px' }">
     <div class="first">
-      <img class="cover" :src="coverImage">
+      <img class="cover" :src="info?.album.picUrl+'?param=100y100'">
       <div class="info">
-        <span class="music-name" style="font-size: 16px;padding: 0">海阔天空</span>
-        <span style="font-weight: 300;padding: 0">Beyond</span>
+        <span class="music-name" style="font-size: 16px;padding: 0">{{ info?.name }}</span>
+        <div>
+          <span
+            v-for="(item,index) of info?.artist"
+            :key="item.id"
+            style="font-weight: 300;padding: 0"
+          >
+            <span class="discolour">{{ item?.name }}</span>
+            <span v-if="index!==info?.artist.length-1">/</span>
+          </span>
+        </div>
       </div>
     </div>
     <HR align="center" width="100%" color="#cccccc" size="0.6" />
@@ -21,19 +30,46 @@
 </template>
 
 <script>
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, onMounted, ref, onUpdated } from 'vue'
 import { useStore } from 'vuex'
 import coverImage from '@/assets/image/cover2.jpg'
 export default defineComponent({
   name: 'ContextMenu',
   props: {
     pointX: Number,
-    pointY: Number
+    pointY: Number,
+    info: Object
   },
   setup(props, ctx) {
     const store = useStore()
+    const menu = ref()
+    const x = ref(props.pointX)
+    const y = ref(props.pointY)
+
+    const getX = () => {
+      if (props.pointX + menu.value.clientWidth > window.document.body.offsetWidth) {
+        return window.document.body.offsetWidth - menu.value.clientWidth - 80
+      } else {
+        return props.pointX
+      }
+    }
+    const getY = () => {
+      if (props.pointY + menu.value.clientHeight > window.document.body.offsetHeight) {
+        return window.document.body.offsetHeight - menu.value.clientHeight - 80
+      } else {
+        return props.pointY
+      }
+    }
+
+    onUpdated(() => {
+      x.value = getX()
+      y.value = getY()
+    })
     return {
-      coverImage
+      menu,
+      coverImage,
+      x,
+      y
     }
   }
 })
@@ -46,7 +82,7 @@ export default defineComponent({
   padding: 10px 10px 0 10px;
   border-radius: 10px;
   position: fixed;
-  width: 200px;
+  width: 250px;
   max-width: 250px;
   background: #FFFFFF;
   z-index: 100;
