@@ -2,13 +2,13 @@
   <div v-if="loading" style="width: calc((var(--block-size) + 20px) * var(--block-num))">
     <div class="head">
       <div class="cover">
-        <a-image :preview="false" :src="list.coverImgUrl" style=" border-radius: 5px;" />
+        <img :preview="false" :src="list.coverImgUrl" style=" border-radius: 5px;" />
       </div>
       <div class="content">
         <div class="info">
           <span class="h2" style="padding-bottom: 10px">{{ list.name }}</span>
           <div class="creator">
-            <a-avatar :src="list.creator.avatarUrl" :size="28" style="margin-right: 10px" />
+            <img :src="list.creator.avatarUrl" style="margin-right: 10px;width: 28px;border-radius: 50%" />
             <span style="font-size: 13px">{{ list.creator.nickname }}</span>
             <div class="tabs">
               <span v-for="item of list.tags" :key="item" style="margin-right: 10px">#{{ item }}</span>

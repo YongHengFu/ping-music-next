@@ -1,7 +1,7 @@
 <template>
   <div>
-    <a-layout class="layout">
-      <a-layout-sider class="sider">
+    <Layout class="layout">
+      <LayoutSider class="sider">
         <img class="logo" src="@/assets/image/logo.png">
         <div class="menu">
           <div>
@@ -38,20 +38,20 @@
             <p class="group">收藏的歌单</p>
           </div>
         </div>
-      </a-layout-sider>
-      <a-layout style="min-width: 1000px">
-        <a-layout-header class="header">
-          <a-input-search class="search" />
+      </LayoutSider>
+      <Layout style="min-width: 1000px">
+        <LayoutHeader class="header">
+          <InputSearch class="search" />
           <div>
-            <a-avatar>
+            <Avatar>
               <template #icon><UserOutlined /></template>
-            </a-avatar>
+            </Avatar>
             <span class="discolour" style="margin: 0 10px">登录</span>
             <MailOutlined class="discolour" style="margin: 0 10px 0 15px" />
             <MenuOutlined class="discolour" />
           </div>
-        </a-layout-header>
-        <a-layout-content id="content" class="content">
+        </LayoutHeader>
+        <LayoutContent id="content" class="content">
           <Loading />
           <!--          <div style="width: 100%;height: 100%;overflow-y: scroll">-->
           <!--            <router-view :key="key" class="view" />-->
@@ -67,12 +67,12 @@
           </div>
 
           <ListDrawer :is-show-drawer="isShowDrawer" @closeDrawer="isShowDrawer=false" />
-        </a-layout-content>
-        <a-layout-footer class="footer">
+        </LayoutContent>
+        <LayoutFooter class="footer">
           <ControlBar @showDrawer="showDrawer" />
-        </a-layout-footer>
-      </a-layout>
-    </a-layout>
+        </LayoutFooter>
+      </Layout>
+    </Layout>
   </div>
 </template>
 
@@ -81,6 +81,7 @@
 import { defineComponent, computed, ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { Layout, Input, Avatar } from 'ant-design-vue'
 import elementResizeDetectorMaker from 'element-resize-detector'
 import Loading from '@/components/Loading.vue'
 import ControlBar from '@/components/ControlBar.vue'
@@ -129,6 +130,13 @@ export default defineComponent({
     UserOutlined,
     PlayCircleOutlined,
     UpOutlined,
+    Layout: Layout,
+    LayoutHeader: Layout.Header,
+    LayoutSider: Layout.Sider,
+    LayoutContent: Layout.Content,
+    LayoutFooter: Layout.Footer,
+    InputSearch: Input.Search,
+    Avatar: Avatar,
     ControlBar,
     ListDrawer,
     Loading

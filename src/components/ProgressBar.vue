@@ -9,7 +9,7 @@
     <div class="duration" />
     <div class="buffered" :style="`right: ${(1- buffDura / totalDura) * 100}%`" />
     <div class="currentTime" :style="currStyle" />
-    <a-tooltip placement="top" :title="sliderFormat" :arrow-point-at-center="true">
+    <Tooltip placement="top" :title="sliderFormat" :arrow-point-at-center="true">
       <div
         v-show="!active||isPoint"
         class="point"
@@ -18,15 +18,19 @@
         @mouseenter="isTip=true"
         @mouseleave="isTip=false"
       />
-    </a-tooltip>
+    </Tooltip>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, watch, ref } from 'vue'
 import { useStore } from 'vuex'
+import { Tooltip } from 'ant-design-vue'
 export default defineComponent({
   name: 'ProgressBar',
+  components:{
+    Tooltip
+  },
   props: {
     originKey: {
       type: String

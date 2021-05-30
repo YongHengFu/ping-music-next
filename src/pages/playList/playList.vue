@@ -2,7 +2,7 @@
   <div v-if="loading" style="width: calc((var(--block-size) + 20px) * var(--block-num))">
     <div class="head">
       <div class="cover">
-        <a-image :preview="false" :src="list.coverImgUrl" />
+        <img :preview="false" :src="list.coverImgUrl" style="width: 100%"/>
       </div>
       <div class="content">
         <div class="info">
@@ -16,7 +16,7 @@
           <!--          </div>-->
         </div>
         <div class="creator">
-          <a-avatar :src="list.creator.avatarUrl+'?param=100y100'" :size="36" style="margin-right: 10px" />
+          <img :src="list.creator.avatarUrl+'?param=100y100'" style="margin-right: 10px;width: 36px;border-radius: 50%" />
           <div style="display: flex;flex-direction: column">
             <span>{{ list.creator.nickname }}</span>
             <div>

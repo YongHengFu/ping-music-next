@@ -8,7 +8,7 @@
     </div>
     <div id="container" class="container">
       <div class="left">
-        <a-image :src="imgUrl" class="cover" width="100%" style="margin-bottom: 30px" />
+        <img :src="imgUrl" class="cover" style="margin-bottom: 30px;width: 100%" />
         <ControlBarMini />
       </div>
       <div class="right">

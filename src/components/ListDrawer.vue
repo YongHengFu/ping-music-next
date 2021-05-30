@@ -1,6 +1,6 @@
 <template>
   <div style="user-select: none">
-    <a-drawer
+    <Drawer
       placement="right"
       :closable="false"
       :visible="isShowDrawer"
@@ -64,17 +64,21 @@
           </div>
         </div>
       </div>
-    </a-drawer>
+    </Drawer>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import { Drawer } from 'ant-design-vue'
 import '@lottiefiles/lottie-player'
 import playAnimation from '@/assets/lottie/sonicWave.json'
 export default defineComponent({
   name: 'ListDrawer',
+  components: {
+    Drawer
+  },
   props: {
     isShowDrawer: {
       type: Boolean

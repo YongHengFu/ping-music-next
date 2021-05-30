@@ -1,9 +1,8 @@
 <template>
   <div v-if="content">
     <div class="block">
-      <a-avatar
+      <img
         class="cover"
-        shape="square"
         :src="content.coverImgUrl"
         @click="clickBlock"
         @mouseenter="showPlay"

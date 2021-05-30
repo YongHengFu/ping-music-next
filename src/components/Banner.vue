@@ -4,9 +4,9 @@
       <LeftCircleFilled v-if="controlButton" class="prevIcon" @click="prev" />
       <RightCircleFilled v-if="controlButton" class="nextIcon" @click="next" />
       <div v-for="n of 5" :key="n" :class="item[n-1].class">
-        <a-image
+        <img
           :src="show[n-1].imageUrl"
-          style="border-radius: 5px;"
+          style="border-radius: 5px;width: 100%"
         />
       </div>
       <div class="points">
