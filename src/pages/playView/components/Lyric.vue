@@ -157,10 +157,14 @@ export default defineComponent({
             analyzeLyric(lyricStr)
           }
         } else {
-          getLyricStr(musicId.value)
+          setTimeout(() => {
+            getLyricStr(musicId.value)
+          }, 200)
         }
       }).catch(() => {
-        getLyricStr(musicId.value)
+        setTimeout(() => {
+          getLyricStr(musicId.value)
+        }, 200)
       })
     }
 

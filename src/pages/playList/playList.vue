@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="playList">
-      <PlayItem v-for="(item,index) of listDatail" :key="item.id" :list-item="item" @dblclick="playSelect(index)" @contextmenu="(e)=>showMenu(e,item)" />
+      <PlayItem v-for="(item,index) of listDetail" :key="item.id" :list-item="item" @dblclick="playSelect(index)" @contextmenu="(e)=>showMenu(e,item)" />
     </div>
     <ContextMenu v-show="isShowMenu" :point-x="pointX" :point-y="pointY" :info="menuInfo" />
   </div>
@@ -64,7 +64,7 @@ export default defineComponent({
     const store = useStore()
     const loading = ref(false)
     const list = ref(<any>{})
-    const listDatail = ref(<any>[])
+    const listDetail = ref(<any>[])
     const isOverflow = ref(false)
     const showAll = ref(false)
     const isShowMenu = ref(false)
@@ -112,7 +112,7 @@ export default defineComponent({
               publishTime: item.publishTime
             })
           }
-          listDatail.value = details
+          listDetail.value = details
         }
       })
     }
@@ -144,6 +144,14 @@ export default defineComponent({
       pointX.value = e.x
       pointY.value = e.y
       menuInfo.value = item
+      document.onmousedown = () => {
+        isShowMenu.value = false
+        document.onmousedown = null
+      }
+      document.onwheel = () => {
+        isShowMenu.value = false
+        document.onwheel = null
+      }
       // console.log(e.x, e.y)
     }
 
@@ -159,7 +167,7 @@ export default defineComponent({
       isOverflow,
       showAll,
       list,
-      listDatail,
+      listDetail,
       isShowMenu,
       pointX,
       pointY,
