@@ -1,5 +1,5 @@
 <template>
-  <div style="position: relative;width: 100vw;height: 100vh;overflow: hidden">
+  <div style="position: relative;width: 100vw;height: 100vh;overflow-y: hidden">
     <playView id="playView" :style="showPlayView?'':'transform:translateY(110%)'" />
     <router-view />
   </div>
