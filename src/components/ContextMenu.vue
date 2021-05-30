@@ -3,12 +3,11 @@
     <div class="first">
       <img class="cover" :src="info?.album.picUrl+'?param=100y100'">
       <div class="info">
-        <span class="music-name" style="font-size: 16px;padding: 0">{{ info?.name }}</span>
-        <div>
+        <span class="music-name" style="font-size: 16px;">{{ info?.name }}</span>
+        <div class="artist">
           <span
             v-for="(item,index) of info?.artist"
             :key="item.id"
-            style="font-weight: 300;padding: 0"
           >
             <span class="discolour">{{ item?.name }}</span>
             <span v-if="index!==info?.artist.length-1">/</span>
@@ -16,15 +15,15 @@
         </div>
       </div>
     </div>
-    <HR align="center" width="100%" color="#cccccc" size="0.6" />
+    <HR align="center" width="100%" color="#cccccc" />
     <div class="second">
-      <span>播放</span>
-      <span>下一首播放</span>
+      <span class="option">播放</span>
+      <span class="option">下一首播放</span>
     </div>
-    <HR align="center" width="100%" color="#cccccc" size="0.6" />
+    <HR align="center" width="100%" color="#cccccc" />
     <div class="third">
-      <span>添加到我的喜欢</span>
-      <span>添加到歌单</span>
+      <span class="option">添加到我的喜欢</span>
+      <span class="option">添加到歌单</span>
     </div>
   </div>
 </template>
@@ -79,13 +78,14 @@ export default defineComponent({
 .menu{
   display: flex;
   flex-direction: column;
-  padding: 10px 10px 0 10px;
+  padding: 10px 10px 10px 10px;
   border-radius: 10px;
   position: fixed;
-  width: 250px;
-  max-width: 250px;
+  /*max-width: 250px;*/
+  min-width: 200px;
   background: #FFFFFF;
   z-index: 100;
+  user-select: none;
 }
 /*.menu:before{
   content: '';
@@ -99,6 +99,7 @@ export default defineComponent({
 }*/
 .first{
   display: flex;
+  margin-bottom: 5px;
 }
 .cover{
   min-width: 50px;
@@ -112,6 +113,13 @@ export default defineComponent({
   margin-left: 10px;
 }
 .music-name{
+  font-weight: bolder;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+}
+.artist{
+  font-weight: 300;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space:nowrap;
@@ -124,8 +132,13 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
 }
-span{
+.option{
   font-weight: bolder;
   padding: 10px;
+  cursor: pointer;
+}
+.option:hover{
+  background: rgba(236, 236, 236, 0.53);
+  border-radius: 8px;
 }
 </style>
