@@ -66,6 +66,15 @@ export function getListById(params:object) {
   })
 }
 
+// 根据id获取专辑详情
+export function getAlbumById(params:object) {
+  return request({
+    url: '/album',
+    method: 'get',
+    params
+  })
+}
+
 // 根据id获取歌词
 export function getLyricById(params:object) {
   return request({

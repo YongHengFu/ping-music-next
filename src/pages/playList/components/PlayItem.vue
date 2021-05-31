@@ -16,15 +16,16 @@
       </div>
     </div>
     <div class="album">
-      <span class="discolour">{{ listItem?.album?.name }}</span>
+      <span class="discolour" @click="openAlbum(listItem.album.id)">{{ listItem?.album?.name }}</span>
     </div>
-    <span class="time"><svg-icon name="love" class="love"/>{{ timeFormat(listItem?.duration) }}</span>
+    <span class="time"><svg-icon name="love" class="love" />{{ timeFormat(listItem?.duration) }}</span>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import MiniCover from '@/components/MiniCover.vue'
 import timeFormat from '@/utils/timeFormat'
 export default defineComponent({
@@ -37,10 +38,16 @@ export default defineComponent({
   },
   setup(props, ctx) {
     const store = useStore()
+    const router = useRouter()
     const musicId = computed(() => store.state.musicList[store.state.currIndex])
+    const openAlbum = (id:string) => {
+      console.log(1)
+      router.push('/album/' + id)
+    }
     return {
       musicId,
-      timeFormat
+      timeFormat,
+      openAlbum
     }
   }
 })

@@ -4,6 +4,7 @@ import recommend from '@/pages/recommend.vue'
 import musicHall from '@/pages/MusicHall/musicHall.vue'
 import historyPlay from '@/pages/historyPlay.vue'
 import playList from '@/pages/playList/playList.vue'
+import album from '@/pages/album/album.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -30,6 +31,12 @@ const routes: Array<RouteRecordRaw> = [
         path: 'playList/:id',
         name: 'playList',
         component: playList,
+        meta: { title: 'PING' }
+      },
+      {
+        path: 'album/:id',
+        name: 'album',
+        component: album,
         meta: { title: 'PING' }
       }
     ]
