@@ -1,61 +1,54 @@
 <template>
-  <div style="width: calc((var(--block-size) + 20px) * var(--block-num))">
-    <div class="head">
-      <div class="cover">
-        <img :preview="false" :src="info.image" style="width: 100%">
-      </div>
-      <div class="content">
-        <div class="info">
-          <span class="h1" style="margin-bottom: 0px">{{ info.name }}</span>
+  <div class="head">
+    <div class="cover">
+      <img :preview="false" :src="info.image" style="width: 100%">
+    </div>
+    <div class="content">
+      <div class="info">
+        <span class="h1" style="margin-bottom: 0px">{{ info.name }}</span>
 
-          <!--          <div style="position: relative; margin-top: 5px;">-->
-          <!--            <span id="description" :class="showAll?'description-show':'description'">{{ info.description }}-->
-          <!--              <br><a v-if="showAll" style="float: right;font-size: 13px" @click="showAll=false">[收起]</a>-->
-          <!--            </span>-->
-          <!--            <a v-if="isOverflow&&!showAll" style="position: absolute;right: 0;font-size: 13px" @click="showAll=true">[展开]</a>-->
-          <!--          </div>-->
-        </div>
-        <div class="creator">
-          <img :src="info.artist.picUrl+'?param=100y100'" style="margin-right: 10px;width: 36px;border-radius: 50%">
-          <div style="display: flex;flex-direction: column">
-            <span>{{ info.artist.name }}</span>
-            <div>
-              <span style="color: #929292;">发行于 {{ DateFormat(info.publishTime) }} • {{ info.size }}首歌</span>
-<!--              <div class="tabs">
-                <span v-for="item of info.tags" :key="item" style="margin-right: 10px">#{{ item }}</span>
-              </div>-->
+        <!--          <div style="position: relative; margin-top: 5px;">-->
+        <!--            <span id="description" :class="showAll?'description-show':'description'">{{ info.description }}-->
+        <!--              <br><a v-if="showAll" style="float: right;font-size: 13px" @click="showAll=false">[收起]</a>-->
+        <!--            </span>-->
+        <!--            <a v-if="isOverflow&&!showAll" style="position: absolute;right: 0;font-size: 13px" @click="showAll=true">[展开]</a>-->
+        <!--          </div>-->
+      </div>
+      <div class="creator">
+        <img :src="info.creatorImg+'?param=100y100'" style="margin-right: 10px;width: 36px;border-radius: 50%">
+        <div style="display: flex;flex-direction: column">
+          <span>{{ info.creatorName }}</span>
+          <div>
+            <span style="color: #929292;">{{ type===1?'发行于':'更新于' }}{{ DateFormat(info.time) }} • {{ info.length }}首歌</span>
+            <div v-if="type===2" class="tags">
+              <span v-for="item of info.tags" :key="item" style="margin-right: 10px">#{{ item }}</span>
             </div>
           </div>
         </div>
-        <div>
-          <span id="description" class="description">{{ info.description }}
-          </span>
-        </div>
-        <div class="handle">
-          <button class="bt-play discolour" @click="playAll(0)"><svg-icon name="play-fill" /> 播放</button>
-          <button class="discolour"><svg-icon name="love" /></button>
-          <button class="discolour">•••</button>
-        </div>
+      </div>
+      <div>
+        <span id="description" class="description">{{ info.description }}
+        </span>
+      </div>
+      <div class="handle">
+        <button class="bt-play discolour" @click="playAll"><svg-icon name="play-fill" /> 播放</button>
+        <button class="discolour"><svg-icon name="love" /></button>
+        <button class="discolour">•••</button>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, ref, nextTick } from 'vue'
-import { useRoute } from 'vue-router'
-import { useStore } from 'vuex'
-import PlayItem from '@/pages/playList/components/PlayItem.vue'
-import ContextMenu from '@/components/ContextMenu.vue'
-import { getListById, getMusicDetail } from '@/api/music'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'ListHead',
   props: {
-    info: Object
+    info: Object,
+    type: Number
   },
-  setup(props) {
-    console.log(props.info)
+  setup(props, ctx) {
     const DateFormat = (date:string) => {
       const time = new Date(date)
       const y = time.getFullYear()
@@ -64,8 +57,13 @@ export default defineComponent({
       return y + '年' + (m < 10 ? ('0' + m) : m) + '月' + (d < 10 ? ('0' + d) : d) + '日'
     }
 
+    const playAll = () => {
+      ctx.emit('playAll')
+    }
+
     return {
-      DateFormat
+      DateFormat,
+      playAll
     }
   }
 })
@@ -75,7 +73,7 @@ export default defineComponent({
 .head{
   display: flex;
   flex-direction: row;
-  margin-bottom: 20px;
+  margin-bottom: 80px;
   justify-content: space-between;
 }
 .cover{
@@ -99,7 +97,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
 }
-.tabs{
+.tags{
   display: inline-block;
   margin-left: 20px;
   color: #929292;

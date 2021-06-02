@@ -1,47 +1,21 @@
 <template>
   <div v-if="loading" style="width: calc((var(--block-size) + 20px) * var(--block-num))">
-    <div class="head">
-      <div class="cover">
-        <img :preview="false" :src="list.coverImgUrl" style="width: 100%"/>
-      </div>
-      <div class="content">
-        <div class="info">
-          <span class="h1" style="margin-bottom: 0px">{{ list.name }}</span>
-
-          <!--          <div style="position: relative; margin-top: 5px;">-->
-          <!--            <span id="description" :class="showAll?'description-show':'description'">{{ list.description }}-->
-          <!--              <br><a v-if="showAll" style="float: right;font-size: 13px" @click="showAll=false">[收起]</a>-->
-          <!--            </span>-->
-          <!--            <a v-if="isOverflow&&!showAll" style="position: absolute;right: 0;font-size: 13px" @click="showAll=true">[展开]</a>-->
-          <!--          </div>-->
-        </div>
-        <div class="creator">
-          <img :src="list.creator.avatarUrl+'?param=100y100'" style="margin-right: 10px;width: 36px;border-radius: 50%" />
-          <div style="display: flex;flex-direction: column">
-            <span>{{ list.creator.nickname }}</span>
-            <div>
-              <span style="color: #929292;">最后更新于 {{ DateFormat(list.updateTime) }} • {{ list.trackCount }}首歌</span>
-              <div class="tabs">
-                <span v-for="item of list.tags" :key="item" style="margin-right: 10px">#{{ item }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span id="description" class="description">{{ list.description }}
-          </span>
-        </div>
-        <div class="handle">
-          <button class="bt-play discolour" @click="playAll(0)"><svg-icon name="play-fill" /> 播放</button>
-          <button class="discolour"><svg-icon name="love" /></button>
-          <button class="discolour">•••</button>
-        </div>
-      </div>
+    <ListHead
+      v-if="Object.keys(playListInfo).length>0"
+      :info="playListInfo"
+      :type="2"
+      @playAll="playAll(0)"
+    />
+    <div>
+      <PlayItem
+        v-for="(item,index) of musicList"
+        :key="item.id"
+        :list-item="item"
+        @dblclick="playSelect(index)"
+        @contextmenu="(e)=>showMenu(e,item)"
+      />
     </div>
-    <div class="playList">
-      <PlayItem v-for="(item,index) of listDetail" :key="item.id" :list-item="item" @dblclick="playSelect(index)" @contextmenu="(e)=>showMenu(e,item)" />
-    </div>
-    <ContextMenu v-show="isShowMenu" :point-x="pointX" :point-y="pointY" :info="menuInfo" />
+    <ContextMenu v-if="Object.keys(menuInfo).length>0" v-show="isShowMenu" :point-x="pointX" :point-y="pointY" :info="menuInfo" />
   </div>
 </template>
 
@@ -49,13 +23,15 @@
 import { defineComponent, watch, ref, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
+import ListHead from '@/components/ListHead.vue'
 import PlayItem from '@/pages/playList/components/PlayItem.vue'
 import ContextMenu from '@/components/ContextMenu.vue'
 import { getListById, getMusicDetail } from '@/api/music'
 
 export default defineComponent({
-  name: 'PlayList',
+  name: 'PlayList2',
   components: {
+    ListHead,
     PlayItem,
     ContextMenu
   },
@@ -63,14 +39,14 @@ export default defineComponent({
     const route = useRoute()
     const store = useStore()
     const loading = ref(false)
-    const list = ref(<any>{})
-    const listDetail = ref(<any>[])
+    const playListInfo = ref(<any>{})
+    const musicList = ref(<any>[])
     const isOverflow = ref(false)
     const showAll = ref(false)
     const isShowMenu = ref(false)
     const pointX = ref(0)
     const pointY = ref(0)
-    const menuInfo = ref()
+    const menuInfo = ref({})
 
     watch(loading, () => {
       nextTick(() => {
@@ -84,13 +60,28 @@ export default defineComponent({
       const param = { 'id': id }
       await getListById(param).then(async(res:any) => {
         if (res.code === 200) {
-          list.value = res.playlist
+          getPlayListInfo(res.playlist)
           loading.value = true
-          await getListDetail(res.playlist.trackIds)
+          await getMusicList(res.playlist.trackIds)
         }
       })
     }
-    const getListDetail = async(list:any) => {
+
+    const getPlayListInfo = (playList:any) => {
+      const info = {
+        name: playList.name,
+        image: playList.coverImgUrl,
+        description: playList.description,
+        creatorName: playList.creator.nickname,
+        creatorImg: playList.creator.avatarUrl,
+        time: playList.updateTime,
+        length: playList.trackCount,
+        type: 2
+      }
+      playListInfo.value = info
+    }
+
+    const getMusicList = async(list:any) => {
       let ids = ''
       for (const item of list) {
         ids += item.id + ','
@@ -112,7 +103,7 @@ export default defineComponent({
               publishTime: item.publishTime
             })
           }
-          listDetail.value = details
+          musicList.value = details
         }
       })
     }
@@ -127,7 +118,7 @@ export default defineComponent({
 
     const playAll = (index:number) => {
       const ids = []
-      for (const item of list.value.trackIds) {
+      for (const item of musicList.value) {
         ids.push(item.id)
       }
       store.commit('setMusicList', ids)
@@ -138,12 +129,17 @@ export default defineComponent({
       store.commit('setCurrIndex', index)
     }
 
-    const showMenu = (e: { preventDefault: () => void; x: number; y: number }, item) => {
+    const showMenu = (e: { preventDefault: () => void; x: number; y: number }, item: any) => {
       e.preventDefault()
       isShowMenu.value = true
       pointX.value = e.x
       pointY.value = e.y
-      menuInfo.value = item
+      const info = {
+        name: item.name,
+        image: item.album.picUrl,
+        artists: item.artist
+      }
+      menuInfo.value = info
       document.onmousedown = () => {
         isShowMenu.value = false
         document.onmousedown = null
@@ -166,8 +162,8 @@ export default defineComponent({
       loading,
       isOverflow,
       showAll,
-      list,
-      listDetail,
+      playListInfo,
+      musicList,
       isShowMenu,
       pointX,
       pointY,
@@ -182,96 +178,5 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.head{
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 20px;
-  justify-content: space-between;
-}
-.cover{
-  width: 280px;
-  border-radius: 15px;
-  overflow: hidden;
-}
-.content{
-  width: calc(100% - 350px);
-  padding-top: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.info{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.creator{
-  display: flex;
-  align-items: center;
-}
-.tabs{
-  display: inline-block;
-  margin-left: 20px;
-  color: #929292;
-}
-.description{
-  width: 100%;
-  font-size: 13px;
-  color: #929292;
-  padding-right: 40px;
-  /*display: inline-block;*/
-  /*overflow: hidden;*/
-  /*text-overflow: ellipsis;*/
-  /*white-space:nowrap;*/
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-}
-.description-mask{
-  width: 100%;
-  position: absolute;
-  z-index: 3;
-  filter: blur(30px);
-  overflow: hidden;
-  background: #1DCF9F;
-}
-.description-show{
-  width: 100%;
-  font-size: 13px;
-  position: absolute;
-  padding: 10px 20px 5px 20px;
-  z-index: 3;
-  border-radius: 5px;
-  overflow: hidden;
-}
-.description-show:after{
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  filter: blur(30px);
-  background: #eeeeee;
-  z-index: -1;
-}
-button{
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  border: none;
-  color: #FFFFFF;
-  margin-right: 20px;
-  outline: none;
-  font-weight: bolder;
-  color: #1a1a1a;
-}
-.bt-play{
-  width: 100px;
-  font-size: 18px;
-}
-.playList{
-  margin-top: 50px;
-}
+
 </style>

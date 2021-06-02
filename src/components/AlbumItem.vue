@@ -32,6 +32,7 @@ export default defineComponent({
   align-items: center;
   padding: 10px;
   border-radius: 10px;
+  user-select: none;
 }
 .album-item:hover{
   background: #f2f2f2;

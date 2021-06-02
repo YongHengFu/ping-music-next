@@ -1,16 +1,16 @@
 <template>
   <div ref="menu" class="menu" :style="{ top: y+'px', left: x+'px' }">
     <div class="first">
-      <img class="cover" :src="info?.album.picUrl+'?param=100y100'">
+      <img class="cover" :src="info.image+'?param=100y100'">
       <div class="info">
-        <span class="music-name" style="font-size: 16px;">{{ info?.name }}</span>
+        <span class="music-name" style="font-size: 16px;">{{ info.name }}</span>
         <div class="artist">
           <span
-            v-for="(item,index) of info?.artist"
+            v-for="(item,index) of info.artists"
             :key="item.id"
           >
-            <span class="discolour">{{ item?.name }}</span>
-            <span v-if="index!==info?.artist.length-1">/</span>
+            <span class="discolour">{{ item.name }}</span>
+            <span v-if="index!==info.artists.length-1">/</span>
           </span>
         </div>
       </div>

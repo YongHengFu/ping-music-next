@@ -1,9 +1,22 @@
 <template>
   <div style="width: calc((var(--block-size) + 20px) * var(--block-num))">
-    <ListHead v-if="Object.keys(albumInfo).length>0" :info="albumInfo" />
-    <div class="music-list">
-      <AlbumItem v-for="(item,index) of musicList" :key="item.id" :music="item" :index="index"/>
+    <ListHead
+      v-if="Object.keys(albumInfo).length>0"
+      :info="albumInfo"
+      :type="1"
+      @playAll="playAll(0)"
+    />
+    <div>
+      <AlbumItem
+        v-for="(item,index) of musicList"
+        :key="item.id"
+        :music="item"
+        :index="index"
+        @dblclick="playSelect(index)"
+        @contextmenu="(e)=>showMenu(e,index)"
+      />
     </div>
+    <ContextMenu v-if="Object.keys(menuInfo).length>0" v-show="isShowMenu" :point-x="pointX" :point-y="pointY" :info="menuInfo" />
   </div>
 </template>
 
@@ -13,12 +26,14 @@ import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import ListHead from '@/components/ListHead.vue'
 import AlbumItem from '@/components/AlbumItem.vue'
+import ContextMenu from '@/components/ContextMenu.vue'
 import { getAlbumById } from '@/api/music'
 export default defineComponent({
   name: 'Album',
   components: {
     ListHead,
-    AlbumItem
+    AlbumItem,
+    ContextMenu
   },
   setup() {
     const route = useRoute()
@@ -30,7 +45,7 @@ export default defineComponent({
     const isShowMenu = ref(false)
     const pointX = ref(0)
     const pointY = ref(0)
-    const menuInfo = ref()
+    const menuInfo = ref({})
 
     /*    watch(loading, () => {
       nextTick(() => {
@@ -56,10 +71,12 @@ export default defineComponent({
         name: album.name,
         image: album.picUrl,
         description: album.description,
-        artist: album.artist,
-        publishTime: album.publishTime,
+        creatorName: album.artist.name,
+        creatorImg: album.artist.picUrl,
+        time: album.publishTime,
         company: album.company,
-        size: album.size
+        length: album.size,
+        artists: album.artists
       }
       albumInfo.value = info
     }
@@ -77,9 +94,9 @@ export default defineComponent({
       musicList.value = list
     }
 
-    /*    const playAll = (index:number) => {
+    const playAll = (index:number) => {
       const ids = []
-      for (const item of list.value.trackIds) {
+      for (const item of musicList.value) {
         ids.push(item.id)
       }
       store.commit('setMusicList', ids)
@@ -88,14 +105,19 @@ export default defineComponent({
 
     const playSelect = (index:number) => {
       store.commit('setCurrIndex', index)
-    }*/
+    }
 
-    const showMenu = (e: { preventDefault: () => void; x: number; y: number }, item) => {
+    const showMenu = (e: { preventDefault: () => void; x: number; y: number }, index: number) => {
       e.preventDefault()
       isShowMenu.value = true
       pointX.value = e.x
       pointY.value = e.y
-      menuInfo.value = item
+      const info = {
+        name: musicList.value[index].name,
+        image: albumInfo.value.image,
+        artists: albumInfo.value.artists
+      }
+      menuInfo.value = info
       document.onmousedown = () => {
         isShowMenu.value = false
         document.onmousedown = null
@@ -123,7 +145,9 @@ export default defineComponent({
       pointX,
       pointY,
       menuInfo,
-      showMenu
+      showMenu,
+      playAll,
+      playSelect
     }
   }
 })
