@@ -2,6 +2,7 @@
   <div style="position: relative;width: 100vw;height: 100vh;overflow-y: hidden">
     <playView id="playView" :style="showPlayView?'':'transform:translateY(110%)'" />
     <router-view />
+    <LoginDialog v-if="showLoginDialog" class="login-dialog"/>
   </div>
 </template>
 
@@ -9,18 +10,22 @@
 import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import playView from '@/pages/playView/playView.vue'
+import LoginDialog from '@/components/LoginDialog.vue'
 // document.body.style.setProperty('--main-color', '#1DCF9F')
 
 export default defineComponent({
   name: 'App',
   components: {
-    playView
+    playView,
+    LoginDialog
   },
   setup() {
     const store = useStore()
     const showPlayView = computed(() => store.state.showPlayView)
+    const showLoginDialog = computed(() => store.state.showLoginDialog)
     return {
-      showPlayView
+      showPlayView,
+      showLoginDialog
     }
   }
 })
@@ -53,6 +58,15 @@ export default defineComponent({
   z-index: 10000;
   transition: 0.5s;
   /*background: #fafafa;*/
+}
+.login-dialog{
+  min-width: 1200px;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10000;
 }
 .playView-enter-from,
 .playView-leave-to{

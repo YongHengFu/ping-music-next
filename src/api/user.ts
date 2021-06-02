@@ -9,7 +9,15 @@ export function getQRCodeKey() {
 
 export function getQRCode(params:object) {
   return request({
-    url: '/login/qr/key',
+    url: '/login/qr/create',
+    method: 'get',
+    params
+  })
+}
+
+export function getQRCodeState(params:object) {
+  return request({
+    url: '/login/qr/check',
     method: 'get',
     params
   })

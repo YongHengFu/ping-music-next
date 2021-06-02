@@ -23,7 +23,8 @@ const store = createStore({
     currIndex: 0,
     records: [],
     loading: false,
-    showPlayView: false
+    showPlayView: false,
+    showLoginDialog: false
   },
   mutations: {
     setBlockNum(state, num) {
@@ -75,6 +76,9 @@ const store = createStore({
     },
     setShowPlayView(state, value) {
       state.showPlayView = value
+    },
+    setShowLoginDialog(state, value) {
+      state.showLoginDialog = value
     }
   },
   getters: {
@@ -104,6 +108,9 @@ const store = createStore({
     },
     getShowPlayView(state) {
       return state.showPlayView
+    },
+    getShowLoginDialog(state) {
+      return state.showLoginDialog
     }
   },
   actions: {},

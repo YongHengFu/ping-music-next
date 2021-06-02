@@ -46,7 +46,7 @@
             <Avatar>
               <template #icon><UserOutlined /></template>
             </Avatar>
-            <span class="discolour" style="margin: 0 10px">登录</span>
+            <span class="discolour" style="margin: 0 10px" @click="showLoginDialog">登录</span>
             <MailOutlined class="discolour" style="margin: 0 10px 0 15px" />
             <MenuOutlined class="discolour" />
           </div>
@@ -263,6 +263,10 @@ export default defineComponent({
       isShowDrawer.value = !isShowDrawer.value
     }
 
+    const showLoginDialog = () => {
+      store.commit('setShowLoginDialog', true)
+    }
+
     return {
       pageIndex,
       isShowDrawer,
@@ -270,7 +274,8 @@ export default defineComponent({
       menuList,
       key,
       pageChange,
-      showDrawer
+      showDrawer,
+      showLoginDialog
     }
   }
 })
