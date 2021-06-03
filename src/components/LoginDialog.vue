@@ -8,9 +8,9 @@
         <span style="font-size: 22px;font-weight: bolder;text-align: center">登录网易云账号</span>
       </div>
       <div v-if="model===0" class="qr-code">
-        <!--        <img :src="QRCodeImg">-->
-        <img src="src/assets/image/cover2.jpg" style="width: 100%">
-        <div class="qr-mask">
+        <img :src="QRCodeImg">
+        <!--        <img src="src/assets/image/cover2.jpg" style="width: 100%">-->
+        <div v-if="QRState!==801" class="qr-mask">
           <div v-show="QRState===800" style="margin: auto;display: flex;flex-direction: column;align-items: center">
             <span>二维码已失效</span>
             <button class="refresh-button" @click="getQRCode">
@@ -41,7 +41,7 @@ export default defineComponent({
     const store = useStore()
     const model = ref(0) // 0:扫码登录 1：账号密码登录
     const QRCodeImg = ref('')
-    const QRState = ref(800) // 800为二维码过期,801为等待扫码,802为待确认,803为授权登录成功(803状态码下会返回cookies)
+    const QRState = ref(801) // 800为二维码过期,801为等待扫码,802为待确认,803为授权登录成功(803状态码下会返回cookies)
     let QRKey = ref('')
     onMounted(() => {
       getQRCode()
@@ -108,6 +108,9 @@ export default defineComponent({
           }
         }
       }
+      getAccountInfo().then((res) => {
+        console.log(res)
+      })
     }
 
     const closeDialog = () => {
