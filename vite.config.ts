@@ -7,10 +7,10 @@ import styleImport from 'vite-plugin-style-import'
 
 export default defineConfig({
   base: './',
-  server: {
+/*  server: {
     port: 6868
     // open: true,
-  },
+  },*/
   plugins: [
     vue(),
     svgBuilder('./src/assets/icons/svg/'),

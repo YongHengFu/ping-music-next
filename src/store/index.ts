@@ -24,7 +24,8 @@ const store = createStore({
     records: [],
     loading: false,
     showPlayView: false,
-    showLoginDialog: false
+    showLoginDialog: false,
+    loginState: false // false：未登录  true：已登录
   },
   mutations: {
     setBlockNum(state, num) {
@@ -79,6 +80,9 @@ const store = createStore({
     },
     setShowLoginDialog(state, value) {
       state.showLoginDialog = value
+    },
+    setLoginState(state, value) {
+      state.loginState = value
     }
   },
   getters: {
@@ -111,6 +115,9 @@ const store = createStore({
     },
     getShowLoginDialog(state) {
       return state.showLoginDialog
+    },
+    getLoginState(state) {
+      return state.loginState
     }
   },
   actions: {},

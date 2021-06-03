@@ -43,10 +43,8 @@
         <LayoutHeader class="header">
           <InputSearch class="search" />
           <div>
-            <Avatar>
-              <template #icon><UserOutlined /></template>
-            </Avatar>
-            <span class="discolour" style="margin: 0 10px" @click="showLoginDialog">登录</span>
+            <img :src="userAvatar" style="width: 30px;border-radius: 50%">
+            <span class="discolour" style="margin: 0 10px" @click="showLoginDialog">{{ nickName }}</span>
             <MailOutlined class="discolour" style="margin: 0 10px 0 15px" />
             <MenuOutlined class="discolour" />
           </div>
@@ -78,7 +76,7 @@
 
 <script lang="ts">
 
-import { defineComponent, computed, ref, onMounted } from 'vue'
+import { defineComponent, computed, watch, ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { Layout, Input, Avatar } from 'ant-design-vue'
@@ -147,6 +145,8 @@ export default defineComponent({
     const store = useStore()
     const pageIndex = ref(0)
     const isShowDrawer = ref(false)
+    const userAvatar = ref('')
+    const nickName = ref('未登录')
     const itemList = [
       {
         index: 0,
@@ -218,6 +218,13 @@ export default defineComponent({
 
     const key = computed(() => route.path)
 
+    const loginState = computed(() => store.state.loginState)
+
+    watch(loginState, () => {
+      userAvatar.value = <string>localStorage.getItem('avatarUrl')
+      nickName.value = <string>localStorage.getItem('nickName')
+    })
+
     onMounted(() => {
       indexByRouter(route.path)
 
@@ -273,6 +280,8 @@ export default defineComponent({
       itemList,
       menuList,
       key,
+      userAvatar,
+      nickName,
       pageChange,
       showDrawer,
       showLoginDialog

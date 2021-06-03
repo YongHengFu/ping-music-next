@@ -85,9 +85,19 @@ export default defineComponent({
               checkQRCodeState(param)
             }, 1000)
           } else {
-            saveCookie(res.cookie)
+            localStorage.setItem('cookie', res.cookie)
+            getAccountInfo().then((res) => {
+              if (res.code === 200) {
+                store.commit('setLoginState', true)
+                localStorage.setItem('userName', res.profile.userName)
+                localStorage.setItem('usid', res.profile.userId)
+                localStorage.setItem('nickName', res.profile.nickname)
+                localStorage.setItem('avatarUrl', res.profile.avatarUrl)
+              }
+            })
+            // saveCookie(res.cookie)
             closeDialog()
-            console.log(res.cookie)
+            // console.log(res.cookie)
           }
         }
       })
@@ -108,9 +118,6 @@ export default defineComponent({
           }
         }
       }
-      getAccountInfo().then((res) => {
-        console.log(res)
-      })
     }
 
     const closeDialog = () => {

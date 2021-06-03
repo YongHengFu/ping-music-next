@@ -6,7 +6,24 @@ const service = axios.create({
   timeout: 10000,
   withCredentials: true
 })
-service.interceptors.request.use((config) => config, (error) => Promise.reject(error))
+service.interceptors.request.use((config) => {
+  const cookie = localStorage.getItem('cookie')
+  if (localStorage.getItem('cookie')) {
+    // 注意：config.method 的判断值必须是小写的post和get
+    if (config.method === 'post') {
+      config.data = {
+        cookie: cookie,
+        ...config.data
+      }
+    } else if (config.method === 'get') {
+      config.params = {
+        cookie: cookie,
+        ...config.params
+      }
+    }
+  }
+  return config
+}, (error) => Promise.reject(error))
 
 service.interceptors.response.use(
 
