@@ -3,7 +3,8 @@ import { message } from 'ant-design-vue'
 
 const service = axios.create({
   baseURL: (import.meta.env.VITE_APP_BASE_URL) as string,
-  timeout: 10000
+  timeout: 10000,
+  withCredentials: true
 })
 service.interceptors.request.use((config) => config, (error) => Promise.reject(error))
 
@@ -13,7 +14,7 @@ service.interceptors.response.use(
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
-/*    if (res.code !== 200) {
+    /*    if (res.code !== 200) {
       message.error('网络异常，请重试！')
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
