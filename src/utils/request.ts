@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue'
-import { useStore } from 'vuex'
+import store from '@/store'
 
 const service = axios.create({
   baseURL: (import.meta.env.VITE_APP_BASE_URL) as string,
@@ -12,7 +12,7 @@ service.interceptors.request.use((config) => {
   const nowTime = new Date().getTime()
   if (lastTime) {
     if ((nowTime - lastTime) / 60000 > 30) {
-      useStore().commit('setRefreshLogin', true)
+      store.commit('setRefreshLogin', true)
     }
   }
   localStorage.setItem('lastTime', nowTime + '')
