@@ -8,17 +8,24 @@
         <span style="font-size: 22px;font-weight: bolder;text-align: center">登录网易云账号</span>
       </div>
       <div v-if="model===0" class="qr-code">
-        <img :src="QRCodeImg">
-        <!--        <img src="src/assets/image/cover2.jpg" style="width: 100%">-->
-        <div v-if="QRState!==801" class="qr-mask">
+        <img :src="QRCodeImg" style="width: 100%">
+        <div v-if="QRState!==801&&!QRLoading" class="qr-mask">
           <div v-show="QRState===800" style="margin: auto;display: flex;flex-direction: column;align-items: center">
-            <span>二维码已失效</span>
+            <span style="color: #FFFFFF">二维码已失效</span>
             <button class="refresh-button" @click="getQRCode">
-              刷新 <svg-icon name="refresh" style="font-size: 13px" />
+              刷新 <svg-icon name="refresh" style="font-size: 13px;" />
             </button>
           </div>
-          <span v-show="QRState===802" style="margin: auto;text-align: center">扫描成功<br>请在手机上<a>授权登录</a></span>
+          <span v-show="QRState===802" style="margin: auto;text-align: center;color: #FFFFFF">扫描成功<br>请在手机上授权登录</span>
         </div>
+        <lottie-player
+          v-if="QRLoading"
+          autoplay
+          loop
+          mode="bounce"
+          :src="QRCodeLoading"
+          class="qr-loading"
+        />
       </div>
       <div v-else class="form">
         <input class="forn-input" placeholder="手机号">
@@ -35,6 +42,8 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { getQRCodeKey, getQRCodeData, getQRCodeState, getAccountInfo } from '@/api/user.ts'
 import Cookie from 'js-cookie'
+import '@lottiefiles/lottie-player'
+import QRCodeLoading from '@/assets/lottie/qrcode.json'
 export default defineComponent({
   name: 'LoginDialog',
   setup() {
@@ -42,18 +51,27 @@ export default defineComponent({
     const model = ref(0) // 0:扫码登录 1：账号密码登录
     const QRCodeImg = ref('')
     const QRState = ref(801) // 800为二维码过期,801为等待扫码,802为待确认,803为授权登录成功(803状态码下会返回cookies)
+    const QRLoading = ref(true)
     let QRKey = ref('')
+    let isInvalid = false // true:停止获取二维码状态
     onMounted(() => {
       getQRCode()
     })
 
     const getQRCode = async() => {
+      QRCodeImg.value = ''
+      QRLoading.value = true
+      QRState.value = 801
       QRKey = await getQRKey()
       QRCodeImg.value = await getQRCodeImg(QRKey)
+      QRLoading.value = false
     }
 
     const getQRKey = () => {
-      return getQRCodeKey().then(async(res) => {
+      const param = {
+        timestamp: new Date().getTime()
+      }
+      return getQRCodeKey(param).then(async(res) => {
         if (res.code === 200) {
           return res.data.unikey
         }
@@ -69,6 +87,7 @@ export default defineComponent({
       return getQRCodeData(param).then((res) => {
         if (res.code === 200) {
           checkQRCodeState(param)
+          isInvalid = false
           return res.data.qrimg
         }
       })
@@ -82,12 +101,16 @@ export default defineComponent({
         if (res.code !== 800) {
           if (res.code !== 803) {
             setTimeout(() => {
-              checkQRCodeState(param)
-            }, 1000)
+              if (!isInvalid) {
+                checkQRCodeState(param)
+              }
+            }, 1500)
           } else {
+            isInvalid = true
             localStorage.setItem('cookie', res.cookie)
+            // store.commit('setRefreshLogin', true)
             getAccountInfo().then((res) => {
-              if (res.code === 200) {
+              if (res.code === 200 && res.data.account) {
                 store.commit('setLoginState', true)
                 localStorage.setItem('userName', res.profile.userName)
                 localStorage.setItem('usid', res.profile.userId)
@@ -121,6 +144,7 @@ export default defineComponent({
     }
 
     const closeDialog = () => {
+      isInvalid = true
       store.commit('setShowLoginDialog', false)
     }
 
@@ -128,6 +152,8 @@ export default defineComponent({
       model,
       QRCodeImg,
       QRState,
+      QRCodeLoading,
+      QRLoading,
       getQRCode,
       closeDialog
     }
@@ -155,6 +181,10 @@ export default defineComponent({
 }
 .qr-code{
   position: relative;
+  border: #cccccc 1px dashed;
+  margin-top: 30px;
+  width: 300px;
+  height: 300px;
 }
 .qr-mask{
   display: flex;
@@ -164,14 +194,22 @@ export default defineComponent({
   top: 0;
   bottom: 0;
   opacity: 0.9;
-  background: #cccccc;
+  background: #5f5f5f;
+}
+.qr-loading{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 .refresh-button{
   border: none;
   outline: none;
-  cursor: pointer
+  cursor: pointer;
+  background: #FFFFFF;
 }
 .refresh-button:active{
-  background: #FFFFFF;
+  background: #d0d0d0;
 }
 </style>

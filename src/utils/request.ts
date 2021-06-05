@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue'
+import { useStore } from 'vuex'
 
 const service = axios.create({
   baseURL: (import.meta.env.VITE_APP_BASE_URL) as string,
@@ -7,8 +8,17 @@ const service = axios.create({
   withCredentials: true
 })
 service.interceptors.request.use((config) => {
+  const lastTime = Number(localStorage.getItem('lastTime'))
+  const nowTime = new Date().getTime()
+  if (lastTime) {
+    if ((nowTime - lastTime) / 60000 > 30) {
+      useStore().commit('setRefreshLogin', true)
+    }
+  }
+  localStorage.setItem('lastTime', nowTime + '')
+
   const cookie = localStorage.getItem('cookie')
-  if (localStorage.getItem('cookie')) {
+  if (cookie) {
     // 注意：config.method 的判断值必须是小写的post和get
     if (config.method === 'post') {
       config.data = {

@@ -84,6 +84,8 @@ import elementResizeDetectorMaker from 'element-resize-detector'
 import Loading from '@/components/Loading.vue'
 import ControlBar from '@/components/ControlBar.vue'
 import ListDrawer from '@/components/ListDrawer.vue'
+import { getAccountInfo } from '@/api/user'
+import { message } from 'ant-design-vue'
 
 import {
   FireOutlined,
@@ -220,12 +222,25 @@ export default defineComponent({
 
     const loginState = computed(() => store.state.loginState)
 
+    const refreshLogin = computed(() => store.state.refreshLogin)
+
     watch(loginState, () => {
       userAvatar.value = <string>localStorage.getItem('avatarUrl')
       nickName.value = <string>localStorage.getItem('nickName')
+      if (!loginState.value) {
+        localStorage.removeItem('cookie')
+        message.error('登录失效，请重新登录!')
+      }
+    })
+
+    watch(refreshLogin, () => {
+      refreshLoginState()
     })
 
     onMounted(() => {
+      localStorage.removeItem('lastTime')
+      refreshLoginState()
+
       indexByRouter(route.path)
 
       const erd = elementResizeDetectorMaker()
@@ -272,6 +287,26 @@ export default defineComponent({
 
     const showLoginDialog = () => {
       store.commit('setShowLoginDialog', true)
+    }
+
+    const refreshLoginState = () => {
+      getAccountInfo().then((res:any) => {
+        if (res.code === 200) {
+          if (!res.account) {
+            logout()
+          } else {
+            store.commit('setLoginState', true)
+          }
+        }
+      })
+    }
+
+    const logout = () => {
+      store.commit('setLoginState', false)
+      localStorage.setItem('userName', '')
+      localStorage.setItem('usid', '')
+      localStorage.setItem('nickName', '未登录')
+      localStorage.setItem('avatarUrl', '')
     }
 
     return {

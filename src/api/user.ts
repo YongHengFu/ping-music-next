@@ -1,10 +1,11 @@
 import request from '@/utils/request'
 
 // 生成二维码的key
-export function getQRCodeKey() {
+export function getQRCodeKey(params:object) {
   return request({
     url: '/login/qr/key',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 
