@@ -8,7 +8,7 @@
         <span style="font-size: 22px;font-weight: bolder;text-align: center">登录网易云账号</span>
       </div>
       <div v-if="model===0" class="qr-code">
-        <img :src="QRCodeImg" style="width: 100%">
+        <Image :src="QRCodeImg" style="width: 100%" />
         <div v-if="QRState!==801&&!QRLoading" class="qr-mask">
           <div v-show="QRState===800" style="margin: auto;display: flex;flex-direction: column;align-items: center">
             <span style="color: #FFFFFF">二维码已失效</span>
@@ -44,6 +44,7 @@ import { getQRCodeKey, getQRCodeData, getQRCodeState, getAccountInfo } from '@/a
 import Cookie from 'js-cookie'
 import '@lottiefiles/lottie-player'
 import QRCodeLoading from '@/assets/lottie/qrcode.json'
+// import Image from '@/components/global/Image'
 export default defineComponent({
   name: 'LoginDialog',
   setup() {
@@ -108,9 +109,8 @@ export default defineComponent({
           } else {
             isInvalid = true
             localStorage.setItem('cookie', res.cookie)
-            // store.commit('setRefreshLogin', true)
             getAccountInfo().then((res) => {
-              if (res.code === 200 && res.data.account) {
+              if (res.code === 200 && res.account) {
                 store.commit('setLoginState', true)
                 localStorage.setItem('userName', res.profile.userName)
                 localStorage.setItem('usid', res.profile.userId)

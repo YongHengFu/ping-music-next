@@ -43,7 +43,7 @@
         <LayoutHeader class="header">
           <InputSearch class="search" />
           <div>
-            <img :src="userAvatar" style="width: 30px;border-radius: 50%">
+            <Image :src="userAvatar" :type="1" radius="50%" style="width: 30px;" />
             <span class="discolour" style="margin: 0 10px" @click="showLoginDialog">{{ nickName }}</span>
             <MailOutlined class="discolour" style="margin: 0 10px 0 15px" />
             <MenuOutlined class="discolour" />
