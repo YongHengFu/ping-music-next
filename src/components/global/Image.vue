@@ -19,7 +19,6 @@ export default defineComponent({
     const imageUrl = ref(props.src)
     const borderRadius = ref('0')
     watch(props, () => {
-      debugger
       if (props.src === '') {
         fallback()
       } else {

@@ -2,7 +2,8 @@
   <div style="position: relative;width: 100vw;height: 100vh;overflow-y: hidden">
     <playView id="playView" :style="showPlayView?'':'transform:translateY(110%)'" />
     <router-view />
-    <LoginDialog v-if="showLoginDialog" class="login-dialog"/>
+    <LoginDialog v-if="showDialog===0" class="login-dialog" />
+    <UserDialog v-if="showDialog===1" class="user-dialog" />
   </div>
 </template>
 
@@ -11,21 +12,23 @@ import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import playView from '@/pages/playView/playView.vue'
 import LoginDialog from '@/components/LoginDialog.vue'
+import UserDialog from '@/components/UserDialog.vue'
 // document.body.style.setProperty('--main-color', '#1DCF9F')
 
 export default defineComponent({
   name: 'App',
   components: {
     playView,
-    LoginDialog
+    LoginDialog,
+    UserDialog
   },
   setup() {
     const store = useStore()
     const showPlayView = computed(() => store.state.showPlayView)
-    const showLoginDialog = computed(() => store.state.showLoginDialog)
+    const showDialog = computed(() => store.state.showDialog)
     return {
       showPlayView,
-      showLoginDialog
+      showDialog
     }
   }
 })
@@ -34,6 +37,7 @@ export default defineComponent({
 <style>
 :root{
   --primary-color: #1DCF9F;
+  --light-color: rgba(29, 207, 159, 0.1);
   /*--primary-color: rgb(244, 93, 93);*/
   --block-size: 160px;
   --block-num: 5;
@@ -66,6 +70,13 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 10000;
+}
+.user-dialog{
+  min-width: 200px;
+  position: absolute;
+  top: 60px;
+  right: 30px;
   z-index: 10000;
 }
 .playView-enter-from,

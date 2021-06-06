@@ -24,7 +24,7 @@ const store = createStore({
     records: [],
     loading: false,
     showPlayView: false,
-    showLoginDialog: false,
+    showDialog: -1, // 0：登录弹窗 1：用户信息弹窗
     loginState: false, // false：未登录  true：已登录
     refreshLogin: false
   },
@@ -79,8 +79,8 @@ const store = createStore({
     setShowPlayView(state, value) {
       state.showPlayView = value
     },
-    setShowLoginDialog(state, value) {
-      state.showLoginDialog = value
+    setShowDialog(state, value) {
+      state.showDialog = value
     },
     setLoginState(state, value) {
       state.loginState = value
@@ -117,8 +117,8 @@ const store = createStore({
     getShowPlayView(state) {
       return state.showPlayView
     },
-    getShowLoginDialog(state) {
-      return state.showLoginDialog
+    getShowDialog(state) {
+      return state.showDialog
     },
     getLoginState(state) {
       return state.loginState

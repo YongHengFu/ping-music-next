@@ -27,10 +27,34 @@ export function getQRCodeState(params:object) {
   })
 }
 
+// 手机登录
+export function loginByPhone(params:object) {
+  return request({
+    url: '/login/cellphone',
+    method: 'get',
+    params
+  })
+}
+// 邮箱登录
+export function loginByEmail(params:object) {
+  return request({
+    url: '/login',
+    method: 'get',
+    params
+  })
+}
+
 // 获取账号信息
 export function getAccountInfo() {
   return request({
     url: '/user/account',
+    method: 'get'
+  })
+}
+// 退出登录
+export function logoutAccount() {
+  return request({
+    url: '/logout',
     method: 'get'
   })
 }

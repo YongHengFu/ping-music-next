@@ -44,16 +44,15 @@
           <InputSearch class="search" />
           <div>
             <Image :src="userAvatar" :type="1" radius="50%" style="width: 30px;" />
-            <span class="discolour" style="margin: 0 10px" @click="showLoginDialog">{{ nickName }}</span>
+            <span class="discolour" style="margin: 0 10px" @click="showDialog">
+              {{ nickName }}
+              <svg-icon name="down" style="font-size: 11px" /></span>
             <MailOutlined class="discolour" style="margin: 0 10px 0 15px" />
             <MenuOutlined class="discolour" />
           </div>
         </LayoutHeader>
         <LayoutContent id="content" class="content">
           <Loading />
-          <!--          <div style="width: 100%;height: 100%;overflow-y: scroll">-->
-          <!--            <router-view :key="key" class="view" />-->
-          <!--          </div>-->
           <div style="width: 100%;height: 100%;overflow-y: scroll">
             <router-view v-slot="{ Component }" :key="key" class="view">
               <transition>
@@ -229,7 +228,6 @@ export default defineComponent({
       nickName.value = <string>localStorage.getItem('nickName')
       if (!loginState.value) {
         localStorage.removeItem('cookie')
-        message.error('登录失效，请重新登录!')
       }
     })
 
@@ -285,8 +283,12 @@ export default defineComponent({
       isShowDrawer.value = !isShowDrawer.value
     }
 
-    const showLoginDialog = () => {
-      store.commit('setShowLoginDialog', true)
+    const showDialog = () => {
+      if (loginState.value) {
+        store.commit('setShowDialog', 1)
+      } else {
+        store.commit('setShowDialog', 0)
+      }
     }
 
     const refreshLoginState = () => {
@@ -294,6 +296,7 @@ export default defineComponent({
         if (res.code === 200) {
           if (!res.account) {
             logout()
+            message.error('登录失效，请重新登录!')
           } else {
             store.commit('setLoginState', true)
           }
@@ -319,7 +322,7 @@ export default defineComponent({
       nickName,
       pageChange,
       showDrawer,
-      showLoginDialog
+      showDialog
     }
   }
 })
