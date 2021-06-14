@@ -1,6 +1,7 @@
 <template>
   <div style="user-select: none">
     <Drawer
+      id="listContainer"
       placement="right"
       :closable="false"
       :visible="isShowDrawer"
@@ -26,7 +27,7 @@
         <div
           v-for="(item, index) of musicList"
           :key="item.id"
-          class="container"
+          class="item"
           :style="index===selectIndex?'background: #efefef':''"
           @click="selectItem(index)"
           @dblclick="switchMusic(index)"
@@ -69,7 +70,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue'
+import { defineComponent, computed, ref, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { Drawer } from 'ant-design-vue'
 import '@lottiefiles/lottie-player'
@@ -133,6 +134,34 @@ export default defineComponent({
       }
     })
 
+    watch(props, () => {
+      if (!props.isShowDrawer) {
+        selectIndex.value = -1
+      }
+    })
+
+    watch(currIndex, () => {
+      let container:any = document.getElementById('listContainer')
+      if (container) {
+        container = container.children[1].children[0].children[0]
+        if (container.scrollHeight > container.clientHeight) {
+          const unit = container.scrollHeight / musicList.value.length
+          container.scrollTo({ left: 0, top: (unit * currIndex.value) - (container.clientHeight / 2), behavior: 'smooth' })
+        }
+      }
+    })
+
+    onMounted(() => {
+      let container:any = document.getElementById('listContainer')
+      if (container) {
+        container = container.children[1].children[0].children[0]
+        if (container.scrollHeight > container.clientHeight) {
+          const unit = container.scrollHeight / musicList.value.length
+          container.scrollTo({ left: 0, top: (unit * currIndex.value) - (container.clientHeight / 2), behavior: 'smooth' })
+        }
+      }
+    })
+
     return {
       player,
       playAnimation,
@@ -156,7 +185,7 @@ export default defineComponent({
   height: 100%;
   background: transparent;
 }
-.container{
+.item{
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -180,18 +209,18 @@ export default defineComponent({
   margin: 0 5px;
   font-size: 20px;
 }
-.container:hover{
+.item:hover{
   background: #efefef;
 }
-.container:hover .info{
+.item:hover .info{
   width: 60%;
 }
-.container:hover .icons{
+.item:hover .icons{
   width: 40%;
   display: flex;
   justify-content: flex-end;
 }
-.container:hover .duration{
+.item:hover .duration{
   width: 0;
   display: none;
 }
