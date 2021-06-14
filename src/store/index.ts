@@ -19,8 +19,9 @@ const store = createStore({
       lyric: '' // 歌词
     },
     musicList: [],
-    detailList: [],
-    currIndex: 0,
+    currMusic: {
+      index: -1
+    },
     records: [],
     loading: false,
     showPlayView: false,
@@ -42,33 +43,8 @@ const store = createStore({
     setMusicList(state, list) {
       state.musicList = list
     },
-    pushMusicList(state, item) { // 加入播放列表
-      // @ts-ignore
-      state.musicList.push(item)
-    },
-    insertMusicList(state, item) { // 插队（下一首播放）
-      // @ts-ignore
-      state.musicList.splice(state.currIndex + 1, 0, item)
-    },
-    removeMusicList(state, index) { // 移出播放列表
-      state.musicList.splice(index, 1)
-    },
-    setDetailList(state, list) {
-      state.detailList = list
-    },
-    pushDetailList(state, item) { // 加入播放列表
-      // @ts-ignore
-      state.detailList.push(item)
-    },
-    insertDetailList(state, item) { // 插队（下一首播放）
-      // @ts-ignore
-      state.detailList.splice(state.currIndex + 1, 0, item)
-    },
-    removeDetailList(state, index) { // 移出播放列表
-      state.detailList.splice(index, 1)
-    },
-    setCurrIndex(state, index) {
-      state.currIndex = index
+    setCurrMusic(state, music) {
+      state.currMusic = music
     },
     setRecords(state, list) {
       state.records = list
@@ -102,11 +78,8 @@ const store = createStore({
     getMusicList(state) {
       return state.musicList
     },
-    getDetailList(state) {
-      return state.detailList
-    },
-    getCurrIndex(state) {
-      return state.currIndex
+    getCurrMusic(state) {
+      return state.currMusic
     },
     getRecords(state) {
       return state.records

@@ -17,7 +17,7 @@
             :key="n"
             :song="newSong[(n-1)+(m-1)*3]"
             :index="(n-1)+(m-1)*3"
-            @play="playSingle(newSong[(n-1)+(m-1)*3])"
+            @play="playSelect(newSong[(n-1)+(m-1)*3].id)"
           />
         </div>
       </div>
@@ -34,7 +34,9 @@ import BlockList from '@/components/BlockList.vue'
 import MusicBlock from '@/components/MusicBlock.vue'
 
 import { getNewSong, getPlayList_Qua } from '@/api/music'
+import { playSingle } from '@/utils/musicList'
 import '@lottiefiles/lottie-player'
+
 export default defineComponent({
   name: 'Featured',
   components: {
@@ -78,34 +80,23 @@ export default defineComponent({
     }
     init()
 
-    const playSingle = (item:any) => {
-      const songItem = {
-        id: item.id,
-        name: item.name,
-        artist: item.song.artists,
-        album: item.song.album,
-        mvId: item.song.mvid,
-        duration: item.song.duration / 1000,
-        publishTime: item.song.album.publishTime
-      }
-      store.commit('insertMusicList', songItem.id)
-      store.commit('insertDetailList', songItem)
-      store.commit('setCurrIndex', store.state.currIndex + 1)
+    const playSelect = (id:string) => {
+      playSingle(id)
     }
 
     const playAll = () => {
-      if (newSongIdList.value.length > 0) {
+      /* if (newSongIdList.value.length > 0) {
         store.commit('setMusicList', newSongIdList.value)
       } else {
         getNewSongData()
-      }
+      }*/
     }
 
     return {
       quaList,
       newSong,
       newSongIdList,
-      playSingle,
+      playSelect,
       playAll
     }
   }

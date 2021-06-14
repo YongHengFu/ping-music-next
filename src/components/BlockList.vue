@@ -19,7 +19,7 @@ import { defineComponent, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import Block from './MaxCover.vue'
-import { getListById } from '@/api/music'
+import { playList } from '@/utils/musicList'
 export default defineComponent({
   name: 'BlockList',
   components: {
@@ -33,26 +33,16 @@ export default defineComponent({
   setup() {
     const router = useRouter()
     const store = useStore()
+
+    const blockNum = computed(():number => store.state.blockNum)
+
     const open = (id:string) => {
       router.push('/playList/' + id)
     }
     const play = (id:string) => {
-      getListData(id)
+      playList(id)
     }
-    const blockNum = computed(():number => store.state.blockNum)
 
-    const getListData = (id:string) => {
-      const param = { 'id': id }
-      getListById(param).then((res:any) => {
-        if (res.code === 200) {
-          const ids = []
-          for (const item of res.playlist.trackIds) {
-            ids.push(item.id)
-          }
-          store.commit('setMusicList', ids)
-        }
-      })
-    }
     return {
       blockNum,
       open,

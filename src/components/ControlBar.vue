@@ -85,7 +85,7 @@
           style="font-size: 19px; margin: 0 10px"
         />
         <svg-icon name="music-list" class="discolour" style="font-size: 22px" @click="showDrawer" />
-        <span style="font-size: 14px">{{ detailList.length }}</span>
+        <span style="font-size: 14px">{{ musicList.length }}</span>
       </div>
     </div>
   </div>
@@ -119,9 +119,8 @@ export default defineComponent({
     const totalDura = computed(() => store.state.audio.duration)
     const mode = computed(() => store.state.audio.mode)
     const mute = computed(() => store.state.audio.mute)
-    const detailList = computed(() => store.state.detailList)
-    const currIndex = computed(() => store.state.currIndex)
-    const currMusic = computed(() => detailList.value[currIndex.value])
+    const musicList = computed(() => store.state.musicList)
+    const currMusic = computed(() => store.state.currMusic)
 
     watch(currentDura, () => {
       currFormat.value = timeFormat(currentDura.value)
@@ -132,7 +131,7 @@ export default defineComponent({
     })
 
     watch(currMusic, () => {
-      imgUrl.value = currMusic.value?.album?.picUrl + '?param=500y500'
+      imgUrl.value = currMusic.value?.album.picUrl + '?param=500y500'
     })
 
     const showPlayView = () => {
@@ -178,7 +177,7 @@ export default defineComponent({
       mode,
       mute,
       jump,
-      detailList,
+      musicList,
       currFormat,
       totalFormat,
       showPlayView,

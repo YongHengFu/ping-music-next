@@ -15,7 +15,7 @@
       <div style="height: 60px;position: absolute;width:100%;padding: 0 10px;top: 0;z-index: 2;background: #FAFAFA">
         <span class="h2">播放清单</span>
         <div style="color: #454545;width:100%;display: flex;align-items: center;justify-content: space-between;background: #FAFAFA">
-          <span>{{ detailList.length }}首歌曲</span>
+          <span>{{ musicList.length }}首歌曲</span>
           <div style="font-size: 12px;display: inline">
             <svg-icon name="batch" style="margin-right: 10px" />
             <svg-icon name="trash" />
@@ -24,7 +24,7 @@
       </div>
       <div style="padding-top: 80px">
         <div
-          v-for="(item, index) of detailList"
+          v-for="(item, index) of musicList"
           :key="item.id"
           class="container"
           :style="index===selectIndex?'background: #efefef':''"
@@ -88,16 +88,15 @@ export default defineComponent({
     const store = useStore()
     const selectIndex = ref(-1)
     const player = ref()
-
-    const detailList = computed(() => store.state.detailList)
-    const currIndex = computed(() => store.state.currIndex)
+    const musicList = computed(() => store.state.musicList)
+    const currIndex = computed(() => store.state.currMusic?.index)
 
     const selectItem = (index:number) => {
       selectIndex.value = index
     }
     const switchMusic = (index:number) => {
       if (currIndex.value !== index) {
-        store.commit('setCurrIndex', index)
+        store.commit('setCurrMusic', musicList.value[index])
       }
     }
     const closeDrawer = () => {
@@ -138,7 +137,7 @@ export default defineComponent({
       player,
       playAnimation,
       selectIndex,
-      detailList,
+      musicList,
       currIndex,
       selectItem,
       switchMusic,

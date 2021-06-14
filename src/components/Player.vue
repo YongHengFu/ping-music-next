@@ -4,7 +4,6 @@
     :src="source"
     autoplay
     @durationchange="durationchange"
-
     @canplay="canplay"
     @play="play"
     @pause="pause"
@@ -22,25 +21,19 @@ export default defineComponent({
   setup() {
     const store = useStore()
     const audio:any = ref(null)
+    const source = ref('')
     let rand = [0]
     let prevIndex = 0
 
     // 待播列表 [id]
     const musicList = computed(() => store.state.musicList)
-
+    const currMusic = computed(() => store.state.currMusic)
     // 当前播放歌曲在列表中的位置
-    const currIndex = computed(() => store.state.currIndex)
 
     // 播放记录
     const records = computed(() => store.state.records)
 
-    // 待播列表 [详情]
-    // const detailList = computed(() => store.state.detailList)
-
     /* ------Audio------*/
-
-    // 当前播放歌曲的url
-    const source = computed(() => `https://music.163.com/song/media/outer/url?id=${musicList.value[currIndex.value]}.mp3`)
 
     // 播放状态：暂停or播放
     const state = computed(() => store.state.audio.state)
@@ -62,6 +55,10 @@ export default defineComponent({
 
     // 是否切换至下一曲
     const isNext = computed(() => store.state.audio.next)
+
+    watch(currMusic, () => {
+      source.value = `https://music.163.com/song/media/outer/url?id=${currMusic.value?.id}.mp3`
+    })
 
     watch(state, () => {
       if (audio !== null) {
@@ -108,16 +105,6 @@ export default defineComponent({
       audio.value.muted = mute.value
     })
 
-    watch(musicList, () => {
-      getMusicDetails()
-      store.commit('setCurrIndex', 0)
-    })
-
-    watch(musicList.value, () => {
-      // store.commit('setCurrIndex', 0)
-      // getMusicDetails()
-    })
-
     const durationchange = () => {
       const param = { prop: 'duration', value: audio.value.duration }
       store.commit('setAudio', param)
@@ -141,7 +128,7 @@ export default defineComponent({
         const param = { prop: 'state', value: true }
         store.commit('setAudio', param)
       }
-      setRecords(musicList.value[currIndex.value])
+      // setRecords(musicList.value[currIndex.value])
     }
 
     const pause = () => {
@@ -152,7 +139,7 @@ export default defineComponent({
     }
 
     const ended = () => {
-      let index = currIndex.value
+      let index = currMusic.value?.index
       if (mode.value <= 1) {
         if (index !== musicList.value.length - 1) {
           index++
@@ -173,7 +160,7 @@ export default defineComponent({
           audio.value.play()
         }
       }
-      store.commit('setCurrIndex', index)
+      store.commit('setCurrMusic', musicList.value[index])
     }
 
     const error = () => {
@@ -181,7 +168,7 @@ export default defineComponent({
     }
 
     const prev = () => {
-      let index = currIndex.value
+      let index = currMusic.value?.index
       if (prevIndex !== 0) {
         const ind = musicList.value.indexOf(records.value[prevIndex - 1])
         if (ind !== -1) {
@@ -192,11 +179,11 @@ export default defineComponent({
           index = musicList.value.length - 1
         }
       }
-      store.commit('setCurrIndex', index)
+      store.commit('setCurrMusic', musicList.value[index])
     }
 
     const next = () => {
-      let index = currIndex.value
+      let index = currMusic.value?.index
       if (mode.value === 2) {
         index = Math.floor(Math.random() * musicList.value.length)
         while (rand.includes(index)) {
@@ -213,37 +200,7 @@ export default defineComponent({
           index = 0
         }
       }
-      store.commit('setCurrIndex', index)
-    }
-
-    const getMusicDetails = () => {
-      if (musicList.value.length > 0) {
-        const param = { ids: '' }
-        for (let i = 0; i < musicList.value.length; i++) {
-          param.ids += musicList.value[i]
-          if (i < musicList.value.length - 1) {
-            param.ids += ','
-          }
-        }
-        getMusicDetail(param).then((res:any) => {
-          if (res.code === 200) {
-            const songs = res.songs
-            const details = []
-            for (const item of songs) {
-              details.push({
-                id: item.id,
-                name: item.name,
-                artist: item.ar,
-                album: item.al,
-                mvId: item.mv,
-                duration: item.dt / 1000,
-                publishTime: item.publishTime
-              })
-            }
-            store.commit('setDetailList', details)
-          }
-        })
-      }
+      store.commit('setCurrMusic', musicList.value[index])
     }
 
     const setRecords = (id:string) => {

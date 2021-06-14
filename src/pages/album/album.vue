@@ -4,7 +4,7 @@
       v-if="Object.keys(albumInfo).length>0"
       :info="albumInfo"
       :type="1"
-      @playAll="playAll(0)"
+      @playAll="playAll"
     />
     <div>
       <AlbumItem
@@ -28,6 +28,7 @@ import ListHead from '@/components/ListHead.vue'
 import AlbumItem from '@/components/AlbumItem.vue'
 import ContextMenu from '@/components/ContextMenu.vue'
 import { getAlbumById } from '@/api/music'
+import { playAblume } from '@/utils/musicList'
 export default defineComponent({
   name: 'Album',
   components: {
@@ -95,16 +96,11 @@ export default defineComponent({
     }
 
     const playAll = (index:number) => {
-      const ids = []
-      for (const item of musicList.value) {
-        ids.push(item.id)
-      }
-      store.commit('setMusicList', ids)
-      store.commit('setCurrIndex', index)
+      playAblume(<string>route.params.id)
     }
 
     const playSelect = (index:number) => {
-      store.commit('setCurrIndex', index)
+      store.commit('setCurrMusic', store.state.musicList[index])
     }
 
     const showMenu = (e: { preventDefault: () => void; x: number; y: number }, index: number) => {

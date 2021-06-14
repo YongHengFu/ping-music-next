@@ -10,7 +10,7 @@
             :key="item.id"
             class="discolour"
             style="color: #FFFFFF"
-          >{{ item?.name }}{{ index===currMusic?.artist?.length-1? '' : '/' }}</span>
+          >{{ item.name }}{{ index===currMusic?.artist.length-1? '' : '/' }}</span>
         </div>
       </div>
       <svg-icon name="love" style="color: #FFFFFF" />
@@ -83,9 +83,7 @@ export default defineComponent({
     const totalDura = computed(() => store.state.audio.duration)
     const mode = computed(() => store.state.audio.mode)
     const mute = computed(() => store.state.audio.mute)
-    const detailList = computed(() => store.state.detailList)
-    const currIndex = computed(() => store.state.currIndex)
-    const currMusic = computed(() => detailList.value[currIndex.value])
+    const currMusic = computed(() => store.state.currMusic)
 
     watch(currentDura, () => {
       currFormat.value = timeFormat(currentDura.value)
@@ -132,7 +130,6 @@ export default defineComponent({
       mode,
       mute,
       jump,
-      detailList,
       currFormat,
       totalFormat,
       changeState,

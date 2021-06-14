@@ -4,7 +4,7 @@
       v-if="Object.keys(playListInfo).length>0"
       :info="playListInfo"
       :type="2"
-      @playAll="playAll(0)"
+      @playAll="playAll"
     />
     <div>
       <PlayItem
@@ -27,9 +27,10 @@ import ListHead from '@/components/ListHead.vue'
 import PlayItem from '@/pages/playList/components/PlayItem.vue'
 import ContextMenu from '@/components/ContextMenu.vue'
 import { getListById, getMusicDetail } from '@/api/music'
+import { playList } from '@/utils/musicList'
 
 export default defineComponent({
-  name: 'PlayList2',
+  name: 'PlayList',
   components: {
     ListHead,
     PlayItem,
@@ -116,17 +117,12 @@ export default defineComponent({
       return y + '年' + (m < 10 ? ('0' + m) : m) + '月' + (d < 10 ? ('0' + d) : d) + '日'
     }
 
-    const playAll = (index:number) => {
-      const ids = []
-      for (const item of musicList.value) {
-        ids.push(item.id)
-      }
-      store.commit('setMusicList', ids)
-      store.commit('setCurrIndex', index)
+    const playAll = () => {
+      playList(<string>route.params.id)
     }
 
     const playSelect = (index:number) => {
-      store.commit('setCurrIndex', index)
+      store.commit('setCurrMusic', store.state.musicList[index])
     }
 
     const showMenu = (e: { preventDefault: () => void; x: number; y: number }, item: any) => {
@@ -148,7 +144,6 @@ export default defineComponent({
         isShowMenu.value = false
         document.onwheel = null
       }
-      // console.log(e.x, e.y)
     }
 
     const init = async() => {

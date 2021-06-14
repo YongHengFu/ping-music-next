@@ -4,10 +4,14 @@
       <LeftCircleFilled v-if="controlButton" class="prevIcon" @click="prev" />
       <RightCircleFilled v-if="controlButton" class="nextIcon" @click="next" />
       <div v-for="n of 5" :key="n" :class="item[n-1].class">
-        <img
-          :src="show[n-1].imageUrl"
-          style="border-radius: 5px;width: 100%"
-        />
+        <div style="position: relative;border-radius: 5px;overflow: hidden;cursor: pointer">
+          <img
+            :src="show[n-1].imageUrl"
+            style="border-radius: 5px;width: 100%"
+            @click="action(show[n-1])"
+          >
+          <span class="tab">{{ show[n-1].typeTitle }}</span>
+        </div>
       </div>
       <div class="points">
         <div v-for="(item,ind) of banners" :key="item" :class="ind===index?'point-L':'point'" />
@@ -19,8 +23,10 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { LeftCircleFilled, RightCircleFilled } from '@ant-design/icons-vue'
 import { getBanner } from '@/api/music'
+import { playSingle } from '@/utils/musicList'
 
 export default defineComponent({
   name: 'Banner',
@@ -29,6 +35,7 @@ export default defineComponent({
     RightCircleFilled
   },
   setup() {
+    const router = useRouter()
     const index = ref(0)
     const item = ref([
       { position: 0, class: 'middle' },
@@ -42,6 +49,7 @@ export default defineComponent({
     // eslint-disable-next-line no-undef
     let interval: NodeJS.Timeout | null = null
     const controlButton = ref(false)
+    const targetType = 1 // 1:单曲， 10：专辑， 1004：MV，3000：数字专辑
 
     const getBannerData = async() => {
       await getBanner().then((res:any) => {
@@ -185,6 +193,41 @@ export default defineComponent({
       }
     }
 
+    const action = (item: any) => {
+      console.log(item.targetType)
+      // 1:单曲， 10：专辑， 1004：MV，3000：数字专辑/单曲
+      switch (item.targetType) {
+        case 1:
+          playSong(item.targetId)
+          break
+        case 10:
+          openAblum(item.targetId)
+          break
+        case 1004:
+          playMV(item.targetId)
+          break
+        case 3000:
+          openDigitalAlbum(item.targetId)
+          break
+      }
+    }
+
+    const playSong = (id:string) => {
+      playSingle(id)
+    }
+
+    const openAblum = (id:string) => {
+      router.push('/album/' + id)
+    }
+
+    const playMV = (id:string) => {
+
+    }
+
+    const openDigitalAlbum = (id:string) => {
+
+    }
+
     const init = async() => {
       await getBannerData()
       if (banners.value.length > 0) {
@@ -202,7 +245,8 @@ export default defineComponent({
       leave,
       enter,
       prev,
-      next
+      next,
+      action
     }
   }
 })
@@ -330,6 +374,16 @@ export default defineComponent({
   height: 5px;
   margin: 0 5px;
   background: var(--primary-color);
-  border-radius: 25%;
+  border-radius: 15px;
+}
+.tab{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: var(--primary-color);
+  color: #FFFFFF;
+  padding: 0px 5px;
+  font-size: 12px;
+  border-radius: 5px 0 ;
 }
 </style>

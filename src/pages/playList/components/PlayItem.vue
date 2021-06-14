@@ -39,9 +39,8 @@ export default defineComponent({
   setup(props, ctx) {
     const store = useStore()
     const router = useRouter()
-    const musicId = computed(() => store.state.musicList[store.state.currIndex])
+    const musicId = computed(() => store.state.currMusic?.id)
     const openAlbum = (id:string) => {
-      console.log(1)
       router.push('/album/' + id)
     }
     return {

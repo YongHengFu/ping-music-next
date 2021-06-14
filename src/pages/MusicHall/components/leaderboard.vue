@@ -48,7 +48,8 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import BoardBlock from '@/components/BoardBlock.vue'
 import BlockList from '@/components/BlockList.vue'
-import { getListById, getTopList } from '@/api/music'
+import { getTopList } from '@/api/music'
+import { playList } from '@/utils/musicList'
 export default defineComponent({
   name: 'Leaderboard',
   components: {
@@ -67,21 +68,9 @@ export default defineComponent({
     const open = (id:string) => {
       router.push('/playList/' + id)
     }
-    const play = (id:string) => {
-      getListData(id)
-    }
 
-    const getListData = (id:string) => {
-      const param = { 'id': id }
-      getListById(param).then((res:any) => {
-        if (res.code === 200) {
-          const ids = []
-          for (const item of res.playlist.trackIds) {
-            ids.push(item.id)
-          }
-          store.commit('setMusicList', ids)
-        }
-      })
+    const play = (id:string) => {
+      playList(id)
     }
 
     const getTopListData = async() => {

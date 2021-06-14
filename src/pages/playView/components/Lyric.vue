@@ -58,7 +58,7 @@ export default defineComponent({
       lys.value = []
     })
 
-    const musicId = computed(() => store.state.musicList[store.state.currIndex])
+    const musicId = computed(() => store.state.currMusic?.id)
     const state = computed(() => store.state.audio.state)
     const currTime = computed(() => store.state.audio.currentTime)
     const totalTime = computed(() => store.state.audio.duration)
@@ -157,14 +157,14 @@ export default defineComponent({
             analyzeLyric(lyricStr)
           }
         } else {
-          setTimeout(() => {
+          /* setTimeout(() => {
             getLyricStr(musicId.value)
-          }, 200)
+          }, 200)*/
         }
       }).catch(() => {
-        setTimeout(() => {
+        /* setTimeout(() => {
           getLyricStr(musicId.value)
-        }, 200)
+        }, 1000)*/
       })
     }
 

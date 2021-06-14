@@ -8,7 +8,7 @@
     </div>
     <div id="container" class="container">
       <div class="left">
-        <img :src="imgUrl" class="cover" style="margin-bottom: 30px;width: 100%" />
+        <img :src="imgUrl" class="cover" style="margin-bottom: 30px;width: 100%">
         <ControlBarMini />
       </div>
       <div class="right">
@@ -32,14 +32,11 @@ export default defineComponent({
   },
   setup() {
     const store = useStore()
-
-    const detailList = computed(() => store.state.detailList)
-    const currIndex = computed(() => store.state.currIndex)
-    const currMusic = computed(() => detailList.value[currIndex.value])
+    const currMusic = computed(() => store.state.currMusic)
     const imgUrl = ref(coverImage)
 
     watch(currMusic, () => {
-      imgUrl.value = currMusic.value?.album?.picUrl + '?param=500y500'
+      imgUrl.value = currMusic.value?.album.picUrl + '?param=500y500'
     })
 
     const showPlayView = () => {
@@ -48,7 +45,6 @@ export default defineComponent({
 
     return {
       coverImage,
-      currMusic,
       imgUrl,
       showPlayView
     }
