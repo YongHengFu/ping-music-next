@@ -58,3 +58,12 @@ export function logoutAccount() {
     method: 'get'
   })
 }
+
+// 获取用户歌单
+export function getUserPlayList(params:object) {
+  return request({
+    url: '/user/playlist',
+    method: 'get',
+    params
+  })
+}

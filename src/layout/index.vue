@@ -29,13 +29,39 @@
             </p>
           </div>
           <div>
-            <p class="group">
-              创建的歌单
-              <PlusSquareOutlined style="margin-left: 30px" />
-            </p>
+            <div class="group">
+              <span>创建的歌单</span>
+              <div>
+                <PlusSquareOutlined style="margin-right: 10px" />
+                <svg-icon :name="isShowCreate?'up':'down'" style="font-size: 12px;cursor: pointer" @click="isShowCreate=!isShowCreate"/>
+              </div>
+            </div>
+            <div v-show="isShowCreate">
+              <p
+                v-for="item of playListCreate"
+                :key="item.id"
+                class="listItem"
+                @click="openPlayList(item.id)"
+              >
+                {{ item.name }}
+              </p>
+            </div>
           </div>
-          <div>
-            <p class="group">收藏的歌单</p>
+          <div style="margin-top: 25px">
+            <div class="group">
+              <span>收藏的歌单</span>
+              <svg-icon :name="isShowCollect?'up':'down'" style="font-size: 12px;cursor: pointer" @click="isShowCollect=!isShowCollect"/>
+            </div>
+            <div v-show="isShowCollect">
+              <p
+                v-for="item of playListCollect"
+                :key="item.id"
+                class="listItem"
+                @click="openPlayList(item.id)"
+              >
+                {{ item.name }}
+              </p>
+            </div>
           </div>
         </div>
       </LayoutSider>
@@ -83,7 +109,7 @@ import elementResizeDetectorMaker from 'element-resize-detector'
 import Loading from '@/components/Loading.vue'
 import ControlBar from '@/components/ControlBar.vue'
 import ListDrawer from '@/components/ListDrawer.vue'
-import { getAccountInfo } from '@/api/user'
+import { getAccountInfo, getUserPlayList } from '@/api/user'
 import { message } from 'ant-design-vue'
 
 import {
@@ -201,6 +227,10 @@ export default defineComponent({
     ]
     // eslint-disable-next-line no-undef
     let timer: (NodeJS.Timeout | null) = null
+    const playListCreate = ref(<any>[])
+    const playListCollect = ref(<any>[])
+    const isShowCreate = ref(true)
+    const isShowCollect = ref(true)
 
     const menuList = computed(() => {
       return function(group: string) {
@@ -226,8 +256,14 @@ export default defineComponent({
     watch(loginState, () => {
       userAvatar.value = <string>localStorage.getItem('avatarUrl')
       nickName.value = <string>localStorage.getItem('nickName')
-      if (!loginState.value) {
+      if (loginState.value) {
+        getPlayList(<string>localStorage.getItem('usid'))
+      } else {
         localStorage.removeItem('cookie')
+        playListCreate.value = []
+        localStorage.removeItem('playListCreate')
+        playListCollect.value = []
+        localStorage.removeItem('playListCollect')
       }
     })
 
@@ -312,6 +348,33 @@ export default defineComponent({
       localStorage.setItem('avatarUrl', '')
     }
 
+    const getPlayList = (usid:string) => {
+      const param = { uid: usid }
+      getUserPlayList(param).then((res:any) => {
+        if (res.code === 200) {
+          for (const item of res.playlist) {
+            const listItem = {
+              name: item.name,
+              id: item.id,
+              image: item.coverImgUrl
+            }
+            if (item.creator.userId === Number(usid)) {
+              playListCreate.value.push(listItem)
+            } else {
+              playListCollect.value.push(listItem)
+            }
+          }
+          console.log(playListCreate.value)
+          localStorage.setItem('playListCreate', JSON.stringify(playListCreate.value))
+          localStorage.setItem('playListCollect', JSON.stringify(playListCollect.value))
+        }
+      })
+    }
+
+    const openPlayList = (id:string) => {
+      router.push('/playList/' + id)
+    }
+
     return {
       pageIndex,
       isShowDrawer,
@@ -320,9 +383,14 @@ export default defineComponent({
       key,
       userAvatar,
       nickName,
+      playListCreate,
+      playListCollect,
+      isShowCreate,
+      isShowCollect,
       pageChange,
       showDrawer,
-      showDialog
+      showDialog,
+      openPlayList
     }
   }
 })
@@ -386,7 +454,10 @@ export default defineComponent({
 .group {
   padding-left: 10px;
   color: #999;
-  font-size: 15px;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .item {
@@ -421,5 +492,22 @@ export default defineComponent({
   border-radius: 20px;
   /* box-shadow: none; */
   /* border: 0; */
+}
+
+.listItem{
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+  display: block;
+  padding: 5px 10px;
+  margin: 5px 0;
+  font-weight: 500;
+  color: #000;
+  cursor: pointer;
+}
+.listItem:hover{
+  border-radius: 5px;
+  background: #d8d8d8;
 }
 </style>
