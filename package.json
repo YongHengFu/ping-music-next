@@ -13,6 +13,7 @@
     "ant-design-vue": "^2.1.2",
     "axios": "^0.21.1",
     "element-resize-detector": "^1.2.2",
+    "howler": "^2.2.1",
     "js-cookie": "^2.2.1",
     "js-md5": "^0.7.3",
     "vue": "^3.0.10",
