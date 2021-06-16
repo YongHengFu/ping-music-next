@@ -9,7 +9,7 @@
             <p
               v-for="item of menuList('a')"
               :key="item.icon"
-              :class="item.index === pageIndex ? 'item-click' : 'item'"
+              :class="currPath===item.path ? 'item-click' : 'item'"
               @click="pageChange(item.index)"
             >
               <component :is="item.icon" style="margin-right: 5px" />
@@ -21,7 +21,7 @@
             <p
               v-for="item of menuList('b')"
               :key="item.icon"
-              :class="item.index === pageIndex ? 'item-click' : 'item'"
+              :class="currPath===item.path ? 'item-click' : 'item'"
               @click="pageChange(item.index)"
             >
               <component :is="item.icon" style="margin-right: 5px" />
@@ -33,14 +33,14 @@
               <span>创建的歌单</span>
               <div>
                 <PlusSquareOutlined style="margin-right: 10px" />
-                <svg-icon :name="isShowCreate?'up':'down'" style="font-size: 12px;cursor: pointer" @click="isShowCreate=!isShowCreate"/>
+                <svg-icon :name="isShowCreate?'up':'down'" style="font-size: 12px;cursor: pointer" @click="isShowCreate=!isShowCreate" />
               </div>
             </div>
             <div v-show="isShowCreate">
               <p
                 v-for="item of playListCreate"
                 :key="item.id"
-                class="listItem"
+                :class="currPath===('/playList/'+item.id) ? 'listItem-click' : 'listItem'"
                 @click="openPlayList(item.id)"
               >
                 {{ item.name }}
@@ -50,13 +50,13 @@
           <div style="margin-top: 25px">
             <div class="group">
               <span>收藏的歌单</span>
-              <svg-icon :name="isShowCollect?'up':'down'" style="font-size: 12px;cursor: pointer" @click="isShowCollect=!isShowCollect"/>
+              <svg-icon :name="isShowCollect?'up':'down'" style="font-size: 12px;cursor: pointer" @click="isShowCollect=!isShowCollect" />
             </div>
             <div v-show="isShowCollect">
               <p
                 v-for="item of playListCollect"
                 :key="item.id"
-                class="listItem"
+                :class="currPath===('/playList/'+item.id) ? 'listItem-click' : 'listItem'"
                 @click="openPlayList(item.id)"
               >
                 {{ item.name }}
@@ -67,7 +67,11 @@
       </LayoutSider>
       <Layout style="min-width: 1000px">
         <LayoutHeader class="header">
-          <InputSearch class="search" />
+          <div>
+            <svg-icon name="left" style="margin-right: 30px;cursor: pointer" @click="routePrev" />
+            <svg-icon name="right" style="cursor: pointer" @click="routeNext" />
+            <InputSearch class="search" />
+          </div>
           <div>
             <Image :src="userAvatar" :type="1" radius="50%" style="width: 30px;" />
             <span class="discolour" style="margin: 0 10px" @click="showDialog">
@@ -101,7 +105,7 @@
 
 <script lang="ts">
 
-import { defineComponent, computed, watch, ref, onMounted } from 'vue'
+import { defineComponent, computed, watch, ref, toRef, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { Layout, Input, Avatar } from 'ant-design-vue'
@@ -170,7 +174,6 @@ export default defineComponent({
     const route = useRoute()
     const router = useRouter()
     const store = useStore()
-    const pageIndex = ref(0)
     const isShowDrawer = ref(false)
     const userAvatar = ref('')
     const nickName = ref('未登录')
@@ -231,6 +234,7 @@ export default defineComponent({
     const playListCollect = ref(<any>[])
     const isShowCreate = ref(true)
     const isShowCollect = ref(true)
+    const currPath = toRef(route, 'fullPath')
 
     const menuList = computed(() => {
       return function(group: string) {
@@ -272,10 +276,8 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      localStorage.removeItem('lastTime')
+      // localStorage.removeItem('lastTime')
       refreshLoginState()
-
-      indexByRouter(route.path)
 
       const erd = elementResizeDetectorMaker()
 
@@ -305,16 +307,8 @@ export default defineComponent({
 
     const pageChange = (index: number) => {
       router.push({ path: itemList[index].path })
-      pageIndex.value = index
     }
-    const indexByRouter = (path:string) => {
-      for (const [index, item] of itemList.entries()) {
-        if (item.path === path) {
-          pageIndex.value = index
-          return index
-        }
-      }
-    }
+
     const showDrawer = () => {
       isShowDrawer.value = !isShowDrawer.value
     }
@@ -375,8 +369,16 @@ export default defineComponent({
       router.push('/playList/' + id)
     }
 
+    const routePrev = () => {
+      router.go(-1)
+    }
+
+    const routeNext = () => {
+      router.go(1)
+      console.log(router.getRoutes())
+    }
+
     return {
-      pageIndex,
       isShowDrawer,
       itemList,
       menuList,
@@ -387,10 +389,13 @@ export default defineComponent({
       playListCollect,
       isShowCreate,
       isShowCollect,
+      currPath,
       pageChange,
       showDrawer,
       showDialog,
-      openPlayList
+      openPlayList,
+      routePrev,
+      routeNext
     }
   }
 })
@@ -434,7 +439,6 @@ export default defineComponent({
 
 .layout .footer {
   background: #fafafa;
-  padding: 10px 2px;
   user-select: none;
   padding: 0 2px 10px 2px;
 }
@@ -463,20 +467,17 @@ export default defineComponent({
 .item {
   color: #666;
   font-weight: bold;
-  border: #f6f6f6 solid;
   padding: 2px 10px;
 }
 
 .item:hover {
   background: #ededed;
-  border: #ededed solid;
   border-radius: 5px;
 }
 
 .item-click {
   color: #ffffff;
   font-weight: bold;
-  border: var(--primary-color) solid;
   background: var(--primary-color);
   border-radius: 5px;
   padding: 2px 10px;
@@ -485,13 +486,11 @@ export default defineComponent({
 .search {
   width: 250px;
   min-width: 150px;
+  margin-left: 50px;
 }
 
 .search {
-  /* background: #e1e1e1; */
   border-radius: 20px;
-  /* box-shadow: none; */
-  /* border: 0; */
 }
 
 .listItem{
@@ -506,8 +505,22 @@ export default defineComponent({
   color: #000;
   cursor: pointer;
 }
+.listItem-click {
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+  display: block;
+  padding: 5px 10px;
+  margin: 5px 0;
+  cursor: pointer;
+  color: #ffffff;
+  font-weight: bold;
+  background: var(--primary-color);
+  border-radius: 5px;
+}
 .listItem:hover{
   border-radius: 5px;
-  background: #d8d8d8;
+  background: #ededed;
 }
 </style>
