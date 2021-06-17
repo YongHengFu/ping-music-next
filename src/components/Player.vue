@@ -13,11 +13,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref } from 'vue'
+import { defineComponent, computed, watch, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import { getMusicDetail } from '@/api/music'
 export default defineComponent({
-  name: 'Player2',
+  name: 'Player',
   setup() {
     const store = useStore()
     const audio:any = ref(null)
@@ -216,6 +215,48 @@ export default defineComponent({
       }
       store.commit('setRecords', list)
     }
+
+    const initMediaSession = () => {
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new window.MediaMetadata({
+          title: 'PingMusic',
+          artist: 'FuYH',
+          album: 'ForeverLove',
+          artwork: [{ src: 'cover.jpg' }]
+        })
+        navigator.mediaSession.setActionHandler('play', () => {
+          play()
+        })
+        navigator.mediaSession.setActionHandler('pause', () => {
+          pause()
+        })
+        navigator.mediaSession.setActionHandler('seekbackward', () => {
+        })
+        navigator.mediaSession.setActionHandler('seekforward', () => {
+        })
+        navigator.mediaSession.setActionHandler('previoustrack', () => {
+          prev()
+        })
+        navigator.mediaSession.setActionHandler('nexttrack', () => {
+          next()
+        })
+      }
+    }
+
+    const updateMediaSession = () => {
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new window.MediaMetadata({
+          title: currMusic.value.name,
+          artist: currMusic.value.artist.name,
+          album: currMusic.value.album.name,
+          artwork: [{ src: currMusic.value.album.picUrl }]
+        })
+      }
+    }
+
+    onMounted(() => {
+      initMediaSession()
+    })
 
     return {
       audio,
