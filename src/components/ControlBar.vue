@@ -5,10 +5,7 @@
     <div class="control-bar">
       <div class="bar-left">
         <div style="position: relative" class="cover" @click="showPlayView">
-          <img
-            class="cover-image"
-            :src="imgUrl"
-          >
+          <Image :src="imgUrl" :type="0" class="cover-image"/>
           <div class="cover-mask">
             <svg-icon name="upShow" style="width: 100%;height: 100%;padding: 30%" />
           </div>
@@ -85,7 +82,7 @@
           style="font-size: 19px; margin: 0 10px"
         />
         <svg-icon name="music-list" class="discolour" style="font-size: 22px" @click="showDrawer" />
-        <span style="font-size: 14px">{{ musicList.length }}</span>
+        <span style="font-size: 10px">{{ musicList.length }}</span>
       </div>
     </div>
   </div>
@@ -99,9 +96,11 @@ import ProgressBar from '@/components/ProgressBar.vue'
 import VolumeBar from '@/components/VolumeBar.vue'
 import coverImage from '@/assets/image/cover.png'
 import timeFormat from '@/utils/timeFormat'
+import Image from '@/components/global/Image.vue'
 export default defineComponent({
   name: 'ControlBar',
   components: {
+    Image,
     ProgressBar,
     Player,
     VolumeBar
@@ -229,10 +228,10 @@ export default defineComponent({
 .cover{
   border: 1px solid #ededed;
   overflow: hidden;
-}
-.cover-image{
   width: 50px;
   height: 50px;
+}
+.cover-image{
   transition: 0.3s;
   /*border-radius: 2px;*/
 }
@@ -242,7 +241,6 @@ export default defineComponent({
   top: 0;
   right: 0;
   bottom: 0;
-  opacity: 0.8;
   /*background: #fafafa;*/
   color: #FFFFFF;
   transition: 0.3s;

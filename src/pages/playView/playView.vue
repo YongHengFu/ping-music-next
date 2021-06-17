@@ -1,7 +1,7 @@
 <template>
   <div class="view">
     <div class="mask">
-      <img :src="imgUrl" style="width: 100%;height: 100%;object-fit: cover">
+      <Image :src="imgUrl" style="width: 100%;height: 100%;object-fit: cover"/>
     </div>
     <div>
       <svg-icon name="down" style="font-size: 24px;margin: 20px 0 0 50px;color: #FFFFFF" @click="showPlayView" />
@@ -24,9 +24,11 @@ import { useStore } from 'vuex'
 import ControlBarMini from './components/ControlBarMini.vue'
 import Lyric from './components/Lyric.vue'
 import coverImage from '@/assets/image/cover.png'
+import Image from '@/components/global/Image.vue'
 export default defineComponent({
   name: 'PlayView',
   components: {
+    Image,
     Lyric,
     ControlBarMini
   },
