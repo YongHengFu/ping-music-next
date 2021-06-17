@@ -27,8 +27,8 @@ import { useStore } from 'vuex'
 import ListHead from '@/components/ListHead.vue'
 import AlbumItem from '@/components/AlbumItem.vue'
 import ContextMenu from '@/components/ContextMenu.vue'
-import { getAlbumById } from '@/api/music'
-import { playAblume } from '@/utils/musicList'
+import { getAlbumById, getMusicDetail } from '@/api/music'
+import { playAble, playAblume } from '@/utils/musicList'
 export default defineComponent({
   name: 'Album',
   components: {
@@ -82,17 +82,36 @@ export default defineComponent({
       albumInfo.value = info
     }
 
-    const getMusicList = (songs:any) => {
-      const list = []
+    const getMusicList = async(songs:any) => {
+      let ids = ''
       for (const item of songs) {
-        const song = {
-          id: item.id,
-          name: item.name,
-          duration: item.dt
-        }
-        list.push(song)
+        ids += item.id + ','
       }
-      musicList.value = list
+      const param = { 'ids': ids.slice(0, ids.length - 1) }
+      await getMusicDetail(param).then((res:any) => {
+        if (res.code === 200) {
+          const songs = res.songs
+          const details = []
+          for (const [index, item] of songs.entries()) {
+            const song:any = {
+              index: index,
+              id: item.id,
+              name: item.name,
+              artist: item.ar,
+              album: item.al,
+              mvId: item.mv,
+              duration: item.dt / 1000,
+              publishTime: item.publishTime,
+              privileges: res.privileges[index],
+              noCopyrightRcmd: item.noCopyrightRcmd,
+              canPlay: null
+            }
+            song.canPlay = playAble(song)
+            details.push(song)
+          }
+          musicList.value = musicList.value.concat(details)
+        }
+      })
     }
 
     const playAll = (index:number) => {

@@ -15,6 +15,7 @@
 <script lang="ts">
 import { defineComponent, computed, watch, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import { message } from 'ant-design-vue'
 export default defineComponent({
   name: 'Player',
   setup() {
@@ -56,7 +57,13 @@ export default defineComponent({
     const isNext = computed(() => store.state.audio.next)
 
     watch(currMusic, () => {
-      source.value = `https://music.163.com/song/media/outer/url?id=${currMusic.value?.id}.mp3`
+      if (currMusic.value?.canPlay.able) {
+        source.value = `https://music.163.com/song/media/outer/url?id=${currMusic.value?.id}.mp3`
+        setMediaMetadata()
+      } else if (currMusic.value?.canPlay) {
+        message.error(currMusic.value?.canPlay.msg)
+        next()
+      }
     })
 
     watch(state, () => {
@@ -168,15 +175,8 @@ export default defineComponent({
 
     const prev = () => {
       let index = currMusic.value?.index
-      if (prevIndex !== 0) {
-        const ind = musicList.value.indexOf(records.value[prevIndex - 1])
-        if (ind !== -1) {
-          index = ind
-        } else if (index !== 0) {
-          index--
-        } else {
-          index = musicList.value.length - 1
-        }
+      if (index > 1) {
+        index--
       }
       store.commit('setCurrMusic', musicList.value[index])
     }
@@ -217,40 +217,42 @@ export default defineComponent({
     }
 
     const initMediaSession = () => {
+      const mediaNavigator:any = navigator
       if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new window.MediaMetadata({
-          title: 'PingMusic',
-          artist: 'FuYH',
-          album: 'ForeverLove',
-          artwork: [{ src: 'cover.jpg' }]
-        })
-        navigator.mediaSession.setActionHandler('play', () => {
+        mediaNavigator.mediaSession.setActionHandler('play', () => {
           play()
         })
-        navigator.mediaSession.setActionHandler('pause', () => {
+        mediaNavigator.mediaSession.setActionHandler('pause', () => {
           pause()
         })
-        navigator.mediaSession.setActionHandler('seekbackward', () => {
-        })
-        navigator.mediaSession.setActionHandler('seekforward', () => {
-        })
-        navigator.mediaSession.setActionHandler('previoustrack', () => {
+        mediaNavigator.mediaSession.setActionHandler('previoustrack', () => {
           prev()
         })
-        navigator.mediaSession.setActionHandler('nexttrack', () => {
+        mediaNavigator.mediaSession.setActionHandler('nexttrack', () => {
           next()
         })
+        // navigator.mediaSession.setActionHandler('seekbackward', () => {
+        // })
+        // navigator.mediaSession.setActionHandler('seekforward', () => {
+        // })
       }
     }
 
-    const updateMediaSession = () => {
+    const setMediaMetadata = () => {
       if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new window.MediaMetadata({
-          title: currMusic.value.name,
-          artist: currMusic.value.artist.name,
-          album: currMusic.value.album.name,
-          artwork: [{ src: currMusic.value.album.picUrl }]
-        })
+        if (currMusic.value?.artist) {
+          const artists = []
+          for (const item of currMusic.value.artist) {
+            artists.push(item.name)
+          }
+          const mediaNavigator:any = navigator
+          mediaNavigator.mediaSession.metadata = new window.MediaMetadata({
+            title: currMusic.value.name,
+            artist: artists.join('/'),
+            album: currMusic.value.album.name,
+            artwork: [{ src: currMusic.value.album.picUrl }]
+          })
+        }
       }
     }
 

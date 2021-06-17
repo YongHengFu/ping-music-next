@@ -1,10 +1,10 @@
 <template>
   <div class="play-item" :style="{background: musicId===listItem?.id?'rgba(236, 236, 236, 0.53)':''}">
     <div style="display: flex;min-width: 45%;max-width: 45%;">
-      <MiniCover :image="listItem?.album?.picUrl" :is-curr="musicId===listItem?.id" />
+      <MiniCover :image="listItem?.album?.picUrl" :is-curr="musicId===listItem?.id" style="min-width: 50px"/>
       <div class="main">
-        <span class="music-name">{{ listItem?.name }}</span>
-        <div>
+        <span :class="!listItem?.canPlay?.able?'invalid':'music-name'">{{ listItem?.name }}</span>
+        <div class="artist">
           <span
             v-for="(item,index) of listItem?.artist"
             :key="item.id"
@@ -59,6 +59,7 @@ export default defineComponent({
   align-items: center;
   padding: 10px;
   border-radius: 10px;
+  user-select: none;
 }
 .play-item:hover{
   background: rgba(236, 236, 236, 0.53);
@@ -87,5 +88,15 @@ export default defineComponent({
 }
 .play-item:hover .love{
   visibility: visible;
+}
+.artist{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+}
+.invalid{
+  font-size: 16px;
+  font-weight: bolder;
+  color: #e2e2e2;
 }
 </style>

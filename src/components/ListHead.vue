@@ -1,7 +1,7 @@
 <template>
   <div class="head">
     <div class="cover">
-      <img :preview="false" :src="info.image" style="width: 100%">
+      <img :preview="false" :src="info.image+'?param=500y500'" style="width: 100%">
     </div>
     <div class="content">
       <div class="info">

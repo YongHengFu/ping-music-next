@@ -34,7 +34,7 @@ export const getMusicData = (ids:string[]) => {
       const songs = res.songs
       const details = []
       for (const [index, item] of songs.entries()) {
-        details.push({
+        const song:any = {
           index: index,
           id: item.id,
           name: item.name,
@@ -42,8 +42,13 @@ export const getMusicData = (ids:string[]) => {
           album: item.al,
           mvId: item.mv,
           duration: item.dt / 1000,
-          publishTime: item.publishTime
-        })
+          publishTime: item.publishTime,
+          privileges: res.privileges[index],
+          noCopyrightRcmd: item.noCopyrightRcmd,
+          canPlay: null
+        }
+        song.canPlay = playAble(song)
+        details.push(song)
       }
       return details
     } else {
@@ -91,11 +96,62 @@ export const playList = async(id:string) => {
     }
   })
   if (ids) {
-    const list = await getMusicData(ids)
+    let list:any = []
+    for (let i = 0; i < ids.length; i += 50) {
+      if (i + 50 < ids.length) {
+        list = list.concat(await getMusicData(ids.slice(i, i + 50)))
+      } else {
+        list = list.concat(await getMusicData(ids.slice(i, ids.length)))
+      }
+      if (i % 100 === 0) {
+        if (list) {
+          localStorage.setItem('musicList', JSON.stringify(list))
+          store.commit('setMusicList', list)
+          if (i === 0) {
+            store.commit('setCurrMusic', list[0])
+          }
+        }
+      }
+    }
     if (list) {
       localStorage.setItem('musicList', JSON.stringify(list))
       store.commit('setMusicList', list)
-      store.commit('setCurrMusic', list[0])
     }
+  }
+}
+
+export const playAble = (item:any) => {
+  // debugger
+  const loginState = store.state.loginState
+  const user:any = {}
+  const result = {
+    able: true,
+    msg: ''
+  }
+  if (loginState && item?.privileges?.cs) {
+    return result
+  }
+  if (item.fee === 1 || item.privileges?.fee === 1) {
+    if (loginState && user?.vipType === 11) {
+      return result
+    } else {
+      result.able = false
+      result.msg = '会员歌曲'
+      return result
+    }
+  } else if (item.fee === 4 || item.privileges?.fee === 4) {
+    result.able = false
+    result.msg = '付费歌曲'
+    return result
+  } else if (item.noCopyrightRcmd) {
+    result.able = false
+    result.msg = '因合作方要求，该资源暂时下载'
+    return result
+  } else if (item.privileges?.st < 0 && loginState) {
+    result.able = false
+    result.msg = '因合作方要求，该资源暂时下载'
+    return result
+  } else {
+    return result
   }
 }

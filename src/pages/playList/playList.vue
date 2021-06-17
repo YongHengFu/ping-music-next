@@ -27,7 +27,7 @@ import ListHead from '@/components/ListHead.vue'
 import PlayItem from '@/pages/playList/components/PlayItem.vue'
 import ContextMenu from '@/components/ContextMenu.vue'
 import { getListById, getMusicDetail } from '@/api/music'
-import { playList } from '@/utils/musicList'
+import { playAble, playList } from '@/utils/musicList'
 
 export default defineComponent({
   name: 'PlayList',
@@ -84,29 +84,43 @@ export default defineComponent({
 
     const getMusicList = async(list:any) => {
       let ids = ''
-      for (const item of list) {
-        ids += item.id + ','
-      }
-      ids = ids.slice(0, ids.length - 1)
-      const param = { 'ids': ids }
-      await getMusicDetail(param).then((res:any) => {
-        if (res.code === 200) {
-          const songs = res.songs
-          const details = []
-          for (const item of songs) {
-            details.push({
-              id: item.id,
-              name: item.name,
-              artist: item.ar,
-              album: item.al,
-              mvId: item.mv,
-              duration: item.dt / 1000,
-              publishTime: item.publishTime
-            })
+      for (let i = 0; i < list.length; i += 50) {
+        ids = ''
+        if (i + 50 < list.length) {
+          for (const item of list.slice(i, i + 50)) {
+            ids += item.id + ','
           }
-          musicList.value = details
+        } else {
+          for (const item of list.slice(i, list.length)) {
+            ids += item.id + ','
+          }
         }
-      })
+        const param = { 'ids': ids.slice(0, ids.length - 1) }
+        await getMusicDetail(param).then((res:any) => {
+          if (res.code === 200) {
+            const songs = res.songs
+            const details = []
+            for (const [index, item] of songs.entries()) {
+              const song:any = {
+                index: index,
+                id: item.id,
+                name: item.name,
+                artist: item.ar,
+                album: item.al,
+                mvId: item.mv,
+                duration: item.dt / 1000,
+                publishTime: item.publishTime,
+                privileges: res.privileges[index],
+                noCopyrightRcmd: item.noCopyrightRcmd,
+                canPlay: null
+              }
+              song.canPlay = playAble(song)
+              details.push(song)
+            }
+            musicList.value = musicList.value.concat(details)
+          }
+        })
+      }
     }
 
     const DateFormat = (date:string) => {
@@ -147,9 +161,9 @@ export default defineComponent({
     }
 
     const init = async() => {
-      store.commit('setLoading', true)
+      // store.commit('setLoading', true)
       await getListData(<string>route.params.id)
-      store.commit('setLoading', false)
+      // store.commit('setLoading', false)
     }
     init()
 

@@ -2,7 +2,7 @@
   <div class="album-item">
     <div style="display: flex;align-items: center">
       <span class="index">{{index+1}}<svg-icon name="play-fill" class="play-fill discolour" /></span>
-      <span class="music-name">{{ music.name }}</span>
+      <span :class="!music?.canPlay?.able?'invalid':'music-name'">{{ music.name }}</span>
     </div>
     <span class="time"><svg-icon name="love" class="love" />{{ timeFormat(music.duration/1000) }}</span>
   </div>
@@ -71,5 +71,10 @@ export default defineComponent({
   margin-right: 20px;
   color: #cccccc;
   visibility: hidden;
+}
+.invalid{
+  font-size: 18px;
+  font-weight: bolder;
+  color: #e2e2e2;
 }
 </style>
