@@ -33,6 +33,7 @@ export const getMusicData = (ids:string[]) => {
     if (res.code === 200) {
       const songs = res.songs
       const details = []
+      let index2 = 0
       for (const [index, item] of songs.entries()) {
         const song:any = {
           index: index,
@@ -44,11 +45,16 @@ export const getMusicData = (ids:string[]) => {
           duration: item.dt / 1000,
           publishTime: item.publishTime,
           privileges: res.privileges[index],
+          fee: item.fee,
           noCopyrightRcmd: item.noCopyrightRcmd,
           canPlay: null
         }
         song.canPlay = playAble(song)
-        details.push(song)
+        if (song.canPlay.able) {
+          song.index = index2
+          index2++
+          details.push(song)
+        }
       }
       return details
     } else {
@@ -58,7 +64,7 @@ export const getMusicData = (ids:string[]) => {
 }
 
 // 播放整张专辑
-export const playAblume = async(id:string) => {
+export const playAblume = async(id:string, selectId:string) => {
   const param = { 'id': id }
   const ids = await getAlbumById(param).then((res:any) => {
     if (res.code === 200) {
@@ -73,16 +79,12 @@ export const playAblume = async(id:string) => {
   })
   if (ids) {
     const list = await getMusicData(ids)
-    if (list) {
-      localStorage.setItem('musicList', JSON.stringify(list))
-      store.commit('setMusicList', list)
-      store.commit('setCurrMusic', list[0])
-    }
+    play(list, selectId)
   }
 }
 
 // 播放整个歌单
-export const playList = async(id:string) => {
+export const playList = async(id:string, selectId:string) => {
   const param = { id }
   const ids = await getListById(param).then((res:any) => {
     if (res.code === 200) {
@@ -103,29 +105,50 @@ export const playList = async(id:string) => {
       } else {
         list = list.concat(await getMusicData(ids.slice(i, ids.length)))
       }
-      if (i % 100 === 0) {
+      /*      if (i % 100 === 0) {
         if (list) {
           localStorage.setItem('musicList', JSON.stringify(list))
           store.commit('setMusicList', list)
           if (i === 0) {
-            store.commit('setCurrMusic', list[0])
+            if (selectId !== '') {
+              for (const [index, item] of list.entries()) {
+                if (item.id === selectId) {
+                  store.commit('setCurrMusic', list[index])
+                }
+              }
+            } else {
+              store.commit('setCurrMusic', list[0])
+            }
           }
         }
-      }
+      }*/
     }
-    if (list) {
-      localStorage.setItem('musicList', JSON.stringify(list))
-      store.commit('setMusicList', list)
+    play(list, selectId)
+  }
+}
+
+const play = (list:any, selectId:string) => {
+  if (list) {
+    localStorage.setItem('musicList', JSON.stringify(list))
+    store.commit('setMusicList', list)
+    if (selectId !== '') {
+      for (const [index, item] of list.entries()) {
+        if (item.id === selectId) {
+          store.commit('setCurrMusic', list[index])
+        }
+      }
+    } else {
+      store.commit('setCurrMusic', list[0])
     }
   }
 }
 
 export const playAble = (item:any) => {
-  // debugger
   const loginState = store.state.loginState
   const user:any = {}
   const result = {
     able: true,
+    type: 0,
     msg: ''
   }
   if (loginState && item?.privileges?.cs) {
@@ -141,15 +164,18 @@ export const playAble = (item:any) => {
     }
   } else if (item.fee === 4 || item.privileges?.fee === 4) {
     result.able = false
+    result.type = 1
     result.msg = '付费歌曲'
     return result
   } else if (item.noCopyrightRcmd) {
     result.able = false
-    result.msg = '因合作方要求，该资源暂时下载'
+    result.type = 2
+    result.msg = '因合作方要求，该资源暂时下架'
     return result
   } else if (item.privileges?.st < 0 && loginState) {
     result.able = false
-    result.msg = '因合作方要求，该资源暂时下载'
+    result.type = 2
+    result.msg = '因合作方要求，该资源暂时下架'
     return result
   } else {
     return result

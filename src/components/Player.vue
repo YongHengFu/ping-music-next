@@ -57,13 +57,8 @@ export default defineComponent({
     const isNext = computed(() => store.state.audio.next)
 
     watch(currMusic, () => {
-      if (currMusic.value?.canPlay.able) {
-        source.value = `https://music.163.com/song/media/outer/url?id=${currMusic.value?.id}.mp3`
-        setMediaMetadata()
-      } else if (currMusic.value?.canPlay) {
-        message.error(currMusic.value?.canPlay.msg)
-        next()
-      }
+      source.value = `https://music.163.com/song/media/outer/url?id=${currMusic.value?.id}.mp3`
+      setMediaMetadata()
     })
 
     watch(state, () => {

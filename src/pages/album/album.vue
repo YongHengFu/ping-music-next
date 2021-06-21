@@ -12,7 +12,7 @@
         :key="item.id"
         :music="item"
         :index="index"
-        @dblclick="playSelect(index)"
+        @dblclick="playSelect(item)"
         @contextmenu="(e)=>showMenu(e,index)"
       />
     </div>
@@ -29,6 +29,7 @@ import AlbumItem from '@/components/AlbumItem.vue'
 import ContextMenu from '@/components/ContextMenu.vue'
 import { getAlbumById, getMusicDetail } from '@/api/music'
 import { playAble, playAblume } from '@/utils/musicList'
+import { message } from 'ant-design-vue'
 export default defineComponent({
   name: 'Album',
   components: {
@@ -103,6 +104,7 @@ export default defineComponent({
               duration: item.dt / 1000,
               publishTime: item.publishTime,
               privileges: res.privileges[index],
+              fee: item.fee,
               noCopyrightRcmd: item.noCopyrightRcmd,
               canPlay: null
             }
@@ -114,12 +116,22 @@ export default defineComponent({
       })
     }
 
-    const playAll = (index:number) => {
-      playAblume(<string>route.params.id)
+    const playAll = () => {
+      playAblume(<string>route.params.id, '')
     }
 
-    const playSelect = (index:number) => {
-      store.commit('setCurrMusic', store.state.musicList[index])
+    const playSelect = (music:any) => {
+      if (music.canPlay.able) {
+        for (const item of store.state.musicList) {
+          if (item.id === music.id) {
+            store.commit('setCurrMusic', item)
+            return
+          }
+        }
+        playAblume(<string>route.params.id, music.id)
+      } else {
+        message.error(music.canPlay.msg)
+      }
     }
 
     const showMenu = (e: { preventDefault: () => void; x: number; y: number }, index: number) => {
