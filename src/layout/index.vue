@@ -8,6 +8,7 @@
             <p class="group">在线音乐</p>
             <p
               v-for="item of menuList('a')"
+              v-show="item.index!==0||loginState"
               :key="item.icon"
               :class="currPath===item.path ? 'item-click' : 'item'"
               @click="pageChange(item.index)"
@@ -20,6 +21,7 @@
             <p class="group">我的音乐</p>
             <p
               v-for="item of menuList('b')"
+              v-show="(item.index!==4&&item.index!==6)||loginState"
               :key="item.icon"
               :class="currPath===item.path ? 'item-click' : 'item'"
               @click="pageChange(item.index)"
@@ -28,7 +30,7 @@
               {{ item.label }}
             </p>
           </div>
-          <div>
+          <div v-if="loginState">
             <div class="group">
               <span>创建的歌单</span>
               <div>
@@ -47,7 +49,7 @@
               </p>
             </div>
           </div>
-          <div style="margin-top: 25px">
+          <div v-if="loginState" style="margin-top: 25px">
             <div class="group">
               <span>收藏的歌单</span>
               <svg-icon :name="isShowCollect?'up':'down'" style="font-size: 12px;cursor: pointer" @click="isShowCollect=!isShowCollect" />
@@ -92,7 +94,6 @@
               </transition>
             </router-view>
           </div>
-
           <ListDrawer :is-show-drawer="isShowDrawer" @closeDrawer="isShowDrawer=false" />
         </LayoutContent>
         <LayoutFooter class="footer">
@@ -133,6 +134,7 @@ import {
   PlayCircleOutlined,
   UpOutlined
 } from '@ant-design/icons-vue'
+import { getLikeList } from '@/api/music'
 
 interface item {
   index: number;
@@ -206,7 +208,7 @@ export default defineComponent({
         index: 4,
         label: '我喜欢',
         icon: 'HeartOutlined',
-        path: '/4'
+        path: '/myLike'
       },
       {
         index: 5,
@@ -217,7 +219,7 @@ export default defineComponent({
       },
       {
         index: 6,
-        label: '下载管理',
+        label: '音乐云盘',
         icon: 'CloudDownloadOutlined',
         path: '/6'
       },
@@ -261,13 +263,16 @@ export default defineComponent({
       userAvatar.value = <string>localStorage.getItem('avatarUrl')
       nickName.value = <string>localStorage.getItem('nickName')
       if (loginState.value) {
-        getPlayList(<string>localStorage.getItem('usid'))
+        const usid = <string>localStorage.getItem('usid')
+        getLikeData(usid)
+        getPlayList(usid)
       } else {
         localStorage.removeItem('cookie')
         playListCreate.value = []
         localStorage.removeItem('playListCreate')
         playListCollect.value = []
         localStorage.removeItem('playListCollect')
+        store.commit('setLikeList', [])
       }
     })
 
@@ -346,19 +351,21 @@ export default defineComponent({
       const param = { uid: usid }
       getUserPlayList(param).then((res:any) => {
         if (res.code === 200) {
-          for (const item of res.playlist) {
+          for (const [index, item] of res.playlist.entries()) {
             const listItem = {
               name: item.name,
               id: item.id,
               image: item.coverImgUrl
             }
             if (item.creator.userId === Number(usid)) {
+              if (index === 0) {
+                localStorage.setItem('myLikeMusicId', listItem.id)
+              }
               playListCreate.value.push(listItem)
             } else {
               playListCollect.value.push(listItem)
             }
           }
-          console.log(playListCreate.value)
           localStorage.setItem('playListCreate', JSON.stringify(playListCreate.value))
           localStorage.setItem('playListCollect', JSON.stringify(playListCollect.value))
         }
@@ -367,6 +374,15 @@ export default defineComponent({
 
     const openPlayList = (id:string) => {
       router.push('/playList/' + id)
+    }
+
+    const getLikeData = (usid:string) => {
+      const param = { uid: usid }
+      getLikeList(param).then((res:any) => {
+        if (res.code === 200) {
+          store.commit('setLikeList', res.ids)
+        }
+      })
     }
 
     const routePrev = () => {
@@ -379,6 +395,7 @@ export default defineComponent({
     }
 
     return {
+      route,
       isShowDrawer,
       itemList,
       menuList,
@@ -390,6 +407,7 @@ export default defineComponent({
       isShowCreate,
       isShowCollect,
       currPath,
+      loginState,
       pageChange,
       showDrawer,
       showDialog,

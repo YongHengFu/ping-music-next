@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, createWebHashHistory, RouteRecordRaw } 
 import Layout from '@/layout/index.vue'
 import recommend from '@/pages/recommend.vue'
 import musicHall from '@/pages/MusicHall/musicHall.vue'
+import myLike from '@/pages/myLike/myLike.vue'
 import historyPlay from '@/pages/historyPlay.vue'
 import playList from '@/pages/playList/playList.vue'
 import album from '@/pages/album/album.vue'
@@ -15,29 +16,34 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'recommend',
         component: recommend,
-        meta: { title: 'PING' }
+        meta: { title: 'PING', keepAlive: true }
       },
       {
         path: 'musicHall',
         component: musicHall,
-        meta: { title: 'PING' }
+        meta: { title: 'PING', keepAlive: true }
+      },
+      {
+        path: 'myLike',
+        component: myLike,
+        meta: { title: 'PING', keepAlive: true }
       },
       {
         path: 'historyPlay',
         component: historyPlay,
-        meta: { title: 'PING' }
+        meta: { title: 'PING', keepAlive: true }
       },
       {
         path: 'playList/:id',
         name: 'playList',
         component: playList,
-        meta: { title: 'PING' }
+        meta: { title: 'PING', keepAlive: false }
       },
       {
         path: 'album/:id',
         name: 'album',
         component: album,
-        meta: { title: 'PING' }
+        meta: { title: 'PING', keepAlive: false }
       }
     ]
   }

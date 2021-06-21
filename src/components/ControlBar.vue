@@ -5,7 +5,7 @@
     <div class="control-bar">
       <div class="bar-left">
         <div style="position: relative" class="cover" @click="showPlayView">
-          <Image :src="imgUrl" :type="0" class="cover-image"/>
+          <Image :src="imgUrl" :type="0" class="cover-image" />
           <div class="cover-mask">
             <svg-icon name="upShow" style="width: 100%;height: 100%;padding: 30%" />
           </div>
@@ -18,8 +18,8 @@
             <svg-icon
               v-if="currMusic"
               name="love"
-              class="discolour"
-              style="font-size: 18px; margin-left: 20px; color: #cccccc"
+              :class="likeList.indexOf(currMusic?.id)!==-1?'like-active':'like'"
+              @click="setLike"
             />
           </div>
 
@@ -97,6 +97,7 @@ import VolumeBar from '@/components/VolumeBar.vue'
 import coverImage from '@/assets/image/cover.png'
 import timeFormat from '@/utils/timeFormat'
 import Image from '@/components/global/Image.vue'
+import { likeMusic } from '@/api/music'
 export default defineComponent({
   name: 'ControlBar',
   components: {
@@ -120,6 +121,7 @@ export default defineComponent({
     const mute = computed(() => store.state.audio.mute)
     const musicList = computed(() => store.state.musicList)
     const currMusic = computed(() => store.state.currMusic)
+    const likeList = computed(() => store.state.likeList)
 
     watch(currentDura, () => {
       currFormat.value = timeFormat(currentDura.value)
@@ -130,7 +132,7 @@ export default defineComponent({
     })
 
     watch(currMusic, () => {
-      imgUrl.value = currMusic.value?.album.picUrl + '?param=500y500'
+      imgUrl.value = currMusic.value?.album.picUrl + '?param=800y800'
     })
 
     const showPlayView = () => {
@@ -168,6 +170,28 @@ export default defineComponent({
       ctx.emit('showDrawer')
     }
 
+    const setLike = () => {
+      const param = {
+        id: currMusic.value?.id,
+        like: false
+      }
+      const index = likeList.value.indexOf(currMusic.value?.id)
+      if (index === -1) {
+        param.like = true
+      }
+      likeMusic(param).then((res:any) => {
+        if (res.code === 200) {
+          const ids:any = [].concat(likeList.value)
+          if (index === -1) {
+            ids.push(param.id)
+          } else {
+            ids.splice(index, 1)
+          }
+          store.commit('setLikeList', ids)
+        }
+      })
+    }
+
     return {
       state,
       imgUrl,
@@ -179,6 +203,7 @@ export default defineComponent({
       musicList,
       currFormat,
       totalFormat,
+      likeList,
       showPlayView,
       changeState,
       switchMode,
@@ -186,7 +211,8 @@ export default defineComponent({
       volumeMute,
       prev,
       next,
-      showDrawer
+      showDrawer,
+      setLike
     }
   }
 })
@@ -251,6 +277,20 @@ export default defineComponent({
 }
 .cover:hover .cover-mask{
   opacity: 1;
+}
+
+.like{
+  margin-left: 20px;
+  color: #cccccc;
+  cursor: pointer;
+}
+.like:hover{
+  color: var(--primary-color);
+}
+.like-active{
+  margin-left: 20px;
+  color: red;
+  cursor: pointer;
 }
 
 .prev-button {

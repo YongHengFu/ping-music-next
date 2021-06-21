@@ -22,6 +22,7 @@ const store = createStore({
     currMusic: {
       index: -1
     },
+    likeList: [],
     records: [],
     loading: false,
     showPlayView: false,
@@ -45,6 +46,9 @@ const store = createStore({
     },
     setCurrMusic(state, music) {
       state.currMusic = music
+    },
+    setLikeList(state, list) {
+      state.likeList = list
     },
     setRecords(state, list) {
       state.records = list
@@ -80,6 +84,9 @@ const store = createStore({
     },
     getCurrMusic(state) {
       return state.currMusic
+    },
+    getLikeList(state) {
+      return state.likeList
     },
     getRecords(state) {
       return state.records

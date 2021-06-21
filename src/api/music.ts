@@ -83,3 +83,21 @@ export function getLyricById(params:object) {
     params
   })
 }
+
+// 根据usid获取喜欢音乐列表
+export function getLikeList(params:object) {
+  return request({
+    url: '/likelist',
+    method: 'get',
+    params
+  })
+}
+
+// 根据id添加/取消喜欢歌曲
+export function likeMusic(params:object) {
+  return request({
+    url: '/like',
+    method: 'get',
+    params // 可选参数 : like: 默认为 true 即喜欢 , 若传 false, 则取消喜欢
+  })
+}

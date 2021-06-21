@@ -13,7 +13,11 @@
           >{{ item.name }}{{ index===currMusic?.artist.length-1? '' : '/' }}</span>
         </div>
       </div>
-      <svg-icon name="love" style="color: #FFFFFF" />
+      <svg-icon
+        name="love"
+        :class="likeList.indexOf(currMusic?.id)!==-1?'like-active':'like'"
+        @click="setLike"
+      />
     </div>
     <div style="width: 100%;display: flex;align-items: center;color: #FFFFFF">
       <span>{{ currFormat }}</span>
@@ -65,6 +69,7 @@ import { useStore } from 'vuex'
 import ProgressBar from '@/components/ProgressBar.vue'
 import VolumeBar from '@/components/VolumeBar.vue'
 import timeFormat from '@/utils/timeFormat'
+import { likeMusic } from '@/api/music'
 export default defineComponent({
   name: 'ControlBarMini',
   components: {
@@ -84,6 +89,7 @@ export default defineComponent({
     const mode = computed(() => store.state.audio.mode)
     const mute = computed(() => store.state.audio.mute)
     const currMusic = computed(() => store.state.currMusic)
+    const likeList = computed(() => store.state.likeList)
 
     watch(currentDura, () => {
       currFormat.value = timeFormat(currentDura.value)
@@ -123,6 +129,28 @@ export default defineComponent({
       store.commit('setAudio', param)
     }
 
+    const setLike = () => {
+      const param = {
+        id: currMusic.value?.id,
+        like: false
+      }
+      const index = likeList.value.indexOf(currMusic.value?.id)
+      if (index === -1) {
+        param.like = true
+      }
+      likeMusic(param).then((res:any) => {
+        if (res.code === 200) {
+          const ids:any = [].concat(likeList.value)
+          if (index === -1) {
+            ids.push(param.id)
+          } else {
+            ids.splice(index, 1)
+          }
+          store.commit('setLikeList', ids)
+        }
+      })
+    }
+
     return {
       state,
       currMusic,
@@ -132,12 +160,14 @@ export default defineComponent({
       jump,
       currFormat,
       totalFormat,
+      likeList,
       changeState,
       switchMode,
       jumpTo,
       volumeMute,
       prev,
-      next
+      next,
+      setLike
     }
   }
 })
@@ -164,6 +194,19 @@ export default defineComponent({
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
+}
+.like{
+  margin-right: 5px;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+.like:hover{
+  color: var(--primary-color);
+}
+.like-active{
+  margin-right: 5px;
+  color: red;
+  cursor: pointer;
 }
 .control{
   width: 100%;

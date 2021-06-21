@@ -1,7 +1,7 @@
 <template>
   <div class="play-item" :style="{background: musicId===listItem?.id?'rgba(236, 236, 236, 0.53)':''}">
     <div style="display: flex;min-width: 45%;max-width: 45%;">
-      <MiniCover :image="listItem?.album?.picUrl" :is-curr="musicId===listItem?.id" style="min-width: 50px"/>
+      <MiniCover :image="listItem?.album?.picUrl" :is-curr="musicId===listItem?.id" style="min-width: 50px" />
       <div class="main">
         <span :class="!listItem?.canPlay?.able?'invalid':'music-name'">{{ listItem?.name }}</span>
         <div class="artist">
@@ -18,16 +18,19 @@
     <div class="album">
       <span class="discolour" @click="openAlbum(listItem.album.id)">{{ listItem?.album?.name }}</span>
     </div>
-    <span class="time"><svg-icon name="love" class="love" />{{ timeFormat(listItem?.duration) }}</span>
+    <span class="time">
+      <svg-icon v-if="listItem?.canPlay?.type!==2" name="love" :class="likeList.indexOf(listItem?.id)!==-1?'like-active':'like'" @click="setLike" />
+      {{ timeFormat(listItem?.duration) }}</span>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, watch, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import MiniCover from '@/components/MiniCover.vue'
 import timeFormat from '@/utils/timeFormat'
+import { likeMusic } from '@/api/music'
 export default defineComponent({
   name: 'PlayItem',
   components: {
@@ -40,13 +43,38 @@ export default defineComponent({
     const store = useStore()
     const router = useRouter()
     const musicId = computed(() => store.state.currMusic?.id)
+    const likeList = computed(() => store.state.likeList)
     const openAlbum = (id:string) => {
       router.push('/album/' + id)
     }
+
+    const setLike = () => {
+      const param = {
+        id: props.listItem?.id,
+        like: false
+      }
+      const index = likeList.value.indexOf(props.listItem?.id)
+      if (index === -1) {
+        param.like = true
+      }
+      likeMusic(param).then((res:any) => {
+        if (res.code === 200) {
+          const ids:any = [].concat(likeList.value)
+          if (index === -1) {
+            ids.push(param.id)
+          } else {
+            ids.splice(index, 1)
+          }
+          store.commit('setLikeList', ids)
+        }
+      })
+    }
     return {
       musicId,
+      likeList,
       timeFormat,
-      openAlbum
+      openAlbum,
+      setLike
     }
   }
 })
@@ -81,12 +109,22 @@ export default defineComponent({
   text-overflow: ellipsis;
   white-space:nowrap;
 }
-.love{
-  margin-right: 20px;
+.like{
+  cursor: pointer;
+  margin-right: 30px;
   color: #cccccc;
   visibility: hidden;
 }
-.play-item:hover .love{
+.like:hover{
+  color: var(--primary-color);
+}
+.like-active{
+  cursor: pointer;
+  margin-right: 30px;
+  visibility: visible;
+  color: red;
+}
+.play-item:hover .like{
   visibility: visible;
 }
 .artist{

@@ -1,25 +1,54 @@
 <template>
   <div class="album-item">
     <div style="display: flex;align-items: center">
-      <span class="index">{{index+1}}<svg-icon name="play-fill" class="play-fill discolour" /></span>
+      <span class="index">{{ index+1 }}<svg-icon name="play-fill" class="play-fill discolour" /></span>
       <span :class="!music?.canPlay?.able?'invalid':'music-name'">{{ music.name }}</span>
     </div>
-    <span class="time"><svg-icon name="love" class="love" />{{ timeFormat(music.duration/1000) }}</span>
+    <span class="time">
+      <svg-icon v-if="music?.canPlay?.type!==2" name="love" :class="likeList.indexOf(music?.id)!==-1?'like-active':'like'" @click="setLike"/>
+      {{ timeFormat(music.duration) }}</span>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useStore } from 'vuex'
 import timeFormat from '@/utils/timeFormat'
+import { likeMusic } from '@/api/music'
 export default defineComponent({
   name: 'AlbumItem',
   props: {
     music: Object,
     index: Number
   },
-  setup() {
+  setup(props) {
+    const store = useStore()
+    const likeList = computed(() => store.state.likeList)
+    const setLike = () => {
+      const param = {
+        id: props.music?.id,
+        like: false
+      }
+      const index = likeList.value.indexOf(props.music?.id)
+      if (index === -1) {
+        param.like = true
+      }
+      likeMusic(param).then((res:any) => {
+        if (res.code === 200) {
+          const ids:any = [].concat(likeList.value)
+          if (index === -1) {
+            ids.push(param.id)
+          } else {
+            ids.splice(index, 1)
+          }
+          store.commit('setLikeList', ids)
+        }
+      })
+    }
     return {
-      timeFormat
+      likeList,
+      timeFormat,
+      setLike
     }
   }
 })
@@ -63,14 +92,26 @@ export default defineComponent({
   width: 100%;
   height: 100%;
 }
+.album-item:hover .like{
+  visibility: visible;
+}
 .music-name{
   font-size: 18px;
   font-weight: bolder;
 }
-.love{
-  margin-right: 20px;
+.like{
+  cursor: pointer;
+  margin-right: 30px;
   color: #cccccc;
   visibility: hidden;
+}
+.like:hover{
+  color: var(--primary-color);
+}
+.like-active{
+  cursor: pointer;
+  margin-right: 30px;
+  color: red;
 }
 .invalid{
   font-size: 18px;
