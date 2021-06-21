@@ -21,7 +21,7 @@ export default defineComponent({
   },
   setup(props, ctx) {
     let imgUrl = coverImage
-    imgUrl = props?.image + '?param=300y300'
+    imgUrl = props?.image + '?param=500y500'
     const title = props?.text ?? 'null'
     const onOpen = () => {
       ctx.emit('open')

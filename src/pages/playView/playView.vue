@@ -38,7 +38,7 @@ export default defineComponent({
     const imgUrl = ref(coverImage)
 
     watch(currMusic, () => {
-      imgUrl.value = currMusic.value?.album.picUrl + '?param=500y500'
+      imgUrl.value = currMusic.value?.album.picUrl + '?param=800y800'
     })
 
     const showPlayView = () => {
