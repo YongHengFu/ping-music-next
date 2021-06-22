@@ -11,7 +11,8 @@
         v-for="item of musicList"
         :key="item.id"
         :list-item="item"
-        :list-id="route.params.id"
+        :list-id="listId"
+        @playSelect="playSelect(item)"
         @dblclick="playSelect(item)"
         @contextmenu="(e)=>showMenu(e,item)"
       />
@@ -51,6 +52,7 @@ export default defineComponent({
     const menuInfo = ref({})
     let playMusicList:any = []
     let isPlayAll = false
+    const listId = 'playList' + route.params.id
 
     const getListData = async(id:string) => {
       const param = { 'id': id }
@@ -200,7 +202,7 @@ export default defineComponent({
     init()
 
     return {
-      route,
+      listId,
       loading,
       showAll,
       playListInfo,

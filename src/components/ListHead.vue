@@ -6,13 +6,6 @@
     <div class="content">
       <div class="info">
         <span class="h1" style="margin-bottom: 0px">{{ info.name }}</span>
-
-        <!--          <div style="position: relative; margin-top: 5px;">-->
-        <!--            <span id="description" :class="showAll?'description-show':'description'">{{ info.description }}-->
-        <!--              <br><a v-if="showAll" style="float: right;font-size: 13px" @click="showAll=false">[收起]</a>-->
-        <!--            </span>-->
-        <!--            <a v-if="isOverflow&&!showAll" style="position: absolute;right: 0;font-size: 13px" @click="showAll=true">[展开]</a>-->
-        <!--          </div>-->
       </div>
       <div class="creator">
         <img :src="info.creatorImg+'?param=100y100'" style="margin-right: 10px;width: 36px;border-radius: 50%">
@@ -27,7 +20,7 @@
         </div>
       </div>
       <div>
-        <span id="description" class="description">{{ info.description }}
+        <span id="description" class="description" :title="info.description">{{ info.description }}
         </span>
       </div>
       <div class="handle">
@@ -107,42 +100,11 @@ export default defineComponent({
   font-size: 13px;
   color: #929292;
   padding-right: 40px;
-  /*display: inline-block;*/
-  /*overflow: hidden;*/
-  /*text-overflow: ellipsis;*/
-  /*white-space:nowrap;*/
+  user-select: none;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
-}
-.description-mask{
-  width: 100%;
-  position: absolute;
-  z-index: 3;
-  filter: blur(30px);
-  overflow: hidden;
-  background: #1DCF9F;
-}
-.description-show{
-  width: 100%;
-  font-size: 13px;
-  position: absolute;
-  padding: 10px 20px 5px 20px;
-  z-index: 3;
-  border-radius: 5px;
-  overflow: hidden;
-}
-.description-show:after{
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  filter: blur(30px);
-  background: #eeeeee;
-  z-index: -1;
 }
 button{
   width: 40px;

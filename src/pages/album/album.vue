@@ -12,7 +12,8 @@
         :key="item.id"
         :music="item"
         :index="index"
-        :list-id="route.params.id"
+        :list-id="listId"
+        @playSelect="playSelect(item)"
         @dblclick="playSelect(item)"
         @contextmenu="(e)=>showMenu(e,index)"
       />
@@ -51,6 +52,7 @@ export default defineComponent({
     const menuInfo = ref({})
     let playMusicList:any = []
     let isPlayAll = false
+    const listId = 'album' + route.params.id
 
     const getAlbumData = async(id:string) => {
       const param = { 'id': id }
@@ -184,7 +186,7 @@ export default defineComponent({
     init()
 
     return {
-      route,
+      listId,
       loading,
       showAll,
       albumInfo,

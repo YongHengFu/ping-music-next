@@ -1,7 +1,12 @@
 <template>
-  <div class="play-item" :style="{background: musicId===listItem?.id?'rgba(236, 236, 236, 0.53)':''}">
+  <div class="play-item" :style="{background: (musicId===listItem?.id&&listId===currListId)?'rgba(236, 236, 236, 0.53)':''}">
     <div style="display: flex;min-width: 45%;max-width: 45%;">
-      <MiniCover :image="listItem?.album?.picUrl" :is-curr="musicId===listItem?.id&&listId===listItem?.listId" style="min-width: 50px" />
+      <MiniCover
+        :image="listItem?.album?.picUrl"
+        :is-curr="musicId===listItem?.id&&listId===currListId"
+        style="min-width: 50px"
+        @click="playSelect"
+      />
       <div class="main">
         <span :class="!listItem?.canPlay?.able?'invalid':'music-name'">{{ listItem?.name }}</span>
         <div class="artist">
@@ -44,9 +49,14 @@ export default defineComponent({
     const store = useStore()
     const router = useRouter()
     const musicId = computed(() => store.state.currMusic?.id)
+    const currListId = computed(() => store.state.currMusic?.listId)
     const likeList = computed(() => store.state.likeList)
     const openAlbum = (id:string) => {
       router.push('/album/' + id)
+    }
+
+    const playSelect = () => {
+      ctx.emit('playSelect')
     }
 
     const setLike = () => {
@@ -73,6 +83,8 @@ export default defineComponent({
     return {
       musicId,
       likeList,
+      currListId,
+      playSelect,
       timeFormat,
       openAlbum,
       setLike
