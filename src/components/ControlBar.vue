@@ -11,10 +11,9 @@
           </div>
         </div>
 
-        <div style="display: flex;flex-direction: column;margin-left: 10px">
-          <div>
-            <span style="font-size: 18px;font-weight: bolder">
-              {{ currMusic?.name??'Ping音乐' }}</span>
+        <div style="display: flex;flex-direction: column;margin-left: 10px;width: 100%">
+          <div style="display: flex;align-items:center;width: 100%">
+            <span class="music-name">{{ currMusic?.name??'Ping音乐' }}</span>
             <svg-icon
               v-if="currMusic"
               name="love"
@@ -25,7 +24,7 @@
 
           <div>
             <span v-if="!currMusic">FuYH</span>
-            <template v-else>
+            <div v-else class="artist">
               <span
                 v-for="(item,index) of currMusic?.artist"
                 :key="item.id"
@@ -34,7 +33,9 @@
                 <span class="discolour">{{ item?.name }}</span>
                 <span v-if="index!==currMusic?.artist.length-1">/</span>
               </span>
-            </template>
+              <span> - </span>
+              <span class="discolour">{{currMusic?.album?.name}}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -228,7 +229,7 @@ export default defineComponent({
 }
 
 .bar-left {
-  width: 100%;
+  min-width: calc((100% - 300px) / 2);
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -238,6 +239,7 @@ export default defineComponent({
 .bar-center {
   width: 250px;
   min-width: 250px;
+  margin: 0 25px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -245,7 +247,7 @@ export default defineComponent({
 }
 
 .bar-right {
-  width: 100%;
+  min-width: calc((100% - 300px) / 2);
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -254,8 +256,10 @@ export default defineComponent({
 .cover{
   border: 1px solid #ededed;
   overflow: hidden;
-  width: 50px;
-  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  max-width: 50px;
+  max-height: 50px;
 }
 .cover-image{
   transition: 0.3s;
@@ -278,7 +282,20 @@ export default defineComponent({
 .cover:hover .cover-mask{
   opacity: 1;
 }
-
+.music-name{
+  max-width: 90%;
+  font-size: 18px;
+  font-weight: bolder;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+}
+.artist{
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+}
 .like{
   margin-left: 20px;
   color: #cccccc;

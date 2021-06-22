@@ -2,16 +2,27 @@
   <div class="control-bar">
     <div class="info">
       <div class="text">
-        <span style="color: #FFFFFF;font-size: 18px;font-weight: bolder">{{ currMusic?.name??'Ping音乐' }}</span>
+        <span class="music-name">{{ currMusic?.name??'Ping音乐' }}</span>
         <span v-if="!currMusic" style="color: #cccccc">FuYH</span>
-        <div v-else>
+        <div v-else class="artist">
+          <span
+            v-for="(item,index) of currMusic?.artist"
+            :key="item.id"
+          >
+            <span class="discolour text-color">{{ item?.name }}</span>
+            <span v-if="index!==currMusic.artist.length-1"> / </span>
+          </span>
+          <span> - </span>
+          <span class="discolour text-color">{{currMusic?.album?.name}}</span>
+        </div>
+        <!--        <div v-else>
           <span
             v-for="(item,index) of currMusic?.artist"
             :key="item.id"
             class="discolour"
             style="color: #FFFFFF"
           >{{ item.name }}{{ index===currMusic?.artist.length-1? '' : '/' }}</span>
-        </div>
+        </div>-->
       </div>
       <svg-icon
         name="love"
@@ -190,12 +201,33 @@ export default defineComponent({
   align-items: center;
 }
 .text{
+  max-width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
 }
+.music-name{
+  width: 100%;
+  font-size: 18px;
+  font-weight: bolder;
+  color: #FFFFFF;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+}
+.artist{
+  width: 100%;
+  color: #FFFFFF;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+}
+.text-color{
+  color: #FFFFFF;
+}
 .like{
+  min-width: 10%;
   margin-right: 5px;
   color: #FFFFFF;
   cursor: pointer;
@@ -204,6 +236,7 @@ export default defineComponent({
   color: var(--primary-color);
 }
 .like-active{
+  min-width: 10%;
   margin-right: 5px;
   color: red;
   cursor: pointer;
