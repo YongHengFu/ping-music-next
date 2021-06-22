@@ -1,14 +1,14 @@
 <template>
   <div class="view">
     <div class="mask">
-      <Image :src="imgUrl" style="width: 100%;height: 100%;object-fit: cover"/>
+      <Image :src="imgUrl" :type="0" style="width: 100%;height: 100%;object-fit: cover"/>
     </div>
     <div>
       <svg-icon name="down" style="font-size: 24px;margin: 20px 0 0 50px;color: #FFFFFF" @click="showPlayView" />
     </div>
     <div id="container" class="container">
       <div class="left">
-        <img :src="imgUrl" class="cover" style="margin-bottom: 30px;width: 100%">
+        <Image :src="imgUrl" :type="0" radius="5px" style="margin-bottom: 30px;width: 100%;"/>
         <ControlBarMini />
       </div>
       <div class="right">
@@ -23,19 +23,16 @@ import { computed, defineComponent, watch, ref } from 'vue'
 import { useStore } from 'vuex'
 import ControlBarMini from './components/ControlBarMini.vue'
 import Lyric from './components/Lyric.vue'
-import coverImage from '@/assets/image/cover.png'
-import Image from '@/components/global/Image.vue'
 export default defineComponent({
   name: 'PlayView',
   components: {
-    Image,
     Lyric,
     ControlBarMini
   },
   setup() {
     const store = useStore()
     const currMusic = computed(() => store.state.currMusic)
-    const imgUrl = ref(coverImage)
+    const imgUrl = ref('')
 
     watch(currMusic, () => {
       imgUrl.value = currMusic.value?.album.picUrl + '?param=800y800'
@@ -46,7 +43,6 @@ export default defineComponent({
     }
 
     return {
-      coverImage,
       imgUrl,
       showPlayView
     }
