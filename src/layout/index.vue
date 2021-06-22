@@ -86,10 +86,10 @@
         <LayoutContent id="content" class="content">
           <Loading />
           <div style="width: 100%;height: 100%;overflow-y: scroll">
-            <router-view v-slot="{ Component }" :key="key" class="view">
+            <router-view v-slot="{ Component }" class="view">
               <transition>
-                <keep-alive>
-                  <component :is="Component" />
+                <keep-alive :include="liveRoute">
+                  <component :is="Component" :key="key" />
                 </keep-alive>
               </transition>
             </router-view>
@@ -237,6 +237,7 @@ export default defineComponent({
     const isShowCreate = ref(true)
     const isShowCollect = ref(true)
     const currPath = toRef(route, 'fullPath')
+    const liveRoute = ref(<string>[])
 
     const menuList = computed(() => {
       return function(group: string) {
@@ -280,29 +281,6 @@ export default defineComponent({
       refreshLoginState()
     })
 
-    onMounted(() => {
-      // localStorage.removeItem('lastTime')
-      refreshLoginState()
-
-      const erd = elementResizeDetectorMaker()
-
-      erd.listenTo(document.getElementById('content'), function(element: any) {
-        debounce(function(ele: { offsetWidth: number }) {
-          const width = ele.offsetWidth
-          let blockSize = (width / 5) - (width * (40 / 1000))
-          blockSize = blockSize > 240 ? 240 : blockSize
-          if (width - (blockSize + 20) * 6 > 40) {
-            store.commit('setBlockNum', 6)
-            document.documentElement.style.setProperty(`--block-num`, 6 + '')
-          } else {
-            store.commit('setBlockNum', 5)
-            document.documentElement.style.setProperty(`--block-num`, 5 + '')
-          }
-          document.documentElement.style.setProperty(`--block-size`, blockSize + 'px')
-        }, element)
-      })
-    })
-
     const debounce = (func: { (ele: { offsetWidth: number }): void; (...args: any[]): void }, element: any) => {
       if (timer) {
         clearTimeout(timer)
@@ -311,6 +289,12 @@ export default defineComponent({
     }
 
     const pageChange = (index: number) => {
+      if (itemList[index].path.indexOf('playList') === -1) {
+        const routeIndex = liveRoute.value.indexOf('playList')
+        if (routeIndex !== -1) {
+          liveRoute.value.splice(routeIndex, 1)
+        }
+      }
       router.push({ path: itemList[index].path })
     }
 
@@ -394,6 +378,41 @@ export default defineComponent({
       console.log(router.getRoutes())
     }
 
+    const setLiveRoute = () => {
+      router.beforeEach((to, from, next) => {
+        if (to.name === 'playList') {
+          liveRoute.value.push('playList')
+        }
+        if (to.name === 'album') {
+          liveRoute.value.push('album')
+        }
+        next()
+      })
+    }
+
+    onMounted(() => {
+      // localStorage.removeItem('lastTime')
+      refreshLoginState()
+      setLiveRoute()
+      const erd = elementResizeDetectorMaker()
+
+      erd.listenTo(document.getElementById('content'), function(element: any) {
+        debounce(function(ele: { offsetWidth: number }) {
+          const width = ele.offsetWidth
+          let blockSize = (width / 5) - (width * (40 / 1000))
+          blockSize = blockSize > 240 ? 240 : blockSize
+          if (width - (blockSize + 20) * 6 > 40) {
+            store.commit('setBlockNum', 6)
+            document.documentElement.style.setProperty(`--block-num`, 6 + '')
+          } else {
+            store.commit('setBlockNum', 5)
+            document.documentElement.style.setProperty(`--block-num`, 5 + '')
+          }
+          document.documentElement.style.setProperty(`--block-size`, blockSize + 'px')
+        }, element)
+      })
+    })
+
     return {
       route,
       isShowDrawer,
@@ -408,6 +427,7 @@ export default defineComponent({
       isShowCollect,
       currPath,
       loginState,
+      liveRoute,
       pageChange,
       showDrawer,
       showDialog,
