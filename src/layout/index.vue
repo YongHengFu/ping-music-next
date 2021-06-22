@@ -87,11 +87,9 @@
           <Loading />
           <div style="width: 100%;height: 100%;overflow-y: scroll">
             <router-view v-slot="{ Component }" class="view">
-              <transition>
-                <keep-alive :include="liveRoute">
-                  <component :is="Component" :key="key" />
-                </keep-alive>
-              </transition>
+              <keep-alive>
+                <component :is="Component" :key="key" />
+              </keep-alive>
             </router-view>
           </div>
           <ListDrawer :is-show-drawer="isShowDrawer" @closeDrawer="isShowDrawer=false" />
@@ -237,7 +235,6 @@ export default defineComponent({
     const isShowCreate = ref(true)
     const isShowCollect = ref(true)
     const currPath = toRef(route, 'fullPath')
-    const liveRoute = ref(<string>[])
 
     const menuList = computed(() => {
       return function(group: string) {
@@ -289,12 +286,6 @@ export default defineComponent({
     }
 
     const pageChange = (index: number) => {
-      if (itemList[index].path.indexOf('playList') === -1) {
-        const routeIndex = liveRoute.value.indexOf('playList')
-        if (routeIndex !== -1) {
-          liveRoute.value.splice(routeIndex, 1)
-        }
-      }
       router.push({ path: itemList[index].path })
     }
 
@@ -378,22 +369,9 @@ export default defineComponent({
       console.log(router.getRoutes())
     }
 
-    const setLiveRoute = () => {
-      router.beforeEach((to, from, next) => {
-        if (to.name === 'playList') {
-          liveRoute.value.push('playList')
-        }
-        if (to.name === 'album') {
-          liveRoute.value.push('album')
-        }
-        next()
-      })
-    }
-
     onMounted(() => {
       // localStorage.removeItem('lastTime')
       refreshLoginState()
-      setLiveRoute()
       const erd = elementResizeDetectorMaker()
 
       erd.listenTo(document.getElementById('content'), function(element: any) {
@@ -427,7 +405,6 @@ export default defineComponent({
       isShowCollect,
       currPath,
       loginState,
-      liveRoute,
       pageChange,
       showDrawer,
       showDialog,
@@ -506,6 +483,7 @@ export default defineComponent({
   color: #666;
   font-weight: bold;
   padding: 2px 10px;
+  cursor: pointer;
 }
 
 .item:hover {
@@ -551,7 +529,6 @@ export default defineComponent({
   display: block;
   padding: 5px 10px;
   margin: 5px 0;
-  cursor: pointer;
   color: #ffffff;
   font-weight: bold;
   background: var(--primary-color);
