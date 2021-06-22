@@ -2,28 +2,54 @@
   <div class="album-item">
     <div style="display: flex;align-items: center">
       <span class="index">{{ index+1 }}<svg-icon name="play-fill" class="play-fill discolour" /></span>
+      <div v-if="musicId===music?.id&&listId===music?.listId" class="play-animation">
+        <lottie-player
+          ref="player"
+          autoplay
+          loop
+          mode="bounce"
+          :src="playAnimation"
+          style="width: 50px;height: 50px"
+        />
+      </div>
       <span :class="!music?.canPlay?.able?'invalid':'music-name'">{{ music.name }}</span>
     </div>
     <span class="time">
-      <svg-icon v-if="music?.canPlay?.type!==2" name="love" :class="likeList.indexOf(music?.id)!==-1?'like-active':'like'" @click="setLike"/>
+      <svg-icon v-if="music?.canPlay?.type!==2" name="love" :class="likeList.indexOf(music?.id)!==-1?'like-active':'like'" @click="setLike" />
       {{ timeFormat(music.duration) }}</span>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, watch, ref } from 'vue'
 import { useStore } from 'vuex'
 import timeFormat from '@/utils/timeFormat'
 import { likeMusic } from '@/api/music'
+import playAnimation from '@/assets/lottie/sonicWave2.json'
 export default defineComponent({
   name: 'AlbumItem',
   props: {
     music: Object,
-    index: Number
+    index: Number,
+    listId: String
   },
   setup(props) {
     const store = useStore()
+    const player = ref()
     const likeList = computed(() => store.state.likeList)
+    const musicId = computed(() => store.state.currMusic?.id)
+    const state = computed(() => store.state.audio.state)
+
+    watch(state, () => {
+      if (props.listId === musicId.value) {
+        if (state.value) {
+          player.value?.play()
+        } else {
+          player.value?.pause()
+        }
+      }
+    })
+
     const setLike = () => {
       const param = {
         id: props.music?.id,
@@ -47,6 +73,9 @@ export default defineComponent({
     }
     return {
       likeList,
+      musicId,
+      playAnimation,
+      player,
       timeFormat,
       setLike
     }

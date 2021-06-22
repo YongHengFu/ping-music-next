@@ -12,6 +12,7 @@
         :key="item.id"
         :music="item"
         :index="index"
+        :list-id="route.params.id"
         @dblclick="playSelect(item)"
         @contextmenu="(e)=>showMenu(e,index)"
       />
@@ -21,14 +22,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, ref, nextTick } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import ListHead from '@/components/ListHead.vue'
 import AlbumItem from '@/components/AlbumItem.vue'
 import ContextMenu from '@/components/ContextMenu.vue'
 import { getAlbumById, getMusicDetail } from '@/api/music'
-import { playAble, playAblume } from '@/utils/musicList'
+import { playAble } from '@/utils/musicList'
 import { message } from 'ant-design-vue'
 export default defineComponent({
   name: 'Album',
@@ -48,15 +49,9 @@ export default defineComponent({
     const pointX = ref(0)
     const pointY = ref(0)
     const menuInfo = ref({})
+    let playMusicList:any = []
+    let isPlayAll = false
 
-    /*    watch(loading, () => {
-      nextTick(() => {
-        const description = document.getElementById('description')
-        if (description !== null && description.scrollWidth > description.clientWidth) {
-          isOverflow.value = true
-        }
-      })
-    })*/
     const getAlbumData = async(id:string) => {
       const param = { 'id': id }
       await getAlbumById(param).then(async(res:any) => {
@@ -84,6 +79,8 @@ export default defineComponent({
     }
 
     const getMusicList = async(songs:any) => {
+      playMusicList = []
+      let playIndex = 0
       let ids = ''
       for (const item of songs) {
         ids += item.id + ','
@@ -106,29 +103,53 @@ export default defineComponent({
               privileges: res.privileges[index],
               fee: item.fee,
               noCopyrightRcmd: item.noCopyrightRcmd,
-              canPlay: null
+              canPlay: null,
+              listId: 'album' + route.params.id
             }
             song.canPlay = playAble(song)
             details.push(song)
+            if (song.canPlay.able) {
+              song.index = playIndex
+              playIndex++
+              playMusicList.push(song)
+            }
           }
           musicList.value = musicList.value.concat(details)
+          if (isPlayAll) {
+            isPlayAll = false
+            store.commit('setMusicList', playMusicList)
+          }
         }
       })
     }
 
     const playAll = () => {
-      playAblume(<string>route.params.id, '')
+      if (playMusicList.length > 0) {
+        isPlayAll = true
+        store.commit('setCurrMusic', playMusicList[0])
+        store.commit('setMusicList', playMusicList)
+      }
     }
 
     const playSelect = (music:any) => {
       if (music.canPlay.able) {
-        for (const item of store.state.musicList) {
-          if (item.id === music.id) {
-            store.commit('setCurrMusic', item)
-            return
+        if (music.listId === route.params.id) {
+          for (const item of store.state.musicList) {
+            if (item.id === music.id) {
+              store.commit('setCurrMusic', item)
+              return
+            }
+          }
+        } else {
+          isPlayAll = true
+          for (const item of playMusicList) {
+            if (item.id === music.id) {
+              store.commit('setCurrMusic', item)
+              store.commit('setMusicList', playMusicList)
+              return
+            }
           }
         }
-        playAblume(<string>route.params.id, music.id)
       } else {
         message.error(music.canPlay.msg)
       }
@@ -153,7 +174,6 @@ export default defineComponent({
         isShowMenu.value = false
         document.onwheel = null
       }
-      // console.log(e.x, e.y)
     }
 
     const init = async() => {
@@ -164,6 +184,7 @@ export default defineComponent({
     init()
 
     return {
+      route,
       loading,
       showAll,
       albumInfo,

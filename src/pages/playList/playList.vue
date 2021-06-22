@@ -8,9 +8,10 @@
     />
     <div>
       <PlayItem
-        v-for="(item,index) of musicList"
+        v-for="item of musicList"
         :key="item.id"
         :list-item="item"
+        :list-id="route.params.id"
         @dblclick="playSelect(item)"
         @contextmenu="(e)=>showMenu(e,item)"
       />
@@ -20,14 +21,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, ref, nextTick } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import ListHead from '@/components/ListHead.vue'
 import PlayItem from '@/pages/playList/components/PlayItem.vue'
 import ContextMenu from '@/components/ContextMenu.vue'
 import { getListById, getMusicDetail } from '@/api/music'
-import { playAble, playList } from '@/utils/musicList'
+import { playAble } from '@/utils/musicList'
 import { message } from 'ant-design-vue'
 
 export default defineComponent({
@@ -43,7 +44,6 @@ export default defineComponent({
     const loading = ref(false)
     const playListInfo = ref(<any>{})
     const musicList = ref(<any>[])
-    const isOverflow = ref(false)
     const showAll = ref(false)
     const isShowMenu = ref(false)
     const pointX = ref(0)
@@ -51,14 +51,7 @@ export default defineComponent({
     const menuInfo = ref({})
     let playMusicList:any = []
     let isPlayAll = false
-    watch(loading, () => {
-      nextTick(() => {
-        const description = document.getElementById('description')
-        if (description !== null && description.scrollWidth > description.clientWidth) {
-          isOverflow.value = true
-        }
-      })
-    })
+
     const getListData = async(id:string) => {
       const param = { 'id': id }
       await getListById(param).then(async(res:any) => {
@@ -117,7 +110,8 @@ export default defineComponent({
                 privileges: res.privileges[index],
                 fee: item.fee,
                 noCopyrightRcmd: item.noCopyrightRcmd,
-                canPlay: null
+                canPlay: null,
+                listId: 'playList' + route.params.id
               }
               song.canPlay = playAble(song)
               details.push(song)
@@ -146,7 +140,6 @@ export default defineComponent({
     }
 
     const playAll = () => {
-      // playList(<string>route.params.id, '')
       if (playMusicList.length > 0) {
         isPlayAll = true
         store.commit('setCurrMusic', playMusicList[0])
@@ -154,32 +147,25 @@ export default defineComponent({
       }
     }
 
-    /*    const playMusicList = (len: number, musicList: any[]) => {
-      const list:any = []
-      let index = len
-      for (let i = index; i < musicList.length; i++) {
-        const song = musicList[i]
-        if (musicList[i].canPlay.able) {
-          song.index = index
-          if (index === 0) {
-            store.commit('setCurrMusic', song)
-          }
-          index++
-          list.push(song)
-        }
-      }
-      return list
-    }*/
-
     const playSelect = (music:any) => {
       if (music.canPlay.able) {
-        for (const item of store.state.musicList) {
-          if (item.id === music.id) {
-            store.commit('setCurrMusic', item)
-            return
+        if (music.listId === route.params.id) {
+          for (const item of store.state.musicList) {
+            if (item.id === music.id) {
+              store.commit('setCurrMusic', item)
+              return
+            }
+          }
+        } else {
+          isPlayAll = true
+          for (const item of playMusicList) {
+            if (item.id === music.id) {
+              store.commit('setCurrMusic', item)
+              store.commit('setMusicList', playMusicList)
+              return
+            }
           }
         }
-        playList(<string>route.params.id, music.id)
       } else {
         message.error(music.canPlay.msg)
       }
@@ -214,8 +200,8 @@ export default defineComponent({
     init()
 
     return {
+      route,
       loading,
-      isOverflow,
       showAll,
       playListInfo,
       musicList,

@@ -1,7 +1,7 @@
 <template>
   <div class="play-item" :style="{background: musicId===listItem?.id?'rgba(236, 236, 236, 0.53)':''}">
     <div style="display: flex;min-width: 45%;max-width: 45%;">
-      <MiniCover :image="listItem?.album?.picUrl" :is-curr="musicId===listItem?.id" style="min-width: 50px" />
+      <MiniCover :image="listItem?.album?.picUrl" :is-curr="musicId===listItem?.id&&listId===listItem?.listId" style="min-width: 50px" />
       <div class="main">
         <span :class="!listItem?.canPlay?.able?'invalid':'music-name'">{{ listItem?.name }}</span>
         <div class="artist">
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import MiniCover from '@/components/MiniCover.vue'
@@ -37,7 +37,8 @@ export default defineComponent({
     MiniCover
   },
   props: {
-    listItem: Array
+    listItem: Array,
+    listId: String
   },
   setup(props, ctx) {
     const store = useStore()
