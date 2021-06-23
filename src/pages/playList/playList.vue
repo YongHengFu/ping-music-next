@@ -1,5 +1,10 @@
 <template>
-  <div v-if="loading" style="width: calc((var(--block-size) + 20px) * var(--block-num))">
+  <div
+    v-if="loading"
+    :id="'playList'+listId"
+    style="width: calc((var(--block-size) + 20px) * var(--block-num))"
+    @wheel="wheel"
+  >
     <ListHead
       v-if="Object.keys(playListInfo).length>0"
       :info="playListInfo"
@@ -16,6 +21,14 @@
         @dblclick="playSelect(item)"
         @contextmenu="(e)=>showMenu(e,item)"
       />
+    </div>
+    <div class="control">
+      <div v-show="isShowPosition" class="control-item">
+        <svg-icon name="position" />
+      </div>
+      <div v-show="isShowTop" class="control-item" @click="toTop">
+        <svg-icon name="top" />
+      </div>
     </div>
     <ContextMenu v-if="Object.keys(menuInfo).length>0" v-show="isShowMenu" :point-x="pointX" :point-y="pointY" :info="menuInfo" />
   </div>
@@ -50,6 +63,8 @@ export default defineComponent({
     const pointX = ref(0)
     const pointY = ref(0)
     const menuInfo = ref({})
+    const isShowPosition = ref(false)
+    const isShowTop = ref(false)
     let playMusicList:any = []
     let isPlayAll = false
     const listId = 'playList' + route.params.id
@@ -193,6 +208,24 @@ export default defineComponent({
         document.onwheel = null
       }
     }
+    const wheel = () => {
+      const playList = document.getElementById('playList' + listId)?.parentElement
+      if (playList) {
+        if (playList.scrollTop > 300) {
+          isShowTop.value = true
+        } else {
+          isShowTop.value = false
+        }
+      }
+    }
+
+    const toTop = () => {
+      const playList = document.getElementById('playList' + listId)?.parentElement
+      if (playList) {
+        playList.scrollTo({ left: 0, top: 0, behavior: 'smooth' })
+        isShowTop.value = false
+      }
+    }
 
     const init = async() => {
       // store.commit('setLoading', true)
@@ -211,15 +244,40 @@ export default defineComponent({
       pointX,
       pointY,
       menuInfo,
+      isShowPosition,
+      isShowTop,
       DateFormat,
       playAll,
       playSelect,
-      showMenu
+      showMenu,
+      wheel,
+      toTop
     }
   }
 })
 </script>
 
 <style scoped>
-
+.control{
+  position: fixed;
+  right: 30px;
+  bottom: 80px;
+  z-index: 2;
+}
+.control-item{
+  background: rgb(224, 224, 224);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  cursor: pointer;
+}
+.control-item:hover{
+  border:1px rgb(219, 219, 219) solid;
+  background: #FFFFFF;
+  color: var(--primary-color);
+}
 </style>
