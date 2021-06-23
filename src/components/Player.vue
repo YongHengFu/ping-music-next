@@ -251,8 +251,49 @@ export default defineComponent({
       }
     }
 
+    const monitorKeyboard = () => {
+      // 全局监听键盘事件
+      window.onkeypress = (e) => {
+        if (e && e.code === 'Space') {
+          const param = { prop: 'state', value: !store.state.audio.state }
+          store.commit('setAudio', param)
+        }
+      }
+
+      window.onkeydown = (e) => {
+        const param = { prop: 'volume', value: store.state.audio.volume }
+        const volume = Number(param.value.toFixed(1))
+        if (e && e.ctrlKey) {
+          switch (e.key) {
+            case 'ArrowLeft':
+              prev()
+              break
+            case 'ArrowRight':
+              next()
+              break
+            case 'ArrowUp':
+              if (volume < 1) {
+                param.value = volume + 0.1
+                store.commit('setAudio', param)
+                param.prop = 'mute'
+                param.value = false
+                store.commit('setAudio', param)
+              }
+              break
+            case 'ArrowDown':
+              if (volume > 0) {
+                param.value = volume - 0.1
+                store.commit('setAudio', param)
+              }
+              break
+          }
+        }
+      }
+    }
+
     onMounted(() => {
       initMediaSession()
+      monitorKeyboard()
     })
 
     return {
