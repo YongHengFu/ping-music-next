@@ -6,11 +6,11 @@
       <div v-for="n of 5" :key="n" :class="item[n-1].class">
         <div style="position: relative;border-radius: 5px;overflow: hidden;cursor: pointer">
           <img
-            :src="show[n-1].imgBase64"
+            :src="show[n-1]?.imgBase64"
             style="border-radius: 5px;width: 100%"
             @click="action(show[n-1])"
           >
-          <span class="tab">{{ show[n-1].typeTitle }}</span>
+          <span class="tab">{{ show[n-1]?.typeTitle }}</span>
         </div>
       </div>
       <div class="points">
@@ -58,12 +58,14 @@ export default defineComponent({
         }
       })
     }
-    const bannersInit = () => {
+    const bannersInit = async() => {
       for (let i = 0; i < banners.value.length; i++) {
         banners.value[i].No = i
-        banners.value[i].imgBase64 = imageToBase64(banners.value[i].imageUrl)
+        banners.value[i].imgBase64 = await imageToBase64(banners.value[i].imageUrl + '?param=1080y400')
+        if (i < 5) {
+          show.value.push(banners.value[i])
+        }
       }
-      show.value = banners.value.slice(0, 5)
       show.value.push(banners.value[banners.value.length - 1])
       initPrev()
       initNext()
