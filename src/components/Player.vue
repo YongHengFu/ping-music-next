@@ -319,8 +319,6 @@ export default defineComponent({
 
       if (currMusicStr) {
         store.commit('setCurrMusic', JSON.parse(currMusicStr))
-        // const param = { prop: 'state', value: false }
-        // store.commit('setAudio', param)
       }
 
       if (audioStr) {
@@ -331,10 +329,6 @@ export default defineComponent({
         param.value = audio.duration
         store.commit('setAudio', param)
 
-        param.prop = 'currentTime'
-        param.value = audio.currentTime
-        store.commit('setAudio', param)
-
         if (audio.volume < 1 && audio.volume > 0) {
           param.prop = 'volume'
           param.value = audio.volume
@@ -343,10 +337,6 @@ export default defineComponent({
 
         param.prop = 'mode'
         param.value = audio.mode
-        store.commit('setAudio', param)
-
-        param.prop = 'jump'
-        param.value = audio.currentTime
         store.commit('setAudio', param)
       }
     }
