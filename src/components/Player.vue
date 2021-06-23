@@ -15,15 +15,16 @@
 <script lang="ts">
 import { defineComponent, computed, watch, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import { message } from 'ant-design-vue'
 export default defineComponent({
   name: 'Player',
   setup() {
     const store = useStore()
     const audio:any = ref(null)
     const source = ref('')
+    const autoPlay = ref('')
     let rand = [0]
     let prevIndex = 0
+    let isFirst = true // 当前歌曲是否恢复的数据
 
     // 待播列表 [id]
     const musicList = computed(() => store.state.musicList)
@@ -58,11 +59,12 @@ export default defineComponent({
 
     watch(currMusic, () => {
       source.value = `https://music.163.com/song/media/outer/url?id=${currMusic.value?.id}.mp3`
+      autoPlay.value = 'autoPlay'
       setMediaMetadata()
     })
 
     watch(state, () => {
-      if (audio !== null) {
+      if (audio.value) {
         if (state.value) {
           audio.value.play()
         } else {
@@ -74,7 +76,7 @@ export default defineComponent({
     watch(jump, () => {
       if (jump.value >= 0) {
         audio.value.currentTime = jump.value
-        if (audio.value.paused) {
+        if (audio.value.readyState && audio.value.paused) {
           audio.value.play()
         }
         const param = { prop: 'jump', value: -1 }
@@ -125,11 +127,15 @@ export default defineComponent({
     }
 
     const play = () => {
-      if (!state.value) {
-        const param = { prop: 'state', value: true }
-        store.commit('setAudio', param)
+      if (isFirst) {
+        audio.value.pause()
+        isFirst = false
+      } else {
+        if (!state.value) {
+          const param = { prop: 'state', value: true }
+          store.commit('setAudio', param)
+        }
       }
-      // setRecords(musicList.value[currIndex.value])
     }
 
     const pause = () => {
@@ -253,14 +259,14 @@ export default defineComponent({
 
     const monitorKeyboard = () => {
       // 全局监听键盘事件
-      window.onkeypress = (e) => {
+      window.onkeypress = (e: { code: string }) => {
         if (e && e.code === 'Space') {
           const param = { prop: 'state', value: !store.state.audio.state }
           store.commit('setAudio', param)
         }
       }
 
-      window.onkeydown = (e) => {
+      window.onkeydown = (e: { ctrlKey: any; key: any }) => {
         const param = { prop: 'volume', value: store.state.audio.volume }
         const volume = Number(param.value.toFixed(1))
         if (e && e.ctrlKey) {
@@ -291,14 +297,73 @@ export default defineComponent({
       }
     }
 
+    // 关闭页面或刷新前保存数据
+    const saveState = () => {
+      localStorage.setItem('musicList', JSON.stringify(store.state.musicList))
+      const currMusic = store.state.currMusic
+      if (currMusic) {
+        localStorage.setItem('currMusic', JSON.stringify(currMusic))
+      }
+      localStorage.setItem('audio', JSON.stringify(store.state.audio))
+    }
+
+    // 恢复上次保存的数据
+    const initState = () => {
+      const musicListStr = localStorage.getItem('musicList')
+      const currMusicStr = localStorage.getItem('currMusic')
+      const audioStr = localStorage.getItem('audio')
+
+      if (musicListStr) {
+        store.commit('setMusicList', JSON.parse(musicListStr))
+      }
+
+      if (currMusicStr) {
+        store.commit('setCurrMusic', JSON.parse(currMusicStr))
+        // const param = { prop: 'state', value: false }
+        // store.commit('setAudio', param)
+      }
+
+      if (audioStr) {
+        const audio = JSON.parse(audioStr)
+        const param = { prop: 'key', value: 'value' }
+
+        param.prop = 'duration'
+        param.value = audio.duration
+        store.commit('setAudio', param)
+
+        param.prop = 'currentTime'
+        param.value = audio.currentTime
+        store.commit('setAudio', param)
+
+        if (audio.volume < 1 && audio.volume > 0) {
+          param.prop = 'volume'
+          param.value = audio.volume
+          store.commit('setAudio', param)
+        }
+
+        param.prop = 'mode'
+        param.value = audio.mode
+        store.commit('setAudio', param)
+
+        param.prop = 'jump'
+        param.value = audio.currentTime
+        store.commit('setAudio', param)
+      }
+    }
+
     onMounted(() => {
       initMediaSession()
       monitorKeyboard()
+      setTimeout(initState, 100)
+      window.onbeforeunload = () => {
+        saveState()
+      }
     })
 
     return {
       audio,
       source,
+      autoPlay,
       durationchange,
       progress,
       canplay,
