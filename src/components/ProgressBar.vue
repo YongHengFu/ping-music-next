@@ -42,18 +42,18 @@ export default defineComponent({
     const isPoint = ref(false)
     const isTip = ref(false)
     const currStyle = ref('')
-    let tipTime = 0
+    const tipTime = ref(0)
     let move = 0
 
     const currentDura = computed(() => store.state.audio.currentTime)
     const totalDura = computed(() => store.state.audio.duration)
     const buffDura = computed(() => store.state.audio.buffered)
-    const sliderFormat = computed(() => timeFormat(tipTime))
+    const sliderFormat = computed(() => timeFormat(tipTime.value))
 
     watch(currentDura, () => {
       if (active.value) {
         move = ((1 - (currentDura.value / totalDura.value)) * 100)
-        tipTime = currentDura.value
+        tipTime.value = currentDura.value
         currStyle.value = `right: ${move}%`
       }
     })
@@ -78,7 +78,7 @@ export default defineComponent({
           let moveWidth = (1 - ((el.x - X) / width)) < 0 ? 0 : (1 - ((el.x - X) / width))
           moveWidth = (1 - ((el.x - X) / width)) > 1 ? 1 : moveWidth
           currStyle.value = `right: ${moveWidth * 100}%`
-          tipTime = (1 - moveWidth) * totalDura.value
+          tipTime.value = (1 - moveWidth) * totalDura.value
         }
       }
 
@@ -86,7 +86,7 @@ export default defineComponent({
       document.onmouseup = function() {
         if (!active.value) {
           active.value = true
-          const param = { prop: 'jump', value: tipTime }
+          const param = { prop: 'jump', value: tipTime.value }
           store.commit('setAudio', param)
         }
         document.onmousemove = null
