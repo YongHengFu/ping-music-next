@@ -1,5 +1,6 @@
 <template>
   <div style="position: relative;width: 100vw;height: 100vh;overflow-y: hidden">
+    <Player ref="player" />
     <playView id="playView" :style="showPlayView?'':'transform:translateY(110%)'" />
     <router-view />
     <LoginDialog v-if="showDialog===0" class="login-dialog" />
@@ -10,6 +11,7 @@
 <script lang="ts">
 import { defineComponent, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import Player from '@/components/Player.vue'
 import playView from '@/pages/playView/playView.vue'
 import LoginDialog from '@/components/LoginDialog.vue'
 import UserDialog from '@/components/UserDialog.vue'
@@ -18,6 +20,7 @@ import UserDialog from '@/components/UserDialog.vue'
 export default defineComponent({
   name: 'App',
   components: {
+    Player,
     playView,
     LoginDialog,
     UserDialog

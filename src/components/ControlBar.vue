@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Player ref="player" />
     <ProgressBar origin-key="controlBar" @jumpTo="jumpTo" />
     <div class="control-bar">
       <div class="bar-left">
@@ -92,7 +91,6 @@
 <script lang="ts">
 import { defineComponent, computed, watch, ref } from 'vue'
 import { useStore } from 'vuex'
-import Player from '@/components/Player.vue'
 import ProgressBar from '@/components/ProgressBar.vue'
 import VolumeBar from '@/components/VolumeBar.vue'
 import coverImage from '@/assets/image/cover.png'
@@ -104,7 +102,6 @@ export default defineComponent({
   components: {
     Image,
     ProgressBar,
-    Player,
     VolumeBar
   },
   setup(props, ctx) {
