@@ -74,9 +74,11 @@ export default defineComponent({
         // param.value = audio.currentTime
         // store.commit('setAudio', param)
 
-        param.prop = 'volume'
-        param.value = audio.volume
-        store.commit('setAudio', param)
+        if (audio.volume < 1 && audio.volume > 0) {
+          param.prop = 'volume'
+          param.value = audio.volume
+          store.commit('setAudio', param)
+        }
 
         param.prop = 'mode'
         param.value = audio.mode
