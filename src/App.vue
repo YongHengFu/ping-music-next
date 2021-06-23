@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import playView from '@/pages/playView/playView.vue'
 import LoginDialog from '@/components/LoginDialog.vue'
@@ -26,6 +26,65 @@ export default defineComponent({
     const store = useStore()
     const showPlayView = computed(() => store.state.showPlayView)
     const showDialog = computed(() => store.state.showDialog)
+
+    window.onbeforeunload = () => {
+      saveState()
+    }
+
+    onMounted(() => {
+      initState()
+    })
+
+    // 关闭页面或刷新前保存数据
+    const saveState = () => {
+      localStorage.setItem('musicList', JSON.stringify(store.state.musicList))
+      const currMusic = store.state.currMusic
+      if (currMusic) {
+        localStorage.setItem('currMusic', JSON.stringify(currMusic))
+      }
+      localStorage.setItem('audio', JSON.stringify(store.state.audio))
+    }
+
+    // 恢复上次保存的数据
+    const initState = () => {
+      const musicListStr = localStorage.getItem('musicList')
+      const currMusicStr = localStorage.getItem('currMusic')
+      const audioStr = localStorage.getItem('audio')
+
+      if (musicListStr) {
+        store.commit('setMusicList', JSON.parse(musicListStr))
+      }
+
+      if (currMusicStr) {
+        store.commit('setCurrMusic', JSON.parse(currMusicStr))
+      }
+
+      if (audioStr) {
+        const audio = JSON.parse(audioStr)
+        const param = { prop: 'key', value: 'value' }
+
+        param.prop = 'duration'
+        param.value = audio.duration
+        store.commit('setAudio', param)
+
+        // param.prop = 'currentTime'
+        // param.value = audio.currentTime
+        // store.commit('setAudio', param)
+
+        param.prop = 'volume'
+        param.value = audio.volume
+        store.commit('setAudio', param)
+
+        param.prop = 'mode'
+        param.value = audio.mode
+        store.commit('setAudio', param)
+
+        param.prop = 'jump'
+        param.value = audio.currentTime
+        store.commit('setAudio', param)
+      }
+    }
+
     return {
       showPlayView,
       showDialog
