@@ -108,12 +108,12 @@ import { defineComponent, computed, watch, ref, toRef, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { Layout, Input, Avatar } from 'ant-design-vue'
-import elementResizeDetectorMaker from 'element-resize-detector'
 import Loading from '@/components/Loading.vue'
 import ControlBar from '@/components/ControlBar.vue'
 import ListDrawer from '@/components/ListDrawer.vue'
 import { getAccountInfo, getUserPlayList } from '@/api/user'
 import { message } from 'ant-design-vue'
+import { debounce } from '@/utils/frequency'
 
 import {
   FireOutlined,
@@ -229,7 +229,7 @@ export default defineComponent({
       }
     ]
     // eslint-disable-next-line no-undef
-    let timer: (NodeJS.Timeout | null) = null
+    // let timer: (NodeJS.Timeout | null) = null
     const playListCreate = ref(<any>[])
     const playListCollect = ref(<any>[])
     const isShowCreate = ref(true)
@@ -278,12 +278,12 @@ export default defineComponent({
       refreshLoginState()
     })
 
-    const debounce = (func: { (ele: { offsetWidth: number }): void; (...args: any[]): void }, element: any) => {
-      if (timer) {
-        clearTimeout(timer)
-      }
-      timer = setTimeout(func, 300, element)
-    }
+    // const debounce = (func: { (ele: { offsetWidth: number }): void; (...args: any[]): void }, element: any) => {
+    //   if (timer) {
+    //     clearTimeout(timer)
+    //   }
+    //   timer = setTimeout(func, 300, element)
+    // }
 
     const pageChange = (index: number) => {
       router.push({ path: itemList[index].path })
@@ -366,29 +366,27 @@ export default defineComponent({
 
     const routeNext = () => {
       router.go(1)
-      console.log(router.getRoutes())
     }
 
-    onMounted(() => {
-      // localStorage.removeItem('lastTime')
-      refreshLoginState()
-      const erd = elementResizeDetectorMaker()
+    const resetSize = debounce(() => {
+      const width = document.getElementById('content').offsetWidth || 0
+      let blockSize = (width / 5) - (width * (40 / 1000))
+      blockSize = blockSize > 240 ? 240 : blockSize
+      if (width - (blockSize + 20) * 6 > 40) {
+        store.commit('setBlockNum', 6)
+        document.documentElement.style.setProperty(`--block-num`, 6 + '')
+      } else {
+        store.commit('setBlockNum', 5)
+        document.documentElement.style.setProperty(`--block-num`, 5 + '')
+      }
+      document.documentElement.style.setProperty(`--block-size`, blockSize + 'px')
+    }, 300)
 
-      erd.listenTo(document.getElementById('content'), function(element: any) {
-        debounce(function(ele: { offsetWidth: number }) {
-          const width = ele.offsetWidth
-          let blockSize = (width / 5) - (width * (40 / 1000))
-          blockSize = blockSize > 240 ? 240 : blockSize
-          if (width - (blockSize + 20) * 6 > 40) {
-            store.commit('setBlockNum', 6)
-            document.documentElement.style.setProperty(`--block-num`, 6 + '')
-          } else {
-            store.commit('setBlockNum', 5)
-            document.documentElement.style.setProperty(`--block-num`, 5 + '')
-          }
-          document.documentElement.style.setProperty(`--block-size`, blockSize + 'px')
-        }, element)
-      })
+    onMounted(() => {
+      refreshLoginState()
+      window.onresize = () => {
+        resetSize()
+      }
     })
 
     return {
