@@ -3,7 +3,6 @@
     v-if="loading"
     :id="'playList'+listId"
     style="width: calc((var(--block-size) + 20px) * var(--block-num))"
-    @wheel="wheel"
   >
     <ListHead
       v-if="Object.keys(playListInfo).length>0"
@@ -13,17 +12,19 @@
     />
     <div>
       <PlayItem
-        v-for="item of musicList"
+        v-for="(item,index) of musicList"
+        :id="listId+index"
         :key="item.id"
         :list-item="item"
         :list-id="listId"
         @playSelect="playSelect(item)"
         @dblclick="playSelect(item)"
         @contextmenu="(e)=>showMenu(e,item)"
+        @isCurr="(isCurr)=>showPosition(index,isCurr)"
       />
     </div>
     <div class="control">
-      <div v-show="isShowPosition" class="control-item">
+      <div v-show="isShowPosition>-1" class="control-item" @click="toPosition">
         <svg-icon name="position" />
       </div>
       <div v-show="isShowTop" class="control-item" @click="toTop">
@@ -35,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, onMounted, onUpdated, onActivated, onDeactivated } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import ListHead from '@/components/ListHead.vue'
@@ -44,6 +45,8 @@ import ContextMenu from '@/components/ContextMenu.vue'
 import { getListById, getMusicDetail } from '@/api/music'
 import { playAble } from '@/utils/musicList'
 import { message } from 'ant-design-vue'
+import { debounce, throttle } from '@/utils/frequency'
+import playList from '@/pages/playList.vue'
 
 export default defineComponent({
   name: 'PlayList',
@@ -63,10 +66,11 @@ export default defineComponent({
     const pointX = ref(0)
     const pointY = ref(0)
     const menuInfo = ref({})
-    const isShowPosition = ref(false)
+    const isShowPosition = ref(-1)
     const isShowTop = ref(false)
     let playMusicList:any = []
     let isPlayAll = false
+    let currIndexs:boolean[] = []
     const listId = 'playList' + route.params.id
 
     const getListData = async(id:string) => {
@@ -208,13 +212,29 @@ export default defineComponent({
         document.onwheel = null
       }
     }
-    const wheel = () => {
+
+    const computeTopPosition = () => {
       const playList = document.getElementById('playList' + listId)?.parentElement
       if (playList) {
         if (playList.scrollTop > 300) {
           isShowTop.value = true
         } else {
           isShowTop.value = false
+        }
+        let currIndex = -1
+        for (let i = 0; i < currIndexs.length; i++) {
+          if (currIndexs[i]) {
+            currIndex = i
+            break
+          }
+        }
+        if (currIndex !== -1) {
+          const item = document.getElementById(listId + currIndex + '')
+          if ((item.offsetTop < playList.scrollTop) || (item.offsetTop > (playList.scrollTop + playList.clientHeight))) {
+            isShowPosition.value = currIndex
+          } else {
+            isShowPosition.value = -1
+          }
         }
       }
     }
@@ -227,13 +247,60 @@ export default defineComponent({
       }
     }
 
-    const init = async() => {
+    const toPosition = () => {
+      if (isShowPosition.value > -1) {
+        const playList = document.getElementById('playList' + listId)?.parentElement
+        const item = document.getElementById(listId + isShowPosition.value + '')
+        if (playList) {
+          playList.scrollTo({ left: 0, top: item.offsetTop - 200, behavior: 'smooth' })
+          isShowPosition.value = -1
+        }
+      }
+    }
+
+    const showPosition = (index, isCurr) => {
+      if (index === 0) {
+        currIndexs = []
+      }
+      currIndexs.push(isCurr)
+      if (isCurr) {
+        getTopPosition()
+      }
+    }
+
+    const getTopPosition = debounce(computeTopPosition, 300)
+
+    onMounted(async() => {
       // store.commit('setLoading', true)
       await getListData(<string>route.params.id)
       // store.commit('setLoading', false)
-    }
-    init()
+    })
 
+    onUpdated(() => {
+      let playList = document.getElementById('playList' + listId)
+      playList = playList?.parentElement
+      if (playList) {
+        playList.onscroll = () => {
+          getTopPosition()
+        }
+      }
+    })
+
+    onActivated(() => {
+      const playList = document.getElementById('playList' + listId)?.parentElement
+      if (playList) {
+        playList.onscroll = () => {
+          getTopPosition()
+        }
+      }
+    })
+
+    onDeactivated(() => {
+      const playList = document.getElementById('playList' + listId)?.parentElement
+      if (playList) {
+        playList.onscroll = null
+      }
+    })
     return {
       listId,
       loading,
@@ -250,8 +317,9 @@ export default defineComponent({
       playAll,
       playSelect,
       showMenu,
-      wheel,
-      toTop
+      toTop,
+      showPosition,
+      toPosition
     }
   }
 })
@@ -265,7 +333,7 @@ export default defineComponent({
   z-index: 2;
 }
 .control-item{
-  background: rgb(224, 224, 224);
+  background: rgba(232, 232, 232, 0.75);
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -276,7 +344,7 @@ export default defineComponent({
   cursor: pointer;
 }
 .control-item:hover{
-  border:1px rgb(219, 219, 219) solid;
+  border:1px var(--primary-color) solid;
   background: #FFFFFF;
   color: var(--primary-color);
 }

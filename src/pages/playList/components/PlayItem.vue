@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import MiniCover from '@/components/MiniCover.vue'
@@ -51,6 +51,15 @@ export default defineComponent({
     const musicId = computed(() => store.state.currMusic?.id)
     const currListId = computed(() => store.state.currMusic?.listId)
     const likeList = computed(() => store.state.likeList)
+
+    watch(musicId, () => {
+      if (musicId.value === props?.listItem?.id && props?.listId === currListId.value) {
+        ctx.emit('isCurr', true)
+      } else {
+        ctx.emit('isCurr', false)
+      }
+    })
+
     const openAlbum = (id:string) => {
       router.push('/album/' + id)
     }
