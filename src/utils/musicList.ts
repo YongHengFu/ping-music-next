@@ -150,21 +150,20 @@ export const playAble = (item:any) => {
     type: 0,
     msg: ''
   }
-  if (item?.privileges?.pl !== 0) {
-    return result
-  } else if (item.fee === 1 || item.privileges?.fee === 1) {
-    result.able = false
-    result.type = 1
-    result.msg = '会员歌曲'
-    return result
-  } else if (item.fee === 4 || item.privileges?.fee === 4) {
-    result.able = false
-    result.type = 2
-    result.msg = '付费歌曲'
-    return result
-  } else {
-    result.able = false
-    result.type = 3
-    result.msg = '因合作方要求，该资源暂时下架'
+  if (item?.privileges?.pl === 0) {
+    if (item.fee === 1 || item.privileges?.fee === 1) {
+      result.able = false
+      result.type = 1
+      result.msg = '会员歌曲'
+    } else if (item.fee === 4 || item.privileges?.fee === 4) {
+      result.able = false
+      result.type = 2
+      result.msg = '付费歌曲'
+    } else {
+      result.able = false
+      result.type = 3
+      result.msg = '因合作方要求，该资源暂时下架'
+    }
   }
+  return result
 }
