@@ -87,9 +87,11 @@
           <Loading />
           <div style="width: 100%;height: 100%;overflow-y: scroll">
             <router-view v-slot="{ Component }" class="view">
-              <keep-alive>
-                <component :is="Component" :key="key" />
-              </keep-alive>
+              <transition name="switch-route" mode="out-in">
+                <keep-alive>
+                  <component :is="Component" :key="key" />
+                </keep-alive>
+              </transition>
             </router-view>
           </div>
           <ListDrawer :is-show-drawer="isShowDrawer" @closeDrawer="isShowDrawer=false" />
@@ -535,5 +537,20 @@ export default defineComponent({
 .listItem:hover{
   border-radius: 5px;
   background: #ededed;
+}
+
+.switch-route-leave-active,
+.switch-route-enter-active {
+  transition: all .5s;
+}
+
+.switch-route-enter {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.switch-route-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 </style>
