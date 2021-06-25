@@ -145,46 +145,26 @@ const play = (list:any, selectId:string) => {
 
 // 判断音乐是否可播放
 export const playAble = (item:any) => {
-  const loginState = store.state.loginState
-  const user:any = {}
   const result = {
     able: true,
     type: 0,
     msg: ''
   }
-  if (loginState && item?.privileges?.cs) {
+  if (item?.privileges?.pl !== 0) {
     return result
-  }
-  if (item.fee === 1 || item.privileges?.fee === 1) {
-    if (loginState && user?.vipType === 11) {
-      return result
-    } else {
-      result.able = false
-      result.type = 1
-      result.msg = '会员歌曲'
-      return result
-    }
+  } else if (item.fee === 1 || item.privileges?.fee === 1) {
+    result.able = false
+    result.type = 1
+    result.msg = '会员歌曲'
+    return result
   } else if (item.fee === 4 || item.privileges?.fee === 4) {
     result.able = false
     result.type = 2
     result.msg = '付费歌曲'
     return result
-  } else if (item.privileges?.pl === 0) {
+  } else {
     result.able = false
     result.type = 3
     result.msg = '因合作方要求，该资源暂时下架'
-  } else {
-    return result
   }
-  // else if (item.noCopyrightRcmd) {
-  //   result.able = false
-  //   result.type = 2
-  //   result.msg = '因合作方要求，该资源暂时下架'
-  //   return result
-  // } else if (item.privileges?.st < 0 && loginState) {
-  //   result.able = false
-  //   result.type = 2
-  //   result.msg = '因合作方要求，该资源暂时下架'
-  //   return result
-  // }
 }
