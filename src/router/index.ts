@@ -6,6 +6,7 @@ import myLike from '@/pages/myLike/myLike.vue'
 import historyPlay from '@/pages/historyPlay.vue'
 import playList from '@/pages/playList/playList.vue'
 import album from '@/pages/album/album.vue'
+import artist from '@/pages/artist/artist.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -43,6 +44,12 @@ const routes: Array<RouteRecordRaw> = [
         path: 'album/:id',
         name: 'album',
         component: album,
+        meta: { title: 'PING', keepAlive: false }
+      },
+      {
+        path: 'artist/:id',
+        name: 'artist',
+        component: artist,
         meta: { title: 'PING', keepAlive: false }
       }
     ]

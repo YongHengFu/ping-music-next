@@ -101,3 +101,101 @@ export function likeMusic(params:object) {
     params // 可选参数 : like: 默认为 true 即喜欢 , 若传 false, 则取消喜欢
   })
 }
+
+/** ------歌手----- **/
+
+/** 收藏/取消收藏歌手
+ @param id:歌手id
+ @param t: 1:收藏, 0:取消收藏
+**/
+export function collectArtist(params:object) {
+  return request({
+    url: '/artist/sub',
+    method: 'get',
+    params
+  })
+}
+
+/** 获取歌手信息和热门歌曲
+ @param id:歌手id
+**/
+export function getArtist(params:object) {
+  return request({
+    url: '/artists',
+    method: 'get',
+    params
+  })
+}
+
+/** 获取歌手热门歌曲(50首)
+ @param id:歌手id
+**/
+export function getArtistHotMusic(params:object) {
+  return request({
+    url: '/artist/top/song',
+    method: 'get',
+    params
+  })
+}
+
+/** 获取歌手信息
+ @param id:歌手id
+**/
+export function getArtistInfo(params:object) {
+  return request({
+    url: '/artist/detail',
+    method: 'get',
+    params
+  })
+}
+
+/** 获取歌手全部歌曲
+ @param id:歌手id
+ @param order : hot ,time 按照热门或者时间排序
+ @param limit: 取出歌单数量 , 默认为 50
+ @param offset: 偏移数量 , 用于分页 , ( 页数 -1)*50, 其中 50 为 limit 的值
+**/
+export function getArtistAllMusic(params:object) {
+  return request({
+    url: '/artists/songs',
+    method: 'get',
+    params
+  })
+}
+
+/** 获取歌手专辑
+ @param id:歌手id
+ @param limit: 取出歌单数量 , 默认为 50
+ @param offset: 偏移数量 , 用于分页 , (页数-1)*50, 其中 50 为 limit 的值
+**/
+export function getArtistAlbum(params:object) {
+  return request({
+    url: '/artists/album',
+    method: 'get',
+    params
+  })
+}
+
+/** 获取歌手mv
+ @param id:歌手id
+ @param limit: 取出歌单数量 , 默认为 50
+ @param offset: 偏移数量 , 用于分页 , (页数-1)*50, 其中 50 为 limit 的值
+**/
+export function getArtistMv(params:object) {
+  return request({
+    url: '/artists/mv',
+    method: 'get',
+    params
+  })
+}
+
+/** 获取相似歌手
+ @param id:歌手id
+**/
+export function getSimilarArtist(params:object) {
+  return request({
+    url: '/simi/artist',
+    method: 'get',
+    params
+  })
+}
