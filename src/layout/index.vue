@@ -88,7 +88,7 @@
           <div style="width: 100%;height: 100%;overflow-y: scroll">
             <router-view v-slot="{ Component }" class="view">
               <transition name="switch-route" mode="out-in">
-                <keep-alive>
+                <keep-alive :exclude="['album', 'artist']">
                   <component :is="Component" :key="key" />
                 </keep-alive>
               </transition>
@@ -196,7 +196,7 @@ export default defineComponent({
         index: 2,
         label: '视频',
         icon: 'VideoCameraOutlined',
-        path: '/2'
+        path: '/artist/5771'
       },
       {
         index: 3,
@@ -279,13 +279,6 @@ export default defineComponent({
     watch(refreshLogin, () => {
       refreshLoginState()
     })
-
-    // const debounce = (func: { (ele: { offsetWidth: number }): void; (...args: any[]): void }, element: any) => {
-    //   if (timer) {
-    //     clearTimeout(timer)
-    //   }
-    //   timer = setTimeout(func, 300, element)
-    // }
 
     const pageChange = (index: number) => {
       router.push({ path: itemList[index].path })
@@ -371,21 +364,25 @@ export default defineComponent({
     }
 
     const resetSize = debounce(() => {
-      const width = document.getElementById('content').offsetWidth || 0
-      let blockSize = (width / 5) - (width * (40 / 1000))
-      blockSize = blockSize > 240 ? 240 : blockSize
-      if (width - (blockSize + 20) * 6 > 40) {
-        store.commit('setBlockNum', 6)
-        document.documentElement.style.setProperty(`--block-num`, 6 + '')
-      } else {
-        store.commit('setBlockNum', 5)
-        document.documentElement.style.setProperty(`--block-num`, 5 + '')
+      const content = document.getElementById('content')
+      if (content) {
+        const width = content.offsetWidth || 0
+        let blockSize = (width / 5) - (width * (40 / 1000))
+        blockSize = blockSize > 240 ? 240 : blockSize
+        if (width - (blockSize + 20) * 6 > 40) {
+          store.commit('setBlockNum', 6)
+          document.documentElement.style.setProperty(`--block-num`, 6 + '')
+        } else {
+          store.commit('setBlockNum', 5)
+          document.documentElement.style.setProperty(`--block-num`, 5 + '')
+        }
+        document.documentElement.style.setProperty(`--block-size`, blockSize + 'px')
       }
-      document.documentElement.style.setProperty(`--block-size`, blockSize + 'px')
     }, 300)
 
     onMounted(() => {
       refreshLoginState()
+      resetSize()
       window.onresize = () => {
         resetSize()
       }
