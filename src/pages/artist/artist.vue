@@ -1,13 +1,14 @@
 <template>
   <div class="artist-page">
-    <Head />
-    <Tabs :tab-list="tabList" @changeTab="changeTab" class="tabs"/>
-    <component :is="currentTabComponent" />
+    <Head :artist-id="route.params?.id" />
+    <Tabs :tab-list="tabList" class="tabs" @changeTab="changeTab" />
+    <component :is="currentTabComponent" :artist-id="route.params?.id" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import Tabs from '@/components/Tabs.vue'
 import Head from '@/pages/artist/components/Head.vue'
 import Hot from '@/pages/artist/components/Hot.vue'
@@ -26,6 +27,7 @@ export default defineComponent({
     MvList
   },
   setup(props, ctx) {
+    const route = useRoute()
     const tabList = [
       { title: '热门', name: 'Hot' },
       { title: '歌曲', name: 'MusicList' },
@@ -40,6 +42,7 @@ export default defineComponent({
     }
 
     return {
+      route,
       tabList,
       currentTabComponent,
       changeTab

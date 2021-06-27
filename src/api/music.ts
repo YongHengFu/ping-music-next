@@ -170,7 +170,7 @@ export function getArtistAllMusic(params:object) {
 **/
 export function getArtistAlbum(params:object) {
   return request({
-    url: '/artists/album',
+    url: '/artist/album',
     method: 'get',
     params
   })
@@ -183,7 +183,7 @@ export function getArtistAlbum(params:object) {
 **/
 export function getArtistMv(params:object) {
   return request({
-    url: '/artists/mv',
+    url: '/artist/mv',
     method: 'get',
     params
   })

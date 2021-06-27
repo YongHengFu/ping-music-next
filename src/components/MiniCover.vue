@@ -1,9 +1,9 @@
 <template>
   <div style="position: relative;overflow: hidden;">
-    <div :style="{'background-image': 'url(' + imgUrl + ')'}" class="cover" @click="onPlay">
+    <div :style="{'background-image': 'url(' + image + '?param=100y100)'}" class="cover" @click="onPlay">
       <div v-if="!isCurr" class="play">
         <svg-icon name="play-fill" class="play-icon" />
-        <div :style="{'background-image': 'url(' + imgUrl + ')'}" class="mask" />
+        <div :style="{'background-image': 'url(' + image + '?param=100y100)'}" class="mask" />
       </div>
     </div>
     <div v-if="isCurr" class="play-animation">
@@ -35,7 +35,6 @@ export default defineComponent({
     const store = useStore()
     const player = ref()
     let imgUrl = coverImage
-    imgUrl = props?.image + '?param=100y100'
 
     const state = computed(() => store.state.audio.state)
 
@@ -55,7 +54,6 @@ export default defineComponent({
     return {
       player,
       playAnimation,
-      imgUrl,
       onPlay
     }
   }

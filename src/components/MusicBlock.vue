@@ -1,59 +1,43 @@
 <template>
-  <div v-if="data.id!==undefined" class="musicBlock">
-    <Block :image="data.picUrl" @click="onPlay" />
+  <div class="musicBlock">
+    <MiniCover :image="music?.album?.picUrl" :is-curr="false" style="min-width: 50px" @click="play" />
     <div class="info">
-      <span class="song">{{ data.name }}</span>
-      <!--      <div style="display: flex;align-items: center">-->
-      <!--        <svg-icon class="icon" name="SQ" />-->
-      <div class="artists">
+      <span class="song">{{ music?.name }}</span>
+      <div class="artist">
         <span
-          v-for="(item,index) of data.song.artists"
-          :key="item.id"
+          v-for="(item,index) of music?.artist"
+          :key="item?.id"
         >
-          <span class="discolour">{{ item?.name }}</span>
-          <span v-if="index!==data.song.artists.length-1">/</span>
+          <span v-artist="item?.id" class="discolour">{{ item?.name }}</span>
+          <span v-if="index!==music?.artist.length-1">/</span>
         </span>
       </div>
-      <!--      </div>-->
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Block from '@/components/MiniCover.vue'
+import MiniCover from '@/components/MiniCover.vue'
 export default defineComponent({
   name: 'MusicBlock',
   components: {
-    Block
+    MiniCover
   },
   props: {
-    song: {
-      type: Object
-    },
-    index: {
-      type: Number
-    }
+    music: Object,
+    index: Number
   },
-  data() {
+  setup(props, ctx) {
+    const play = () => {
+      ctx.emit('play')
+    }
+    const openArtist = () => {
+      ctx.emit('handleMusicBlock', 1, props.index)
+    }
     return {
-      data: {}
-    }
-  },
-  created() {
-    if (this.song) {
-      this.data = this.song
-    }
-  },
-  methods: {
-    onPlay() {
-      this.$emit('play')
-    },
-    clickSong() {
-      this.$emit('handleMusicBlock', 0, this.index)
-    },
-    clickArt() {
-      this.$emit('handleMusicBlock', 1, this.index)
+      play,
+      openArtist
     }
   }
 })
@@ -80,7 +64,12 @@ export default defineComponent({
   font-size: 15px;
   font-weight: bold;
 }
-
+.artist{
+  max-width: calc(((var(--block-size) + 20px) * var(--block-num)) / 4 - 90px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+}
 .icon{
   font-size: 28px;
   color: #1DCF9F;
