@@ -21,7 +21,7 @@
         v-for="(item,index) of music?.artist"
         :key="item.id"
       >
-        <span class="discolour">{{ item?.name }}</span>
+        <span v-artist="item?.id" class="discolour">{{ item?.name }}</span>
         <span v-if="index!==music.artist.length-1"> / </span>
       </span>
     </div>

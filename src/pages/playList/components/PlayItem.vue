@@ -14,14 +14,14 @@
             v-for="(item,index) of listItem?.artist"
             :key="item.id"
           >
-            <span class="discolour">{{ item?.name }}</span>
+            <span v-artist="item?.id" class="discolour">{{ item?.name }}</span>
             <span v-if="index!==listItem.artist.length-1">/</span>
           </span>
         </div>
       </div>
     </div>
     <div class="album">
-      <span class="discolour" @click="openAlbum(listItem.album.id)">{{ listItem?.album?.name }}</span>
+      <span v-album="listItem?.album?.id" class="discolour" @click="openAlbum(listItem?.album?.id)">{{ listItem?.album?.name }}</span>
     </div>
     <span class="time">
       <svg-icon v-if="listItem?.canPlay?.type!==2" name="love" :class="likeList.indexOf(listItem?.id)!==-1?'like-active':'like'" @click="setLike" />

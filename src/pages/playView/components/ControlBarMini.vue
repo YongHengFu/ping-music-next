@@ -9,11 +9,11 @@
             v-for="(item,index) of currMusic?.artist"
             :key="item.id"
           >
-            <span class="discolour text-color">{{ item?.name }}</span>
+            <span v-artist="item?.id" class="discolour text-color">{{ item?.name }}</span>
             <span v-if="index!==currMusic.artist.length-1"> / </span>
           </span>
           <span> - </span>
-          <span class="discolour text-color">{{currMusic?.album?.name}}</span>
+          <span v-album="currMusic?.album?.id" class="discolour text-color">{{ currMusic?.album?.name }}</span>
         </div>
         <!--        <div v-else>
           <span

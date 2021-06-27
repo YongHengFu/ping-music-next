@@ -29,11 +29,11 @@
                 :key="item.id"
                 style="font-size: 14px;cursor: pointer"
               >
-                <span class="discolour">{{ item?.name }}</span>
+                <span v-artist="item?.id" class="discolour">{{ item?.name }}</span>
                 <span v-if="index!==currMusic?.artist.length-1">/</span>
               </span>
               <span> - </span>
-              <span class="discolour">{{currMusic?.album?.name}}</span>
+              <span v-album="currMusic?.album?.id" class="discolour">{{ currMusic?.album?.name }}</span>
             </div>
           </div>
         </div>
