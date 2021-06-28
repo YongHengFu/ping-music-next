@@ -1,19 +1,18 @@
 <template>
   <div style="margin-top: 20px">
-    <div :style="{'background-image': 'url(' + imgUrl + ')'}" class="cover" @click="onOpen">
-      <Image :src="imgUrl" :type="0" class="image" style="border-radius: 8px;width:100%;height:100%;object-fit: contain" />
+    <div class="cover" @click="onOpen">
+      <Image :src="image+'?param=960y540'" :type="0" class="image" style="border-radius: 8px" />
       <div class="play" @click.stop="onPlay">
         <svg-icon name="play-fill" class="play-icon" />
-        <div :style="{'background-image': 'url(' + imgUrl + ')'}" class="mask" />
+        <Image :src="image+'?param=960y540'" :type="0" class="mask" />
       </div>
     </div>
-    <span class="title">{{ title }}</span>
+    <span class="title">{{ text??'' }}</span>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import coverImage from '@/assets/image/cover2.jpg'
 export default defineComponent({
   name: 'MaxCover',
   props: {
@@ -21,9 +20,6 @@ export default defineComponent({
     text: String
   },
   setup(props, ctx) {
-    let imgUrl = coverImage
-    imgUrl = props?.image + '?param=500y500'
-    const title = props?.text ?? 'null'
     const onOpen = () => {
       ctx.emit('open')
     }
@@ -31,8 +27,6 @@ export default defineComponent({
       ctx.emit('play')
     }
     return {
-      imgUrl,
-      title,
       onOpen,
       onPlay
     }
@@ -44,12 +38,10 @@ export default defineComponent({
 .cover{
   position: relative;
   width: var(--block-size);
-  height: calc(var(--block-size) / 2);
-  border-radius: 8px;
+  height: calc(var(--block-size) * (9 / 16));
   transition: 0.2s;
   background-size: cover;
   cursor: pointer;
-  border: #999999 1px solid;
 }
 .cover:hover{
   transform: translateY(-10px);
@@ -60,10 +52,12 @@ export default defineComponent({
   bottom: 0;
   left: 0;
   right: 0;
+  height: 100%;
+  object-fit: contain
 }
 .play{
-  width: 12.5%;
-  height: 25%;
+  width: 18%;
+  height: 32%;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -78,8 +72,8 @@ export default defineComponent({
   visibility: visible;
 }
 .play:hover{
-  width: 14%;
-  height: 28%;
+  width: 22.5%;
+  height: 40%;
 }
 .mask{
   content: '';
@@ -93,6 +87,8 @@ export default defineComponent({
   background-position: center;
   background-size: 300%;
   z-index: 1;
+  height: 100%;
+  object-fit: contain
 }
 .play-icon{
   width: 60%;

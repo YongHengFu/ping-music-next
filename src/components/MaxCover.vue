@@ -1,19 +1,18 @@
 <template>
   <div style="margin-top: 20px">
     <div class="cover" @click="onOpen">
-      <Image :src="imgUrl" :type="0" class="image" style="border:1px #999999 solid;border-radius: 8px" />
+      <Image :src="image+'?param=500y500'" :type="0" class="image" style="border-radius: 8px" />
       <div class="play" @click.stop="onPlay">
         <svg-icon name="play-fill" class="play-icon" />
-        <Image :src="imgUrl" :type="0" class="mask" />
+        <Image :src="image+'?param=500y500'" :type="0" class="mask" />
       </div>
     </div>
-    <span class="title">{{ title }}</span>
+    <span class="title">{{ text??'' }}</span>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import coverImage from '@/assets/image/cover2.jpg'
 export default defineComponent({
   name: 'MaxCover',
   props: {
@@ -21,9 +20,6 @@ export default defineComponent({
     text: String
   },
   setup(props, ctx) {
-    let imgUrl = coverImage
-    imgUrl = props?.image + '?param=500y500'
-    const title = props?.text ?? 'null'
     const onOpen = () => {
       ctx.emit('open')
     }
@@ -31,8 +27,6 @@ export default defineComponent({
       ctx.emit('play')
     }
     return {
-      imgUrl,
-      title,
       onOpen,
       onPlay
     }

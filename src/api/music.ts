@@ -157,7 +157,7 @@ export function getArtistInfo(params:object) {
 **/
 export function getArtistAllMusic(params:object) {
   return request({
-    url: '/artists/songs',
+    url: '/artist/songs',
     method: 'get',
     params
   })

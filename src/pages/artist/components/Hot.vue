@@ -41,6 +41,8 @@
         <VideoCover
           v-for="m of blockNum"
           :key="m"
+          :image="mvList[m-1]?.imgurl16v9"
+          :text="mvList[m-1]?.name"
         />
       </div>
     </div>
@@ -160,8 +162,6 @@ export default defineComponent({
   font-size: 24px;
   color: var(--primary-color);
   cursor: pointer;
-}
-.play-all:hover{
 }
 .MusicBlock{
   width: calc((var(--block-size) * var(--block-num)) + (10px * (var(--block-num) - 1)));

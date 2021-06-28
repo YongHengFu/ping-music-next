@@ -16,6 +16,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import MaxCover from '@/components/MaxCover.vue'
 import { getArtistAlbum } from '@/api/music'
@@ -29,6 +30,7 @@ export default defineComponent({
     artistId: String
   },
   setup(props, ctx) {
+    const router = useRouter()
     const store = useStore()
     const albumList = ref(<any>[])
     const blockNum = computed(():number => store.state.blockNum)
@@ -37,18 +39,22 @@ export default defineComponent({
     const getAlbumList = () => {
       const param = {
         id: props?.artistId,
-        limit: 50,
+        limit: 30,
         offset: offset
       }
       getArtistAlbum(param).then((res:any) => {
         if (res.code === 200) {
           albumList.value = albumList.value.concat(res.hotAlbums)
-          if (res.hasMore) {
-            offset++
+          if (res.more) {
+            offset = (offset + 1) * 30
             getAlbumList()
           }
         }
       })
+    }
+
+    const openAlbum = (id:string) => {
+      router.push('/album/' + id)
     }
 
     onMounted(() => {
@@ -57,7 +63,8 @@ export default defineComponent({
 
     return {
       blockNum,
-      albumList
+      albumList,
+      openAlbum
     }
   }
 })
