@@ -7,7 +7,6 @@
     </div>
     <div>
       <span class="h2" style="margin-bottom: 15px">
-        <!--      <FireFilled style="color: red;font-size: 22px" />-->
         <svg-icon name="fire-fill" style="color: red;font-size: 22px" />
         TOP 50 <a><svg-icon class="play-all" name="playAll" @click="playAll" /></a>
       </span>
@@ -23,12 +22,11 @@
     </div>
     <div>
       <span class="h2">热门专辑</span>
-      <span class="discolour" style="float: right;cursor: pointer">更多</span>
-      <div v-for="n of Math.ceil(albumList.length/blockNum)" :key="n">
+      <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
+      <div v-for="n of 2" :key="n" style="display: flex;justify-content: space-between">
         <MaxCover
           v-for="m of blockNum"
           :key="m"
-          style="display: inline-block;margin: 15px 5px"
           :image="albumList[(m-1)+(blockNum*(n-1))]?.picUrl"
           :text="albumList[(m-1)+(blockNum*(n-1))]?.name"
           @open="openAlbum(albumList[(m-1)+(blockNum*(n-1))]?.id)"
@@ -38,7 +36,13 @@
     </div>
     <div>
       <span class="h2">热门MV</span>
-      <span class="discolour" style="float: right;cursor: pointer">更多</span>
+      <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
+      <div style="display: flex;justify-content: space-between">
+        <VideoCover
+          v-for="m of blockNum"
+          :key="m"
+        />
+      </div>
     </div>
 
   </div>
@@ -49,17 +53,17 @@ import { defineComponent, ref, onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import MusicBlock from '@/components/MusicBlock.vue'
-import { getArtistAlbum, getArtistHotMusic, getArtistMv } from '@/api/music'
-import { FireFilled } from '@ant-design/icons-vue'
-import { playAble } from '@/utils/musicList'
 import MaxCover from '@/components/MaxCover.vue'
+import VideoCover from '@/components/VideoCover.vue'
+import { getArtistAlbum, getArtistHotMusic, getArtistMv } from '@/api/music'
+import { playAble } from '@/utils/musicList'
 
 export default defineComponent({
   name: 'Hot',
   components: {
+    MusicBlock,
     MaxCover,
-    FireFilled,
-    MusicBlock
+    VideoCover
   },
   props: {
     artistId: String
@@ -160,7 +164,7 @@ export default defineComponent({
 .play-all:hover{
 }
 .MusicBlock{
-  width: calc((var(--block-size) + 20px) * var(--block-num));
+  width: calc((var(--block-size) * var(--block-num)) + (10px * (var(--block-num) - 1)));
   display: flex;
   justify-content: space-between;
 }

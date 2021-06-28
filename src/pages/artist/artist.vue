@@ -2,7 +2,9 @@
   <div class="artist-page">
     <Head :artist-id="route.params?.id" />
     <Tabs :tab-list="tabList" class="tabs" @changeTab="changeTab" />
-    <component :is="currentTabComponent" :artist-id="route.params?.id" />
+    <keep-alive>
+      <component :is="currentTabComponent" :artist-id="route.params?.id" />
+    </keep-alive>
   </div>
 </template>
 
@@ -12,9 +14,9 @@ import { useRoute } from 'vue-router'
 import Tabs from '@/components/Tabs.vue'
 import Head from '@/pages/artist/components/Head.vue'
 import Hot from '@/pages/artist/components/Hot.vue'
-import MusicList from '@/pages/artist/components/Hot.vue'
-import AlbumList from '@/pages/artist/components/Hot.vue'
-import MvList from '@/pages/artist/components/Hot.vue'
+import MusicList from '@/pages/artist/components/MusicList.vue'
+import AlbumList from '@/pages/artist/components/AlbumList.vue'
+import MvList from '@/pages/artist/components/MvList.vue'
 
 export default defineComponent({
   name: 'Artist',
@@ -35,7 +37,6 @@ export default defineComponent({
       { title: 'MV', name: 'MvList' }
     ]
     const currentTabComponent = ref('Hot')
-    const info = ref({})
 
     const changeTab = (tabName:string) => {
       currentTabComponent.value = tabName
@@ -56,6 +57,6 @@ export default defineComponent({
   margin: 50px 0 30px 0;
 }
 .artist-page{
-  width: calc((var(--block-size) + 20px) * var(--block-num))!important;
+  width: var(--page-width);
 }
 </style>
