@@ -367,16 +367,18 @@ export default defineComponent({
       const content = document.getElementById('content')
       if (content) {
         const width = content.offsetWidth || 0
-        let blockSize = (width / 5) - (width * (40 / 1000))
+        let blockNum = 6
+        let blockSize = (width / 8)
         blockSize = blockSize > 240 ? 240 : blockSize
-        if (width - (blockSize + 20) * 6 > 40) {
-          store.commit('setBlockNum', 6)
-          document.documentElement.style.setProperty(`--block-num`, 6 + '')
-        } else {
-          store.commit('setBlockNum', 5)
-          document.documentElement.style.setProperty(`--block-num`, 5 + '')
+        if (blockSize < 160) {
+          blockSize = (width / 6)
+          blockSize = blockSize > 240 ? 240 : blockSize
+          blockNum = 5
         }
+        store.commit('setBlockNum', blockNum)
+        document.documentElement.style.setProperty(`--block-num`, blockNum + '')
         document.documentElement.style.setProperty(`--block-size`, blockSize + 'px')
+        document.documentElement.style.setProperty(`--page-width`, (blockNum * (blockSize + 10) - 10) + 'px')
       }
     }, 300)
 

@@ -1,10 +1,9 @@
 <template>
   <div v-if="list.length>0">
-    <div v-for="n of Math.ceil(list.length/blockNum)" :key="n">
+    <div v-for="n of Math.floor(list.length/blockNum)" :key="n" style="display: flex;justify-content: space-between">
       <Block
         v-for="m of blockNum"
         :key="m"
-        style="display: inline-block;margin: 15px 10px"
         :image="list[(m-1)+(blockNum*(n-1))]?.coverImgUrl"
         :text="list[(m-1)+(blockNum*(n-1))]?.name"
         @open="open(list[(m-1)+(blockNum*(n-1))]?.id)"

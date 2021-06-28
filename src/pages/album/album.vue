@@ -1,5 +1,5 @@
 <template>
-  <div style="width: calc((var(--block-size) + 20px) * var(--block-num))">
+  <div style="width: var(--page-width)">
     <ListHead
       v-if="Object.keys(albumInfo).length>0"
       :info="albumInfo"

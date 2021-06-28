@@ -115,7 +115,7 @@ export default defineComponent({
   cursor: pointer;
 }
 .MusicBlock{
-  width: calc((var(--block-size) + 20px) * var(--block-num));
+  width: var(--page-width);
   display: flex;
   justify-content: space-between;
 }

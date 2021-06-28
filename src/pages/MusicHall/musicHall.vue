@@ -1,5 +1,5 @@
 <template>
-  <div style="user-select: none;width: calc((var(--block-size) + 20px) * var(--block-num))">
+  <div style="user-select: none;width: var(--page-width)">
     <span class="h1">音乐馆</span>
     <Tabs :tabList="tabList" @changeTab="changeTab" />
     <component :is="currentTabComponent" />

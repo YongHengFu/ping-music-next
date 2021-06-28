@@ -45,6 +45,7 @@ export default defineComponent({
   /*--primary-color: rgb(244, 93, 93);*/
   --block-size: 160px;
   --block-num: 5;
+  --page-width: 1000px
 }
 ::-webkit-scrollbar {
   width: 6px; /* 纵向滚动条*/
@@ -83,15 +84,6 @@ export default defineComponent({
   right: 30px;
   z-index: 10000;
 }
-.playView-enter-from,
-.playView-leave-to{
-  transform: translateY(100%);
-}
-.playView-enter-active,
-.playView-leave-active{
-  transition: 0.3s;
-}
-
 .discolour {
   cursor: pointer;
   color: rgb(102, 102, 102);

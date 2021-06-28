@@ -1,9 +1,10 @@
 <template>
-  <div>
-    <div :style="{'background-image': 'url(' + imgUrl + ')'}" class="cover" @click="onOpen">
+  <div style="margin-top: 20px">
+    <div class="cover" @click="onOpen">
+      <Image :src="imgUrl" :type="0" class="image" style="border:1px #999999 solid;border-radius: 8px" />
       <div class="play" @click.stop="onPlay">
         <svg-icon name="play-fill" class="play-icon" />
-        <div :style="{'background-image': 'url(' + imgUrl + ')'}" class="mask" />
+        <Image :src="imgUrl" :type="0" class="mask" />
       </div>
     </div>
     <span class="title">{{ title }}</span>
@@ -44,13 +45,19 @@ export default defineComponent({
   position: relative;
   width: var(--block-size);
   height: var(--block-size);
-  border-radius: 8px;
   transition: 0.2s;
   background-size: cover;
   cursor: pointer;
 }
 .cover:hover{
   transform: translateY(-10px);
+}
+.image{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 .play{
   width: 25%;

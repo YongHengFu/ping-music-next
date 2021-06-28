@@ -2,29 +2,16 @@
   <div v-if="topList.length>0">
     <div class="container">
       <span class="h2">超级榜</span>
-      <div class="super">
-        <div>
-          <BoardBlock
-            v-for="item of superList.slice(0,2)"
-            :key="item.id"
-            :data="item"
-            class="block"
-            @open="open(item?.id)"
-            @play="play(item?.id)"
-            @click="open(item?.id)"
-          />
-        </div>
-        <div>
-          <BoardBlock
-            v-for="item of superList.slice(2,4)"
-            :key="item.id"
-            :data="item"
-            class="block"
-            @open="open(item?.id)"
-            @play="play(item?.id)"
-            @click="open(item?.id)"
-          />
-        </div>
+      <div v-for="n of 2" :key="n" class="super">
+        <BoardBlock
+          v-for="item of superList.slice(n*2,(n+1)*2)"
+          :key="item.id"
+          :data="item"
+          class="block"
+          @open="open(item?.id)"
+          @play="play(item?.id)"
+          @click="open(item?.id)"
+        />
       </div>
       <div class="cloud">
         <span class="h2">云听榜</span>
@@ -130,12 +117,10 @@ export default defineComponent({
 }
 .super{
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  flex-direction: row;
+  justify-content: space-between;
 }
 .block{
-  margin: 20px 10px;
-  width: calc((var(--block-size) + 20px)/2 * var(--block-num) - 20px);
+  margin-top: 20px;
+  width: calc((var(--page-width) - 10) / 2);
 }
 </style>

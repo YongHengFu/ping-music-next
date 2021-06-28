@@ -2,7 +2,7 @@
   <div
     v-if="loading"
     :id="'playList'+listId"
-    style="width: calc((var(--block-size) + 20px) * var(--block-num))"
+    style="width: var(--page-width)"
   >
     <ListHead
       v-if="Object.keys(playListInfo).length>0"
@@ -45,8 +45,7 @@ import ContextMenu from '@/components/ContextMenu.vue'
 import { getListById, getMusicDetail } from '@/api/music'
 import { playAble } from '@/utils/musicList'
 import { message } from 'ant-design-vue'
-import { debounce, throttle } from '@/utils/frequency'
-import playList from '@/pages/playList.vue'
+import { debounce } from '@/utils/frequency'
 
 export default defineComponent({
   name: 'PlayList',
