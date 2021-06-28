@@ -4,7 +4,7 @@
       <span class="h2">超级榜</span>
       <div v-for="n of 2" :key="n" class="super">
         <BoardBlock
-          v-for="item of superList.slice(n*2,(n+1)*2)"
+          v-for="item of superList.slice((n-1)*2,n*2)"
           :key="item.id"
           :data="item"
           class="block"
@@ -121,6 +121,6 @@ export default defineComponent({
 }
 .block{
   margin-top: 20px;
-  width: calc((var(--page-width) - 10) / 2);
+  width: calc(50% - 5px);
 }
 </style>

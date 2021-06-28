@@ -51,6 +51,7 @@ export default defineComponent({
   display: inline-block;
   width: 80px;
   color: rgb(69, 74, 80);
+  cursor: pointer;
 }
 .pane:hover{
   color: rgba(69, 74, 80, 0.6);
