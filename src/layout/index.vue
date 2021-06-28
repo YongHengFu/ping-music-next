@@ -230,8 +230,7 @@ export default defineComponent({
         path: '/historyPlay'
       }
     ]
-    // eslint-disable-next-line no-undef
-    // let timer: (NodeJS.Timeout | null) = null
+
     const playListCreate = ref(<any>[])
     const playListCollect = ref(<any>[])
     const isShowCreate = ref(true)
@@ -445,6 +444,7 @@ export default defineComponent({
 .layout .content {
   background: #fafafa;
   overflow: hidden;
+  position: relative;
 }
 
 .view{

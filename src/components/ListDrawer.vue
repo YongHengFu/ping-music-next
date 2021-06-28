@@ -40,7 +40,7 @@
                 style="font-size: 28px;height:16px;color: #1DCF9F;min-width: 28px;margin-left: 5px"
               />
               <lottie-player
-                v-if="index===currIndex"
+                v-if="isShowDrawer&&index===currIndex"
                 ref="player"
                 autoplay
                 loop
@@ -81,9 +81,7 @@ export default defineComponent({
     Drawer
   },
   props: {
-    isShowDrawer: {
-      type: Boolean
-    }
+    isShowDrawer: Boolean
   },
   setup(props, ctx) {
     const store = useStore()
