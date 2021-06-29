@@ -2,9 +2,9 @@
   <div v-if="topList.length>0">
     <div class="container">
       <span class="h2">超级榜</span>
-      <div v-for="n of 2" :key="n" class="super">
+      <div class="super-list">
         <BoardBlock
-          v-for="item of superList.slice((n-1)*2,n*2)"
+          v-for="item of superList"
           :key="item.id"
           :data="item"
           class="block"
@@ -15,15 +15,42 @@
       </div>
       <div class="cloud">
         <span class="h2">云听榜</span>
-        <BlockList :list="cloudList" />
+        <div class="order-list">
+          <MaxCover
+            v-for="item of cloudList"
+            :key="item?.id"
+            :image="item?.coverImgUrl"
+            :text="item?.name"
+            @open="openList(item?.id)"
+            @play="playList(item?.id)"
+          />
+        </div>
       </div>
       <div class="global">
         <span class="h2">全球榜</span>
-        <BlockList :list="globalList" />
+        <div class="order-list">
+          <MaxCover
+            v-for="item of globalList"
+            :key="item?.id"
+            :image="item?.coverImgUrl"
+            :text="item?.name"
+            @open="openList(item?.id)"
+            @play="playList(item?.id)"
+          />
+        </div>
       </div>
       <div class="pattern">
         <span class="h2">花样榜</span>
-        <BlockList :list="patternList" />
+        <div class="order-list">
+          <MaxCover
+            v-for="item of patternList"
+            :key="item?.id"
+            :image="item?.coverImgUrl"
+            :text="item?.name"
+            @open="openList(item?.id)"
+            @play="playList(item?.id)"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -34,14 +61,12 @@ import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import BoardBlock from '@/components/BoardBlock.vue'
-import BlockList from '@/components/BlockList.vue'
 import { getTopList } from '@/api/music'
 import { playList } from '@/utils/musicList'
 export default defineComponent({
   name: 'Leaderboard',
   components: {
-    BoardBlock,
-    BlockList
+    BoardBlock
   },
   setup() {
     const store = useStore()
@@ -115,12 +140,20 @@ export default defineComponent({
 .container{
 
 }
-.super{
-  display: flex;
-  justify-content: space-between;
+.super-list{
+  display: grid;
+  grid-template-columns: repeat(2, calc(50% - 10px));
+  grid-template-rows: repeat(2, var(--block-size));
+  grid-gap: 20px 20px;
+}
+.order-list{
+  display: grid;
+  grid-template-columns: repeat(var(--block-num), var(--block-size));
+  grid-template-rows: repeat(1, calc(var(--block-size) + 15px));
+  grid-gap: 20px 20px;
 }
 .block{
   margin-top: 20px;
-  width: calc(50% - 5px);
+  width: calc(50% - 10px);
 }
 </style>

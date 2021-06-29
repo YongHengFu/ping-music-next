@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-top: 20px">
+  <div>
     <div class="cover" @click="onOpen">
       <Image :src="image+'?param=960y540'" :type="0" class="image" style="border-radius: 8px" />
       <div class="play" @click.stop="onPlay">
@@ -7,7 +7,7 @@
         <Image :src="image+'?param=960y540'" :type="0" class="mask" />
       </div>
     </div>
-    <span class="title">{{ text??'' }}</span>
+    <span class="title">{{ text??'forever' }}</span>
   </div>
 </template>
 

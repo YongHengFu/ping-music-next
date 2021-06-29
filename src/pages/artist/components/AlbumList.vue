@@ -1,14 +1,14 @@
 <template>
   <div>
     <span class="h2" style="margin-bottom: 15px">专辑</span>
-    <div v-for="n of Math.floor(albumList.length/blockNum)" :key="n" style="display: flex;justify-content: space-between">
+    <div class="album-list">
       <MaxCover
-        v-for="m of blockNum"
-        :key="m"
-        :image="albumList[(m-1)+(blockNum*(n-1))]?.picUrl"
-        :text="albumList[(m-1)+(blockNum*(n-1))]?.name"
-        @open="openAlbum(albumList[(m-1)+(blockNum*(n-1))]?.id)"
-        @play="playAlbum(albumList[(m-1)+(blockNum*(n-1))]?.id)"
+        v-for="item of albumList"
+        :key="item?.id"
+        :image="item?.picUrl"
+        :text="item?.name"
+        @open="openAlbum(item?.id)"
+        @play="playAlbum(item?.id)"
       />
     </div>
   </div>
@@ -71,5 +71,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
+.album-list{
+  display: grid;
+  grid-template-columns: repeat(var(--block-num), var(--block-size));
+  grid-template-rows: repeat(1, calc(var(--block-size) + 15px));
+  grid-gap: 20px 20px;
+}
 </style>

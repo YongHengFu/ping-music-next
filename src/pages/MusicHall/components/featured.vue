@@ -5,7 +5,16 @@
     </div>
     <div>
       <span class="h2">精选专辑<RightOutlined style="font-size: 22px;text-align: center" /></span>
-      <BlockList v-if="quaList.length>0" :list="quaList" />
+      <div class="qual-list">
+        <MaxCover
+          v-for="n of quaList.length>(blockNum*2)?blockNum*2:quaList.length"
+          :key="n"
+          :image="quaList[n-1]?.picUrl"
+          :text="quaList[n-1]?.name"
+          @open="quaList([n-1]?.id)"
+          @play="quaList([n-1]?.id)"
+        />
+      </div>
     </div>
     <div>
       <span class="h2" style="margin-right: 10px">最新先听 <a><svg-icon class="play-all" name="playAll" @click="playAll" /></a>
@@ -26,11 +35,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { RightOutlined } from '@ant-design/icons-vue'
 import Banner from '@/components/Banner.vue'
-import BlockList from '@/components/BlockList.vue'
 import MusicBlock from '@/components/MusicBlock.vue'
 
 import { getNewSong, getPlayList_Qua } from '@/api/music'
@@ -42,11 +50,11 @@ export default defineComponent({
   components: {
     RightOutlined,
     Banner,
-    BlockList,
     MusicBlock
   },
   setup() {
     const store = useStore()
+    const blockNum = computed(():number => store.state.blockNum)
     const quaList = ref(<any>[])
     const newSong = ref(<any>[])
     const newSongIdList = ref(<string[]>[])
@@ -93,6 +101,7 @@ export default defineComponent({
     }
 
     return {
+      blockNum,
       quaList,
       newSong,
       newSongIdList,
@@ -113,6 +122,12 @@ export default defineComponent({
   font-size: 24px;
   color: #000c17;
   cursor: pointer;
+}
+.qual-list{
+  display: grid;
+  grid-template-columns: repeat(var(--block-num), var(--block-size));
+  grid-template-rows: repeat(1, calc(var(--block-size) + 15px));
+  grid-gap: 20px 20px;
 }
 .MusicBlock{
   width: var(--page-width);

@@ -23,26 +23,26 @@
     <div>
       <span class="h2">热门专辑</span>
       <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
-      <div v-for="n of 2" :key="n" style="display: flex;justify-content: space-between">
+      <div class="album-list">
         <MaxCover
-          v-for="m of blockNum"
-          :key="m"
-          :image="albumList[(m-1)+(blockNum*(n-1))]?.picUrl"
-          :text="albumList[(m-1)+(blockNum*(n-1))]?.name"
-          @open="openAlbum(albumList[(m-1)+(blockNum*(n-1))]?.id)"
-          @play="playAlbum(albumList[(m-1)+(blockNum*(n-1))]?.id)"
+          v-for="n of albumList.length>(blockNum*2)?blockNum*2:albumList.length"
+          :key="n"
+          :image="albumList[n-1]?.picUrl"
+          :text="albumList[n-1]?.name"
+          @open="openAlbum([n-1]?.id)"
+          @play="playAlbum([n-1]?.id)"
         />
       </div>
     </div>
     <div>
       <span class="h2">热门MV</span>
       <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
-      <div style="display: flex;justify-content: space-between">
+      <div class="mv-list">
         <VideoCover
-          v-for="m of blockNum"
-          :key="m"
-          :image="mvList[m-1]?.imgurl16v9"
-          :text="mvList[m-1]?.name"
+          v-for="n of mvList.length>blockNum?blockNum:albumList.length"
+          :key="n"
+          :image="mvList[n-1]?.imgurl16v9"
+          :text="mvList[n-1]?.name"
         />
       </div>
     </div>
@@ -164,8 +164,19 @@ export default defineComponent({
   cursor: pointer;
 }
 .MusicBlock{
-  width: calc((var(--block-size) * var(--block-num)) + (10px * (var(--block-num) - 1)));
   display: flex;
   justify-content: space-between;
+}
+.album-list{
+  display: grid;
+  grid-template-columns: repeat(var(--block-num), var(--block-size));
+  grid-template-rows: repeat(1, calc(var(--block-size) + 15px));
+  grid-gap: 20px 20px;
+}
+.mv-list{
+  display: grid;
+  grid-template-columns: repeat(var(--block-num), var(--block-size));
+  grid-template-rows: repeat(1, calc(var(--block-size) * (9 / 16) + 15px));
+  grid-gap: 20px 20px;
 }
 </style>

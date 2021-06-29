@@ -1,12 +1,12 @@
 <template>
   <div>
     <span class="h2" style="margin-bottom: 15px">MV</span>
-    <div v-for="n of Math.floor(mvList.length/blockNum)" :key="n" style="display: flex;justify-content: space-between">
+    <div class="mv-list">
       <VideoCover
-        v-for="m of blockNum"
-        :key="m"
-        :image="mvList[(m-1)+(blockNum*(n-1))]?.imgurl16v9"
-        :text="mvList[(m-1)+(blockNum*(n-1))]?.name"
+        v-for="item of mvList"
+        :key="item?.id"
+        :image="item?.imgurl16v9"
+        :text="item?.name"
       />
     </div>
   </div>
@@ -63,5 +63,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
+.mv-list{
+  display: grid;
+  grid-template-columns: repeat(var(--block-num), var(--block-size));
+  grid-template-rows: repeat(1, calc(var(--block-size) * (9 / 16) + 15px));
+  grid-gap: 20px 20px;
+}
 </style>
