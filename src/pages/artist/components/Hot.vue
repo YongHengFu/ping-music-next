@@ -39,10 +39,23 @@
       <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
       <div class="mv-list">
         <VideoCover
-          v-for="n of mvList.length>blockNum?blockNum:albumList.length"
+          v-for="n of mvList.length>(blockNum*2)?blockNum*2:albumList.length"
           :key="n"
           :image="mvList[n-1]?.imgurl16v9"
           :text="mvList[n-1]?.name"
+        />
+      </div>
+    </div>
+    <div>
+      <span class="h2">相似歌手</span>
+            <span class="discolour" style="float: right;cursor: pointer">更多</span>
+      <div class="simi-list">
+        <ArtistCover
+          v-for="n of simiList.length>(blockNum*2)?blockNum*2:simiList.length"
+          :key="n"
+          :image="simiList[n-1]?.picUrl"
+          :text="simiList[n-1]?.name"
+          :artist-id="simiList[n-1]?.id"
         />
       </div>
     </div>
@@ -57,7 +70,8 @@ import { useRouter } from 'vue-router'
 import MusicBlock from '@/components/MusicBlock.vue'
 import MaxCover from '@/components/MaxCover.vue'
 import VideoCover from '@/components/VideoCover.vue'
-import { getArtistAlbum, getArtistHotMusic, getArtistMv } from '@/api/music'
+import ArtistCover from '@/components/ArtistCover.vue'
+import { getArtistAlbum, getArtistHotMusic, getArtistMv, getSimilarArtist } from '@/api/music'
 import { playAble } from '@/utils/musicList'
 
 export default defineComponent({
@@ -65,7 +79,8 @@ export default defineComponent({
   components: {
     MusicBlock,
     MaxCover,
-    VideoCover
+    VideoCover,
+    ArtistCover
   },
   props: {
     artistId: String
@@ -77,6 +92,7 @@ export default defineComponent({
     const musicList = ref(<any>[])
     const albumList = ref(<any>[])
     const mvList = ref(<any>[])
+    const simiList = ref(<any>[])
 
     const getMusicList = () => {
       const param = { id: props?.artistId }
@@ -137,6 +153,15 @@ export default defineComponent({
       })
     }
 
+    const getSimiList = () => {
+      const param = { id: props?.artistId }
+      getSimilarArtist(param).then((res) => {
+        if (res.code === 200) {
+          simiList.value = res.artists
+        }
+      })
+    }
+
     const openAlbum = (id:string) => {
       router.push('/album/' + id)
     }
@@ -145,12 +170,14 @@ export default defineComponent({
       getMusicList()
       getAlbumList()
       getMvList()
+      getSimiList()
     })
     return {
       blockNum,
       musicList,
       albumList,
       mvList,
+      simiList,
       openAlbum
     }
   }
@@ -178,6 +205,13 @@ export default defineComponent({
   display: grid;
   grid-template-columns: repeat(var(--block-num), var(--block-size));
   grid-template-rows: repeat(1, calc(var(--block-size) * (9 / 16) + 15px));
+  grid-gap: 20px 20px;
+  margin: 20px 0;
+}
+.simi-list{
+  display: grid;
+  grid-template-columns: repeat(var(--block-num), var(--block-size));
+  grid-template-rows: repeat(1, calc(var(--block-size) + 15px));
   grid-gap: 20px 20px;
   margin: 20px 0;
 }
