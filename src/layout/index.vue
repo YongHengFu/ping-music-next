@@ -377,7 +377,7 @@ export default defineComponent({
         store.commit('setBlockNum', blockNum)
         document.documentElement.style.setProperty(`--block-num`, blockNum + '')
         document.documentElement.style.setProperty(`--block-size`, blockSize + 'px')
-        document.documentElement.style.setProperty(`--page-width`, (blockNum * (blockSize + 10) - 10) + 'px')
+        document.documentElement.style.setProperty(`--page-width`, (blockNum * (blockSize + 20) - 20) + 'px')
       }
     }, 300)
 

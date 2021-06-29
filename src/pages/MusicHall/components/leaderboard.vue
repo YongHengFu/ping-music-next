@@ -7,7 +7,6 @@
           v-for="item of superList"
           :key="item.id"
           :data="item"
-          class="block"
           @open="openList(item?.id)"
           @play="playAll(item?.id)"
           @click="openList(item?.id)"
@@ -143,7 +142,7 @@ export default defineComponent({
 }
 .super-list{
   display: grid;
-  grid-template-columns: repeat(2, 100%);
+  grid-template-columns: repeat(2, 50%);
   grid-template-rows: repeat(2, var(--block-size));
   grid-gap: 20px 20px;
 }
@@ -152,8 +151,5 @@ export default defineComponent({
   grid-template-columns: repeat(var(--block-num), var(--block-size));
   grid-template-rows: repeat(1, calc(var(--block-size) + 15px));
   grid-gap: 20px 20px;
-}
-.block{
-  width: calc(50% - 10px);
 }
 </style>
