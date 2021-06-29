@@ -61,12 +61,14 @@ import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import BoardBlock from '@/components/BoardBlock.vue'
+import MaxCover from '@/components/MaxCover.vue'
 import { getTopList } from '@/api/music'
 import { playList } from '@/utils/musicList'
 export default defineComponent({
   name: 'Leaderboard',
   components: {
-    BoardBlock
+    BoardBlock,
+    MaxCover
   },
   setup() {
     const store = useStore()
@@ -141,7 +143,7 @@ export default defineComponent({
 }
 .super-list{
   display: grid;
-  grid-template-columns: repeat(2, auto);
+  grid-template-columns: repeat(2, 100%);
   grid-template-rows: repeat(2, var(--block-size));
   grid-gap: 20px 20px;
 }
@@ -152,7 +154,6 @@ export default defineComponent({
   grid-gap: 20px 20px;
 }
 .block{
-  margin-top: 20px;
   width: calc(50% - 10px);
 }
 </style>

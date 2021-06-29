@@ -40,8 +40,8 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { RightOutlined } from '@ant-design/icons-vue'
 import Banner from '@/components/Banner.vue'
+import MaxCover from '@/components/MaxCover.vue'
 import MusicBlock from '@/components/MusicBlock.vue'
-
 import { getNewSong, getPlayList_Qua } from '@/api/music'
 import { playList, playSingle } from '@/utils/musicList'
 import '@lottiefiles/lottie-player'
@@ -51,6 +51,7 @@ export default defineComponent({
   components: {
     RightOutlined,
     Banner,
+    MaxCover,
     MusicBlock
   },
   setup() {
