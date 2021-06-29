@@ -11,8 +11,8 @@
           :key="n"
           :image="quaList[n-1]?.picUrl"
           :text="quaList[n-1]?.name"
-          @open="quaList([n-1]?.id)"
-          @play="quaList([n-1]?.id)"
+          @open="openList(quaList[n-1]?.id)"
+          @play="playListAll(quaList[n-1]?.id)"
         />
       </div>
     </div>
@@ -36,13 +36,14 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { RightOutlined } from '@ant-design/icons-vue'
 import Banner from '@/components/Banner.vue'
 import MusicBlock from '@/components/MusicBlock.vue'
 
 import { getNewSong, getPlayList_Qua } from '@/api/music'
-import { playSingle } from '@/utils/musicList'
+import { playList, playSingle } from '@/utils/musicList'
 import '@lottiefiles/lottie-player'
 
 export default defineComponent({
@@ -53,6 +54,7 @@ export default defineComponent({
     MusicBlock
   },
   setup() {
+    const router = useRouter()
     const store = useStore()
     const blockNum = computed(():number => store.state.blockNum)
     const quaList = ref(<any>[])
@@ -93,11 +95,13 @@ export default defineComponent({
     }
 
     const playAll = () => {
-      /* if (newSongIdList.value.length > 0) {
-        store.commit('setMusicList', newSongIdList.value)
-      } else {
-        getNewSongData()
-      }*/
+    }
+
+    const openList = (id:string) => {
+      router.push('/playList/' + id)
+    }
+    const playListAll = (id:string) => {
+      playList(id)
     }
 
     return {
@@ -106,7 +110,9 @@ export default defineComponent({
       newSong,
       newSongIdList,
       playSelect,
-      playAll
+      playAll,
+      openList,
+      playListAll
     }
   }
 })

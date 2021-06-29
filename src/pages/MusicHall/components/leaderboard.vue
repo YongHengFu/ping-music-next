@@ -8,9 +8,9 @@
           :key="item.id"
           :data="item"
           class="block"
-          @open="open(item?.id)"
-          @play="play(item?.id)"
-          @click="open(item?.id)"
+          @open="openList(item?.id)"
+          @play="playAll(item?.id)"
+          @click="openList(item?.id)"
         />
       </div>
       <div class="cloud">
@@ -22,7 +22,7 @@
             :image="item?.coverImgUrl"
             :text="item?.name"
             @open="openList(item?.id)"
-            @play="playList(item?.id)"
+            @play="playAll(item?.id)"
           />
         </div>
       </div>
@@ -35,7 +35,7 @@
             :image="item?.coverImgUrl"
             :text="item?.name"
             @open="openList(item?.id)"
-            @play="playList(item?.id)"
+            @play="playAll(item?.id)"
           />
         </div>
       </div>
@@ -48,7 +48,7 @@
             :image="item?.coverImgUrl"
             :text="item?.name"
             @open="openList(item?.id)"
-            @play="playList(item?.id)"
+            @play="playAll(item?.id)"
           />
         </div>
       </div>
@@ -76,14 +76,6 @@ export default defineComponent({
     const cloudList = ref(<any>[])
     const globalList = ref(<any>[])
     const patternList = ref(<any>[])
-
-    const open = (id:string) => {
-      router.push('/playList/' + id)
-    }
-
-    const play = (id:string) => {
-      playList(id)
-    }
 
     const getTopListData = async() => {
       await getTopList().then((res:any) => {
@@ -116,6 +108,13 @@ export default defineComponent({
       }
     }
 
+    const openList = (id:string) => {
+      router.push('/playList/' + id)
+    }
+    const playAll = (id:string) => {
+      playList(id)
+    }
+
     const init = async() => {
       store.commit('setLoading', true)
       await getTopListData()
@@ -129,8 +128,8 @@ export default defineComponent({
       cloudList,
       globalList,
       patternList,
-      open,
-      play
+      openList,
+      playAll
     }
   }
 })
@@ -142,7 +141,7 @@ export default defineComponent({
 }
 .super-list{
   display: grid;
-  grid-template-columns: repeat(2, calc(50% - 10px));
+  grid-template-columns: repeat(2, auto);
   grid-template-rows: repeat(2, var(--block-size));
   grid-gap: 20px 20px;
 }
