@@ -9,7 +9,7 @@
         <MaxCover
           v-for="n of quaList.length>(blockNum*2)?blockNum*2:quaList.length"
           :key="n"
-          :image="quaList[n-1]?.picUrl"
+          :image="quaList[n-1]?.coverImgUrl"
           :text="quaList[n-1]?.name"
           @open="openList(quaList[n-1]?.id)"
           @play="playListAll(quaList[n-1]?.id)"
@@ -135,6 +135,7 @@ export default defineComponent({
   grid-template-columns: repeat(var(--block-num), var(--block-size));
   grid-template-rows: repeat(1, calc(var(--block-size) + 15px));
   grid-gap: 20px 20px;
+  margin: 20px 0;
 }
 .MusicBlock{
   width: var(--page-width);

@@ -145,11 +145,13 @@ export default defineComponent({
   grid-template-columns: repeat(2, calc(50% - 10px));
   grid-template-rows: repeat(2, var(--block-size));
   grid-gap: 20px 20px;
+  margin: 20px 0;
 }
 .order-list{
   display: grid;
   grid-template-columns: repeat(var(--block-num), var(--block-size));
   grid-template-rows: repeat(1, calc(var(--block-size) + 15px));
   grid-gap: 20px 20px;
+  margin: 20px 0;
 }
 </style>

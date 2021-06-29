@@ -76,5 +76,6 @@ export default defineComponent({
   grid-template-columns: repeat(var(--block-num), var(--block-size));
   grid-template-rows: repeat(1, calc(var(--block-size) + 15px));
   grid-gap: 20px 20px;
+  margin: 20px 0;
 }
 </style>

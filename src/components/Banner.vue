@@ -1,15 +1,16 @@
 <template>
-  <div v-if="show.length>0">
+  <div>
     <div class="container" @mouseleave="leave" @mouseenter="enter">
       <LeftCircleFilled v-if="controlButton" class="prevIcon" @click="prev" />
       <RightCircleFilled v-if="controlButton" class="nextIcon" @click="next" />
-      <div v-for="n of 5" :key="n" :class="item[n-1].class">
-        <div style="position: relative;border-radius: 5px;overflow: hidden;cursor: pointer">
-          <img
+      <div v-for="n of 5" :key="n" :class="item[n-1]?.class">
+        <div style="position: relative;border-radius: 5px;overflow: hidden;cursor: pointer;width: 100%;height: 100%;">
+          <Image
             :src="show[n-1]?.imgBase64"
-            style="border-radius: 5px;width: 100%"
+            :type="0"
+            style="border-radius: 5px;width: 100%;height: 100%;object-fit: contain"
             @click="action(show[n-1])"
-          >
+          />
           <span class="tab">{{ show[n-1]?.typeTitle }}</span>
         </div>
       </div>
