@@ -21,7 +21,7 @@
       </div>
     </div>
     <div>
-      <span class="h2">热门专辑</span>
+      <span class="h2">推荐专辑</span>
       <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
       <div class="album-list">
         <MaxCover
@@ -29,26 +29,27 @@
           :key="n"
           :image="albumList[n-1]?.picUrl"
           :text="albumList[n-1]?.name"
-          @open="openAlbum([n-1]?.id)"
-          @play="playAlbum([n-1]?.id)"
+          @open="openAlbum(albumList[n-1]?.id)"
+          @play="playAlbum(albumList[n-1]?.id)"
         />
       </div>
     </div>
     <div>
-      <span class="h2">热门MV</span>
+      <span class="h2">热门视频</span>
       <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
       <div class="mv-list">
         <VideoCover
-          v-for="n of mvList.length>(blockNum*2)?blockNum*2:albumList.length"
+          v-for="n of mvList.length>(blockNum*2)?blockNum*2:mvList.length"
           :key="n"
           :image="mvList[n-1]?.imgurl16v9"
           :text="mvList[n-1]?.name"
+          :video-id="mvList[n-1]?.id"
         />
       </div>
     </div>
     <div>
       <span class="h2">相似歌手</span>
-            <span class="discolour" style="float: right;cursor: pointer">更多</span>
+      <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
       <div class="simi-list">
         <ArtistCover
           v-for="n of simiList.length>(blockNum*2)?blockNum*2:simiList.length"
@@ -155,7 +156,7 @@ export default defineComponent({
 
     const getSimiList = () => {
       const param = { id: props?.artistId }
-      getSimilarArtist(param).then((res) => {
+      getSimilarArtist(param).then((res:any) => {
         if (res.code === 200) {
           simiList.value = res.artists
         }

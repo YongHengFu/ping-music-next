@@ -2,33 +2,32 @@
   <div>
     <div class="cover" @click="onOpen">
       <Image :src="image+'?param=960y540'" :type="0" class="image" style="border-radius: 8px" />
-      <div class="play" @click.stop="onPlay">
+      <div class="play">
         <svg-icon name="play-fill" class="play-icon" />
         <Image :src="image+'?param=960y540'" :type="0" class="mask" />
       </div>
     </div>
-    <span class="title">{{ text??'forever' }}</span>
+    <span class="title">{{ text??'' }}</span>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'MaxCover',
   props: {
     image: String,
-    text: String
+    text: String,
+    videoId: String
   },
   setup(props, ctx) {
+    const router = useRouter()
     const onOpen = () => {
-      ctx.emit('open')
-    }
-    const onPlay = () => {
-      ctx.emit('play')
+      router.push('/videoPlayer/' + props?.videoId)
     }
     return {
-      onOpen,
-      onPlay
+      onOpen
     }
   }
 })

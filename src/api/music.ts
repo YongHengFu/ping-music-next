@@ -199,3 +199,39 @@ export function getSimilarArtist(params:object) {
     params
   })
 }
+
+/** ------视频----- **/
+
+/** 获取mv数据
+ @param mvid:mv的id
+ **/
+export function getMvDetail(params:object) {
+  return request({
+    url: '/mv/detail',
+    method: 'get',
+    params
+  })
+}
+
+/** 获取mv的url
+ @param id:mv的id
+ @param r:分辨率
+ **/
+export function getMvUrl(params:object) {
+  return request({
+    url: '/mv/url',
+    method: 'get',
+    params
+  })
+}
+
+/** 获取相似mv
+ @param mvid:mv的id
+ **/
+export function getSimiMv(params:object) {
+  return request({
+    url: '/simi/mv',
+    method: 'get',
+    params
+  })
+}

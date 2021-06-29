@@ -31,7 +31,7 @@ export default defineComponent({
   setup(props, ctx) {
     const route = useRoute()
     const tabList = [
-      { title: '热门', name: 'Hot' },
+      { title: '精选', name: 'Hot' },
       { title: '歌曲', name: 'MusicList' },
       { title: '专辑', name: 'AlbumList' },
       { title: 'MV', name: 'MvList' }

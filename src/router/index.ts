@@ -7,6 +7,7 @@ import historyPlay from '@/pages/historyPlay.vue'
 import playList from '@/pages/playList/playList.vue'
 import album from '@/pages/album/album.vue'
 import artist from '@/pages/artist/artist.vue'
+import videoPlayer from '@/pages/videoPlayer/VideoPlayer.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -50,6 +51,12 @@ const routes: Array<RouteRecordRaw> = [
         path: 'artist/:id',
         name: 'artist',
         component: artist,
+        meta: { title: 'PING', keepAlive: false }
+      },
+      {
+        path: 'videoPlayer/:id',
+        name: 'videoPlayer',
+        component: videoPlayer,
         meta: { title: 'PING', keepAlive: false }
       }
     ]

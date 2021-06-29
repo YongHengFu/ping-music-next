@@ -7,7 +7,7 @@
       class="image"
       @click="openArtist"
     />
-    <span>{{ text??'test' }}</span>
+    <span>{{ text??'' }}</span>
   </div>
 </template>
 
@@ -24,8 +24,8 @@ export default defineComponent({
   setup(props, ctx) {
     const router = useRouter()
     const openArtist = (id:string) => {
-      if (props?.id) {
-        router.push('/artist/' + props.id)
+      if (props?.artistId) {
+        router.push('/artist/' + props.artistId)
       }
     }
 
@@ -45,13 +45,14 @@ export default defineComponent({
   user-select: none;
 }
 .image{
-  width: var(--block-size);
-  height: var(--block-size);
-  border: 1px #999999 dashed;
+  width: calc(var(--block-size) - 10%);
+  height: calc(var(--block-size) - 10%);
+  object-fit: cover;
   cursor: pointer;
+  transition: 0.3s;
 }
 .image:hover{
-  transition: 1s;
-  transform: rotate(360deg);
+  transform: translateY(-10px);
+  /*transform: rotate(360deg);*/
 }
 </style>

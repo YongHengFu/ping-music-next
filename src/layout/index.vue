@@ -196,7 +196,7 @@ export default defineComponent({
         index: 2,
         label: '视频',
         icon: 'VideoCameraOutlined',
-        path: '/artist/5771'
+        path: '/videoPlayer/10896407'
       },
       {
         index: 3,

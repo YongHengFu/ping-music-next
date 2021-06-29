@@ -6,6 +6,7 @@
         v-for="item of mvList"
         :key="item?.id"
         :image="item?.imgurl16v9"
+        :video-id="item?.id"
         :text="item?.name"
       />
     </div>

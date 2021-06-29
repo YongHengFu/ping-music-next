@@ -5,8 +5,11 @@ import Router from '@/router'
 import Vuex from '@/store'
 import svgIcon from '@/components/svgIcon.vue'
 import Image from '@/components/global/Image.vue'
-import App from '@/App.vue'
 import initDirective from '@/utils/directive'
+// @ts-ignore
+import VuePlyr from 'vue-plyr'
+import 'vue-plyr/dist/vue-plyr.css'
+import App from '@/App.vue'
 
 Router.beforeEach((to, from, next) => {
   if (to.meta.title) {
@@ -21,6 +24,7 @@ const app = createApp(App)
 initDirective(app)
 app.use(Router)
 app.use(Vuex)
+app.use(VuePlyr, { plyr: {}})
 app.component('SvgIcon', svgIcon)
 app.component('Image', Image)
 app.mount('#app')
