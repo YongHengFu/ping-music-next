@@ -8,7 +8,7 @@
         :image="item?.picUrl"
         :text="item?.name"
         @open="openAlbum(item?.id)"
-        @play="playAlbum(item?.id)"
+        @play="playAll(item?.id)"
       />
     </div>
   </div>
@@ -20,6 +20,7 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import MaxCover from '@/components/MaxCover.vue'
 import { getArtistAlbum } from '@/api/music'
+import { playAblume } from '@/utils/musicList'
 
 export default defineComponent({
   name: 'MusicList',
@@ -57,6 +58,10 @@ export default defineComponent({
       router.push('/album/' + id)
     }
 
+    const playAll = (id:string) => {
+      playAblume(id)
+    }
+
     onMounted(() => {
       getAlbumList()
     })
@@ -64,7 +69,8 @@ export default defineComponent({
     return {
       blockNum,
       albumList,
-      openAlbum
+      openAlbum,
+      playAll
     }
   }
 })

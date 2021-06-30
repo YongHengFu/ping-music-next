@@ -30,7 +30,7 @@
           :image="albumList[n-1]?.picUrl"
           :text="albumList[n-1]?.name"
           @open="openAlbum(albumList[n-1]?.id)"
-          @play="playAlbum(albumList[n-1]?.id)"
+          @play="playAll(albumList[n-1]?.id)"
         />
       </div>
     </div>
@@ -73,7 +73,7 @@ import MaxCover from '@/components/MaxCover.vue'
 import VideoCover from '@/components/VideoCover.vue'
 import ArtistCover from '@/components/ArtistCover.vue'
 import { getArtistAlbum, getArtistHotMusic, getArtistMv, getSimilarArtist } from '@/api/music'
-import { playAble } from '@/utils/musicList'
+import { playAble, playAblume } from '@/utils/musicList'
 
 export default defineComponent({
   name: 'Hot',
@@ -167,6 +167,10 @@ export default defineComponent({
       router.push('/album/' + id)
     }
 
+    const playAll = (id:string) => {
+      playAblume(id)
+    }
+
     onMounted(() => {
       getMusicList()
       getAlbumList()
@@ -179,7 +183,8 @@ export default defineComponent({
       albumList,
       mvList,
       simiList,
-      openAlbum
+      openAlbum,
+      playAll
     }
   }
 })

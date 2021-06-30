@@ -11,7 +11,7 @@ export const playSingle = async(id:string) => {
 // 选择歌曲下一首播放
 export const pushSingle = async(id:string) => {
   const ids = [id]
-  const song = await getMusicData(ids)
+  const song = await getMusicData(ids, '')
   if (song) {
     const musicList = JSON.parse(<string>localStorage.getItem('musicList'))
     const currIndex = store.state.currMusic?.index
@@ -27,7 +27,7 @@ export const pushSingle = async(id:string) => {
   }
 }
 
-export const getMusicData = (ids:string[]) => {
+export const getMusicData = (ids:string[], listId:string) => {
   const param = { ids: ids.join(',') }
   return getMusicDetail(param).then((res:any) => {
     if (res.code === 200) {
@@ -51,6 +51,9 @@ export const getMusicData = (ids:string[]) => {
         }
         song.canPlay = playAble(song)
         if (song.canPlay.able) {
+          if (listId && listId !== '') {
+            song.listId = listId
+          }
           song.index = index2
           index2++
           details.push(song)
@@ -64,7 +67,7 @@ export const getMusicData = (ids:string[]) => {
 }
 
 // 播放整张专辑
-export const playAblume = async(id:string, selectId:string) => {
+export const playAblume = async(id:string) => {
   const param = { 'id': id }
   const ids = await getAlbumById(param).then((res:any) => {
     if (res.code === 200) {
@@ -77,14 +80,16 @@ export const playAblume = async(id:string, selectId:string) => {
       return null
     }
   })
-  if (ids) {
-    const list = await getMusicData(ids)
-    play(list, selectId)
+  if (ids && ids.length > 0) {
+    const list = await getMusicData(ids, 'album' + id)
+    if (list && list.length > 0) {
+      play(list)
+    }
   }
 }
 
 // 播放整个歌单
-export const playList = async(id:string, selectId:string) => {
+export const playList = async(id:string) => {
   const param = { id }
   const ids = await getListById(param).then((res:any) => {
     if (res.code === 200) {
@@ -97,50 +102,35 @@ export const playList = async(id:string, selectId:string) => {
       return null
     }
   })
-  if (ids) {
+  if (ids && ids.length > 0) {
     let list:any = []
     for (let i = 0; i < ids.length; i += 50) {
       if (i + 50 < ids.length) {
-        list = list.concat(await getMusicData(ids.slice(i, i + 50)))
+        list = list.concat(await getMusicData(ids.slice(i, i + 50), 'playList' + id))
       } else {
-        list = list.concat(await getMusicData(ids.slice(i, ids.length)))
+        list = list.concat(await getMusicData(ids.slice(i, ids.length), 'playList' + id))
       }
-      /*      if (i % 100 === 0) {
-        if (list) {
+      if (i % 100 === 0) {
+        if (list && list.length > 0) {
           localStorage.setItem('musicList', JSON.stringify(list))
           store.commit('setMusicList', list)
           if (i === 0) {
-            if (selectId !== '') {
-              for (const [index, item] of list.entries()) {
-                if (item.id === selectId) {
-                  store.commit('setCurrMusic', list[index])
-                }
-              }
-            } else {
-              store.commit('setCurrMusic', list[0])
-            }
+            store.commit('setCurrMusic', list[0])
           }
         }
-      }*/
+      }
     }
-    play(list, selectId)
+    if (list && list.length > 0) {
+      localStorage.setItem('musicList', JSON.stringify(list))
+      store.commit('setMusicList', list)
+    }
   }
 }
 
-const play = (list:any, selectId:string) => {
-  if (list) {
-    localStorage.setItem('musicList', JSON.stringify(list))
-    store.commit('setMusicList', list)
-    if (selectId !== '') {
-      for (const [index, item] of list.entries()) {
-        if (item.id === selectId) {
-          store.commit('setCurrMusic', list[index])
-        }
-      }
-    } else {
-      store.commit('setCurrMusic', list[0])
-    }
-  }
+const play = (list:any) => {
+  localStorage.setItem('musicList', JSON.stringify(list))
+  store.commit('setCurrMusic', list[0])
+  store.commit('setMusicList', list)
 }
 
 // 判断音乐是否可播放

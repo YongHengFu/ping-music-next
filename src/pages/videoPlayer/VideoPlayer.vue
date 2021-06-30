@@ -2,7 +2,13 @@
   <div class="page-video-player">
     <div class="player">
       <span v-if="!isReady" class="play-loading">正在获取视频...</span>
-      <vue-plyr v-else :options="playerOptions" class="plyr">
+      <vue-plyr
+        v-else
+        :options="playerOptions"
+        :autoplay="true"
+        class="plyr"
+        @play="onPlay"
+      >
         <video
           controls
           crossorigin
@@ -107,6 +113,11 @@ export default defineComponent({
       router.replace('/videoPlayer/' + id)
     }
 
+    const onPlay = () => {
+      const param = { prop: 'state', value: false }
+      store.commit('setAudio', param)
+    }
+
     onMounted(() => {
       getMvData()
       getSimiMvList()
@@ -119,7 +130,8 @@ export default defineComponent({
       videoInfo,
       simiMvList,
       isReady,
-      openVideo
+      openVideo,
+      onPlay
     }
   }
 })
