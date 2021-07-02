@@ -20,7 +20,6 @@ export const pushSingle = async(id:string) => {
       musicList[i].index = i
     }
     store.commit('setMusicList', musicList)
-    localStorage.setItem('musicList', JSON.stringify(musicList))
     return true
   } else {
     return false
@@ -83,7 +82,8 @@ export const playAblume = async(id:string) => {
   if (ids && ids.length > 0) {
     const list = await getMusicData(ids, 'album' + id)
     if (list && list.length > 0) {
-      play(list)
+      store.commit('setCurrMusic', list[0])
+      store.commit('setMusicList', list)
     }
   }
 }
@@ -112,7 +112,6 @@ export const playList = async(id:string) => {
       }
       if (i % 100 === 0) {
         if (list && list.length > 0) {
-          localStorage.setItem('musicList', JSON.stringify(list))
           store.commit('setMusicList', list)
           if (i === 0) {
             store.commit('setCurrMusic', list[0])
@@ -121,16 +120,34 @@ export const playList = async(id:string) => {
       }
     }
     if (list && list.length > 0) {
-      localStorage.setItem('musicList', JSON.stringify(list))
       store.commit('setMusicList', list)
     }
   }
 }
 
-const play = (list:any) => {
-  localStorage.setItem('musicList', JSON.stringify(list))
-  store.commit('setCurrMusic', list[0])
-  store.commit('setMusicList', list)
+// 播放其他列表歌曲
+export const playOrderList = async(ids:string[], listId:string) => {
+  if (ids && ids.length > 0) {
+    let list:any = []
+    for (let i = 0; i < ids.length; i += 30) {
+      if (i + 30 < ids.length) {
+        list = list.concat(await getMusicData(ids.slice(i, i + 30), listId))
+      } else {
+        list = list.concat(await getMusicData(ids.slice(i, ids.length), listId))
+      }
+      if (i % 40 === 0) {
+        if (list && list.length > 0) {
+          store.commit('setMusicList', list)
+          if (i === 0) {
+            store.commit('setCurrMusic', list[0])
+          }
+        }
+      }
+    }
+    if (list && list.length > 0) {
+      store.commit('setMusicList', list)
+    }
+  }
 }
 
 // 判断音乐是否可播放
