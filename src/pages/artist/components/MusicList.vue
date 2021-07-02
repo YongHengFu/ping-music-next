@@ -45,17 +45,15 @@ export default defineComponent({
     let isPlayAll = false
 
     const getMusicList = () => {
-      playMusicList = []
-      playIndex = 0
       const param = {
         id: props?.artistId,
         order: 'hot',
         limit: 30,
         offset: offset
       }
-      setMusicList()
       getArtistAllMusic(param).then((res:any) => {
         if (res.code === 200) {
+          setMusicList(res.songs)
           if (res.more) {
             offset = (offset + 1) * 30
             getMusicList()
