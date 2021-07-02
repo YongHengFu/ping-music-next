@@ -1,9 +1,9 @@
 <template>
   <div>
-      <span class="h2" style="margin-bottom: 15px">
-        <svg-icon name="fire-fill" style="color: red;font-size: 22px" />
-        TOP 50 <a><svg-icon class="play-all" name="playAll" @click="playAll" /></a>
-      </span>
+    <span class="h2" style="margin-bottom: 15px">
+      <svg-icon name="fire-fill" style="color: red;font-size: 22px" />
+      TOP 50 <a><svg-icon class="play-all" name="playAll" @click="playAll" /></a>
+    </span>
     <div>
       <PlayItem
         v-for="(item,index) of musicList"
@@ -21,9 +21,12 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
+import { useStore } from 'vuex'
 import PlayItem from '@/pages/playList/components/PlayItem.vue'
-import { getArtistAllMusic, getArtistHotMusic } from '@/api/music'
+import { getArtistAllMusic } from '@/api/music'
 import { playAble } from '@/utils/musicList'
+import { message } from 'ant-design-vue'
+
 export default defineComponent({
   name: 'MusicList',
   components: {
@@ -33,14 +36,35 @@ export default defineComponent({
     artistId: String
   },
   setup(props, ctx) {
+    const store = useStore()
     const musicList = ref(<any>[])
-    const listId = ref('allMusic' + props.artistId)
+    let playMusicList:any = []
+    const listId = 'artistAll' + props?.artistId
+    let offset = 0
+    let playIndex = 0
+    let isPlayAll = false
 
     const getMusicList = () => {
-      const param = { id: props?.artistId }
-      getArtistHotMusic(param).then((res:any) => {
+      playMusicList = []
+      playIndex = 0
+      const param = {
+        id: props?.artistId,
+        order: 'hot',
+        limit: 30,
+        offset: offset
+      }
+      setMusicList()
+      getArtistAllMusic(param).then((res:any) => {
         if (res.code === 200) {
-          setMusicList(res.songs)
+          if (res.more) {
+            offset = (offset + 1) * 30
+            getMusicList()
+          } else {
+            if (isPlayAll) {
+              isPlayAll = false
+              store.commit('setMusicList', playMusicList)
+            }
+          }
         }
       })
     }
@@ -61,12 +85,40 @@ export default defineComponent({
           fee: item.fee,
           noCopyrightRcmd: item.noCopyrightRcmd,
           canPlay: null,
-          listId: 'hotMusic' + props.artistId
+          listId: listId
         }
         song.canPlay = playAble(song)
         songList.push(song)
+        if (song.canPlay.able) {
+          song.index = playIndex
+          playIndex++
+          playMusicList.push(song)
+        }
       }
-      musicList.value = songList
+      musicList.value = musicList.value.concat(songList)
+    }
+
+    const playAll = () => {
+      if (playMusicList.length > 0) {
+        isPlayAll = true
+        store.commit('setCurrMusic', playMusicList[0])
+        store.commit('setMusicList', playMusicList)
+      }
+    }
+
+    const playSelect = (music:any) => {
+      if (music.canPlay.able) {
+        isPlayAll = true
+        for (const item of playMusicList) {
+          if (item.id === music.id) {
+            store.commit('setCurrMusic', item)
+            store.commit('setMusicList', playMusicList)
+            return
+          }
+        }
+      } else {
+        message.error(music.canPlay.msg)
+      }
     }
 
     onMounted(() => {
@@ -75,7 +127,9 @@ export default defineComponent({
 
     return {
       musicList,
-      listId
+      listId,
+      playAll,
+      playSelect
     }
   }
 })

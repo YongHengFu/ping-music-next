@@ -169,21 +169,12 @@ export default defineComponent({
 
     const playSelect = (music:any) => {
       if (music.canPlay.able) {
-        if (music.listId === route.params.id) {
-          for (const item of store.state.musicList) {
-            if (item.id === music.id) {
-              store.commit('setCurrMusic', item)
-              return
-            }
-          }
-        } else {
-          isPlayAll = true
-          for (const item of playMusicList) {
-            if (item.id === music.id) {
-              store.commit('setCurrMusic', item)
-              store.commit('setMusicList', playMusicList)
-              return
-            }
+        isPlayAll = true
+        for (const item of playMusicList) {
+          if (item.id === music.id) {
+            store.commit('setCurrMusic', item)
+            store.commit('setMusicList', playMusicList)
+            return
           }
         }
       } else {
