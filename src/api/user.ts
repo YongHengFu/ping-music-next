@@ -67,3 +67,27 @@ export function getUserPlayList(params:object) {
     params
   })
 }
+
+/** 获取收藏的歌手列表
+ @param limit: 每页数量 , 默认为 50
+ @param offset: 偏移数量 , 用于分页 , (页数-1)*50, 其中 50 为 limit 的值
+ **/
+export function getCollectArtist(params:object) {
+  return request({
+    url: '/artist/sublist',
+    method: 'get',
+    params
+  })
+}
+
+/** 收藏/取消收藏歌手
+ @param id: 歌手id
+ @param t:操作,1 为收藏,其他为取消收藏
+ **/
+export function collectArtist(params:object) {
+  return request({
+    url: '/artist/sub',
+    method: 'get',
+    params
+  })
+}

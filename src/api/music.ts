@@ -104,18 +104,6 @@ export function likeMusic(params:object) {
 
 /** ------歌手----- **/
 
-/** 收藏/取消收藏歌手
- @param id:歌手id
- @param t: 1:收藏, 0:取消收藏
-**/
-export function collectArtist(params:object) {
-  return request({
-    url: '/artist/sub',
-    method: 'get',
-    params
-  })
-}
-
 /** 获取歌手信息和热门歌曲
  @param id:歌手id
 **/
@@ -152,7 +140,7 @@ export function getArtistInfo(params:object) {
 /** 获取歌手全部歌曲
  @param id:歌手id
  @param order : hot ,time 按照热门或者时间排序
- @param limit: 取出歌单数量 , 默认为 50
+ @param limit: 每页数量 , 默认为 50
  @param offset: 偏移数量 , 用于分页 , ( 页数 -1)*50, 其中 50 为 limit 的值
 **/
 export function getArtistAllMusic(params:object) {
@@ -165,7 +153,7 @@ export function getArtistAllMusic(params:object) {
 
 /** 获取歌手专辑
  @param id:歌手id
- @param limit: 取出歌单数量 , 默认为 50
+ @param limit: 每页数量 , 默认为 50
  @param offset: 偏移数量 , 用于分页 , (页数-1)*50, 其中 50 为 limit 的值
 **/
 export function getArtistAlbum(params:object) {
@@ -178,7 +166,7 @@ export function getArtistAlbum(params:object) {
 
 /** 获取歌手mv
  @param id:歌手id
- @param limit: 取出歌单数量 , 默认为 50
+ @param limit: 每页数量 , 默认为 50
  @param offset: 偏移数量 , 用于分页 , (页数-1)*50, 其中 50 为 limit 的值
 **/
 export function getArtistMv(params:object) {

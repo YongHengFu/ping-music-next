@@ -113,7 +113,7 @@ import { Layout, Input, Avatar } from 'ant-design-vue'
 import Loading from '@/components/Loading.vue'
 import ControlBar from '@/components/ControlBar.vue'
 import ListDrawer from '@/components/ListDrawer.vue'
-import { getAccountInfo, getUserPlayList } from '@/api/user'
+import { getAccountInfo, getCollectArtist, getUserPlayList } from '@/api/user'
 import { message } from 'ant-design-vue'
 import { debounce } from '@/utils/frequency'
 
@@ -264,6 +264,7 @@ export default defineComponent({
       if (loginState.value) {
         const usid = <string>localStorage.getItem('usid')
         getLikeData(usid)
+        getCollectArtistList(0, [])
         getPlayList(usid)
       } else {
         localStorage.removeItem('cookie')
@@ -272,6 +273,7 @@ export default defineComponent({
         playListCollect.value = []
         localStorage.removeItem('playListCollect')
         store.commit('setLikeList', [])
+        store.commit('setCollectArtistList', [])
       }
     })
 
@@ -350,6 +352,28 @@ export default defineComponent({
       getLikeList(param).then((res:any) => {
         if (res.code === 200) {
           store.commit('setLikeList', res.ids)
+        }
+      })
+    }
+
+    const getCollectArtistList = (offset:number, list:any[]) => {
+      const param = {
+        limit: 50,
+        offset: offset
+      }
+      let artistList = list
+      getCollectArtist(param).then((res:any) => {
+        if (res.code === 200) {
+          artistList = artistList.concat(res.data)
+          if (res.hasMore) {
+            getCollectArtistList(offset + param.limit, artistList)
+          } else {
+            const list = []
+            for (const item of artistList) {
+              list.push(item.id + '')
+            }
+            store.commit('setCollectArtistList', list)
+          }
         }
       })
     }

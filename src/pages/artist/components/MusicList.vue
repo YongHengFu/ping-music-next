@@ -23,7 +23,7 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import PlayItem from '@/pages/playList/components/PlayItem.vue'
-import { getArtistAllMusic } from '@/api/music'
+import { getArtistHotMusic } from '@/api/music'
 import { playAble } from '@/utils/musicList'
 import { message } from 'ant-design-vue'
 
@@ -38,31 +38,17 @@ export default defineComponent({
   setup(props, ctx) {
     const store = useStore()
     const musicList = ref(<any>[])
-    let playMusicList:any = []
-    const listId = 'artistAll' + props?.artistId
-    let offset = 0
+    const playMusicList:any = []
+    const listId = 'artistHot' + props?.artistId
+    // const offset = 0
     let playIndex = 0
-    let isPlayAll = false
+    // let isPlayAll = false
 
     const getMusicList = () => {
-      const param = {
-        id: props?.artistId,
-        order: 'hot',
-        limit: 30,
-        offset: offset
-      }
-      getArtistAllMusic(param).then((res:any) => {
+      const param = { id: props?.artistId }
+      getArtistHotMusic(param).then((res:any) => {
         if (res.code === 200) {
           setMusicList(res.songs)
-          if (res.more) {
-            offset = (offset + 1) * 30
-            getMusicList()
-          } else {
-            if (isPlayAll) {
-              isPlayAll = false
-              store.commit('setMusicList', playMusicList)
-            }
-          }
         }
       })
     }
@@ -83,7 +69,7 @@ export default defineComponent({
           fee: item.fee,
           noCopyrightRcmd: item.noCopyrightRcmd,
           canPlay: null,
-          listId: listId
+          listId: 'artistHot' + props.artistId
         }
         song.canPlay = playAble(song)
         songList.push(song)
@@ -93,12 +79,64 @@ export default defineComponent({
           playMusicList.push(song)
         }
       }
-      musicList.value = musicList.value.concat(songList)
+      musicList.value = songList
     }
+
+    // const getMusicList = () => {
+    //   const param = {
+    //     id: props?.artistId,
+    //     order: 'hot',
+    //     limit: 30,
+    //     offset: offset
+    //   }
+    //   getArtistAllMusic(param).then((res:any) => {
+    //     if (res.code === 200) {
+    //       setMusicList(res.songs)
+    //       if (res.more) {
+    //         offset = (offset + 1) * 30
+    //         getMusicList()
+    //       } else {
+    //         if (isPlayAll) {
+    //           isPlayAll = false
+    //           store.commit('setMusicList', playMusicList)
+    //         }
+    //       }
+    //     }
+    //   })
+    // }
+    //
+    // const setMusicList = (list:any) => {
+    //   const songList = []
+    //   for (const [index, item] of list.entries()) {
+    //     const song:any = {
+    //       index: index,
+    //       id: item.id,
+    //       name: item.name,
+    //       artist: item.ar,
+    //       album: item.al,
+    //       mvId: item.mv,
+    //       duration: item.dt / 1000,
+    //       publishTime: item.publishTime,
+    //       privileges: item.privileges,
+    //       fee: item.fee,
+    //       noCopyrightRcmd: item.noCopyrightRcmd,
+    //       canPlay: null,
+    //       listId: listId
+    //     }
+    //     song.canPlay = playAble(song)
+    //     songList.push(song)
+    //     if (song.canPlay.able) {
+    //       song.index = playIndex
+    //       playIndex++
+    //       playMusicList.push(song)
+    //     }
+    //   }
+    //   musicList.value = musicList.value.concat(songList)
+    // }
 
     const playAll = () => {
       if (playMusicList.length > 0) {
-        isPlayAll = true
+        // isPlayAll = true
         store.commit('setCurrMusic', playMusicList[0])
         store.commit('setMusicList', playMusicList)
       }
@@ -106,7 +144,7 @@ export default defineComponent({
 
     const playSelect = (music:any) => {
       if (music.canPlay.able) {
-        isPlayAll = true
+        // isPlayAll = true
         for (const item of playMusicList) {
           if (item.id === music.id) {
             store.commit('setCurrMusic', item)

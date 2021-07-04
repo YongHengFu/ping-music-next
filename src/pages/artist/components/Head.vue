@@ -6,7 +6,7 @@
     <div class="content">
       <div class="info">
         <span class="h1" style="margin-bottom: 0px">{{ artist?.name }}</span>
-        <button class="discolour like-button"><svg-icon name="love" /></button>
+        <button class="discolour like-button" :class="isCollect?'like-active':''" @click="changeCollect"><svg-icon name="love" /></button>
       </div>
       <div>
         <span class="works">{{ artist?.musicSize }}首歌 • {{ artist?.albumSize }}张专辑 • {{ artist?.mvSize }}支MV</span>
@@ -19,8 +19,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, computed, onUpdated } from 'vue'
+import { useStore } from 'vuex'
 import { getArtistInfo } from '@/api/music'
+import { collectArtist } from '@/api/user'
 
 export default defineComponent({
   name: 'Info',
@@ -28,11 +30,46 @@ export default defineComponent({
     artistId: String
   },
   setup(props, ctx) {
+    const store = useStore()
     const artist = ref({})
+    const isCollect = ref(false)
+    const collectList = computed(() => store.state.collectArtistList)
+
+    const getCollectState = () => {
+      if (collectList.value.indexOf(props.artistId) !== -1) {
+        isCollect.value = true
+      } else {
+        isCollect.value = false
+      }
+    }
+
+    const changeCollect = () => {
+      const param = {
+        id: props.artistId,
+        t: 1
+      }
+      if (isCollect.value) {
+        param.t = 0
+      }
+      collectArtist(param).then((res:any) => {
+        if (res.code === 200) {
+          if (isCollect.value) {
+            isCollect.value = false
+            const index = collectList.value.indexOf(props.artistId)
+            store.commit('setCollectArtistList', collectList.value.slice(index, 1))
+          } else {
+            isCollect.value = true
+            const list = collectList.value
+            list.push(props.artistId)
+            store.commit('setCollectArtistList', list)
+          }
+        }
+      })
+    }
 
     const getArtistIndfoData = () => {
       const param = { id: props?.artistId }
-      getArtistInfo(param).then((res) => {
+      getArtistInfo(param).then((res:any) => {
         if (res?.code === 200) {
           artist.value = res?.data?.artist
         }
@@ -41,10 +78,17 @@ export default defineComponent({
 
     onMounted(() => {
       getArtistIndfoData()
+      getCollectState()
+    })
+
+    onUpdated(() => {
+      getCollectState()
     })
 
     return {
-      artist
+      artist,
+      isCollect,
+      changeCollect
     }
   }
 })
@@ -101,5 +145,8 @@ export default defineComponent({
   outline: none;
   font-weight: bolder;
   color: #1a1a1a;
+}
+.like-active{
+  color: red!important;
 }
 </style>

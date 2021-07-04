@@ -23,7 +23,7 @@ export default defineComponent({
     const source = ref('')
     const autoPlay = ref('')
     let rand = [0]
-    let prevIndex = 0
+    const prevIndex = 0
     let isFirst = true // 当前歌曲是否恢复的数据
 
     // 待播列表 [id]
@@ -176,7 +176,7 @@ export default defineComponent({
 
     const prev = () => {
       let index = currMusic.value?.index
-      if (index > 1) {
+      if (index > 0) {
         index--
       }
       store.commit('setCurrMusic', musicList.value[index])
@@ -203,19 +203,19 @@ export default defineComponent({
       store.commit('setCurrMusic', musicList.value[index])
     }
 
-    const setRecords = (id:string) => {
-      const list = records.value
-      const index = list.indexOf(id)
-      if (index === -1) {
-        list.push(id)
-        prevIndex = list.length - 1
-      } else {
-        list.splice(index, 1)
-        prevIndex = index
-        list.push(id)
-      }
-      store.commit('setRecords', list)
-    }
+    // const setRecords = (id:string) => {
+    //   const list = records.value
+    //   const index = list.indexOf(id)
+    //   if (index === -1) {
+    //     list.push(id)
+    //     prevIndex = list.length - 1
+    //   } else {
+    //     list.splice(index, 1)
+    //     prevIndex = index
+    //     list.push(id)
+    //   }
+    //   store.commit('setRecords', list)
+    // }
 
     const initMediaSession = () => {
       const mediaNavigator:any = navigator
