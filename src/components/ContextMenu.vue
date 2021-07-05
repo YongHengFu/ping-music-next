@@ -9,7 +9,7 @@
             v-for="(item,index) of info.artists"
             :key="item.id"
           >
-            <span class="discolour">{{ item.name }}</span>
+            <span v-artist="item?.id" class="discolour">{{ item.name }}</span>
             <span v-if="index!==info.artists.length-1">/</span>
           </span>
         </div>
@@ -17,8 +17,8 @@
     </div>
     <HR align="center" width="100%" color="#cccccc" />
     <div class="second">
-      <span class="option">播放</span>
-      <span class="option">下一首播放</span>
+      <span class="option" @click="playSelect">播放</span>
+      <span class="option" @click="nextPlay">下一首播放</span>
     </div>
     <HR align="center" width="100%" color="#cccccc" />
     <div class="third">
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, onMounted, ref, onUpdated } from 'vue'
+import { defineComponent, computed, onMounted, ref, onUpdated, onBeforeUnmount, onActivated, onBeforeUpdate } from 'vue'
 import { useStore } from 'vuex'
 import coverImage from '@/assets/image/cover2.jpg'
 export default defineComponent({
@@ -60,15 +60,39 @@ export default defineComponent({
       }
     }
 
-    onUpdated(() => {
+    const playSelect = () => {
+      ctx.emit('playSelect')
+    }
+
+    const nextPlay = () => {
+      ctx.emit('nextPlay')
+    }
+
+    onMounted(() => {
       x.value = getX()
       y.value = getY()
+      document.onmousedown = (e) => {
+        if (!menu.value.contains(e.target)) {
+          ctx.emit('close')
+        }
+      }
+      document.onwheel = () => {
+        ctx.emit('close')
+        document.onwheel = null
+      }
+    })
+
+    onBeforeUnmount(() => {
+      document.onmousedown = null
+      document.onwheel = null
     })
     return {
       menu,
       coverImage,
       x,
-      y
+      y,
+      playSelect,
+      nextPlay
     }
   }
 })

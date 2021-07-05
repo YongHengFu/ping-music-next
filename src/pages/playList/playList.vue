@@ -31,7 +31,14 @@
         <svg-icon name="top" />
       </div>
     </div>
-    <ContextMenu v-if="Object.keys(menuInfo).length>0" v-show="isShowMenu" :point-x="pointX" :point-y="pointY" :info="menuInfo" />
+    <ContextMenu
+      v-if="Object.keys(menuInfo).length>0&&isShowMenu"
+      :point-x="pointX"
+      :point-y="pointY"
+      :info="menuInfo"
+      @close="isShowMenu=false"
+      @playSelect="menuPlay"
+    />
   </div>
 </template>
 
@@ -71,6 +78,7 @@ export default defineComponent({
     let isPlayAll = false
     let currIndexs:boolean[] = []
     const listId = 'playList' + route.params.id
+    let selectItem = null
 
     const getListData = async(id:string) => {
       const param = { 'id': id }
@@ -183,6 +191,7 @@ export default defineComponent({
     }
 
     const showMenu = (e: { preventDefault: () => void; x: number; y: number }, item: any) => {
+      selectItem = item
       e.preventDefault()
       isShowMenu.value = true
       pointX.value = e.x
@@ -193,13 +202,12 @@ export default defineComponent({
         artists: item.artist
       }
       menuInfo.value = info
-      document.onmousedown = () => {
-        isShowMenu.value = false
-        document.onmousedown = null
-      }
-      document.onwheel = () => {
-        isShowMenu.value = false
-        document.onwheel = null
+    }
+
+    const menuPlay = () => {
+      isShowMenu.value = false
+      if (selectItem) {
+        playSelect(selectItem)
       }
     }
 
@@ -307,6 +315,7 @@ export default defineComponent({
       playAll,
       playSelect,
       showMenu,
+      menuPlay,
       toTop,
       showPosition,
       toPosition
