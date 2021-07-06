@@ -79,7 +79,7 @@ export default defineComponent({
     let isPlayAll = false
     let currIndexs:boolean[] = []
     const listId = 'playList' + route.params.id
-    let selectItem = null
+    let selectItem:any = null
 
     const getListData = async(id:string) => {
       const param = { 'id': id }
@@ -228,7 +228,12 @@ export default defineComponent({
       const currIndex = store.state.currMusic?.index
       const list = store.state.musicList
       list.splice(currIndex + 1, 0, playItem)
-      for (let i = currIndex; i < list.length; i++) {
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].id === playItem.id && i !== currIndex + 1) {
+          list.splice(i, 1)
+          i--
+          break
+        }
         list[i].index = i
       }
       store.commit('setMusicList', list)
@@ -279,7 +284,7 @@ export default defineComponent({
       }
     }
 
-    const showPosition = (index, isCurr) => {
+    const showPosition = (index: number, isCurr: boolean) => {
       if (index === 0) {
         currIndexs = []
       }
