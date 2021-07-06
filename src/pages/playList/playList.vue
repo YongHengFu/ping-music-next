@@ -37,7 +37,8 @@
       :point-y="pointY"
       :info="menuInfo"
       @close="isShowMenu=false"
-      @playSelect="menuPlay"
+      @playNow="playNow"
+      @playWait="playWait"
     />
   </div>
 </template>
@@ -204,11 +205,33 @@ export default defineComponent({
       menuInfo.value = info
     }
 
-    const menuPlay = () => {
+    const playNow = () => {
       isShowMenu.value = false
       if (selectItem) {
         playSelect(selectItem)
       }
+    }
+
+    const playWait = () => {
+      isShowMenu.value = false
+      if (selectItem) {
+        if (selectItem.canPlay.able) {
+          addPlayItem(selectItem)
+          store.commit('setWaitNum', store.state.waitNum + 1)
+        } else {
+          message.error(selectItem.canPlay.msg)
+        }
+      }
+    }
+
+    const addPlayItem = (playItem:any) => {
+      const currIndex = store.state.currMusic?.index
+      const list = store.state.musicList
+      list.splice(currIndex + 1, 0, playItem)
+      for (let i = currIndex; i < list.length; i++) {
+        list[i].index = i
+      }
+      store.commit('setMusicList', list)
     }
 
     const computeTopPosition = () => {
@@ -315,7 +338,8 @@ export default defineComponent({
       playAll,
       playSelect,
       showMenu,
-      menuPlay,
+      playNow,
+      playWait,
       toTop,
       showPosition,
       toPosition

@@ -23,13 +23,11 @@ export default defineComponent({
     const source = ref('')
     const autoPlay = ref('')
     let rand = [0]
-    const prevIndex = 0
     let isFirst = true // 当前歌曲是否恢复的数据
 
-    // 待播列表 [id]
     const musicList = computed(() => store.state.musicList)
     const currMusic = computed(() => store.state.currMusic)
-    // 当前播放歌曲在列表中的位置
+    const waitNum = computed(() => store.state.waitNum)
 
     // 播放记录
     const records = computed(() => store.state.records)
@@ -57,7 +55,10 @@ export default defineComponent({
     // 是否切换至下一曲
     const isNext = computed(() => store.state.audio.next)
 
-    watch(currMusic, () => {
+    watch(currMusic, (newVal, oldVal) => {
+      if (waitNum.value > 0 && newVal.index !== oldVal + 1) {
+        store.commit('setWaitNum', 0)
+      }
       source.value = `https://music.163.com/song/media/outer/url?id=${currMusic.value?.id}.mp3`
       autoPlay.value = 'autoPlay'
       setMediaMetadata()
@@ -136,6 +137,7 @@ export default defineComponent({
           store.commit('setAudio', param)
         }
       }
+      setRecords(currMusic.value.id)
     }
 
     const pause = () => {
@@ -184,7 +186,7 @@ export default defineComponent({
 
     const next = () => {
       let index = currMusic.value?.index
-      if (mode.value === 2) {
+      if (mode.value === 2 && waitNum.value === 0) {
         index = Math.floor(Math.random() * musicList.value.length)
         while (rand.includes(index)) {
           index = Math.floor(Math.random() * musicList.value.length)
@@ -194,6 +196,9 @@ export default defineComponent({
           rand = []
         }
       } else {
+        if (waitNum.value > 1) {
+          store.commit('setWaitNum', waitNum.value - 1)
+        }
         if (index !== musicList.value.length - 1) {
           index++
         } else {
@@ -203,19 +208,17 @@ export default defineComponent({
       store.commit('setCurrMusic', musicList.value[index])
     }
 
-    // const setRecords = (id:string) => {
-    //   const list = records.value
-    //   const index = list.indexOf(id)
-    //   if (index === -1) {
-    //     list.push(id)
-    //     prevIndex = list.length - 1
-    //   } else {
-    //     list.splice(index, 1)
-    //     prevIndex = index
-    //     list.push(id)
-    //   }
-    //   store.commit('setRecords', list)
-    // }
+    const setRecords = (id:string) => {
+      const list = records.value
+      const index = list.indexOf(id)
+      if (index === -1) {
+        list.push(id)
+      } else {
+        list.splice(index, 1)
+        list.push(id)
+      }
+      store.commit('setRecords', list)
+    }
 
     const initMediaSession = () => {
       const mediaNavigator:any = navigator

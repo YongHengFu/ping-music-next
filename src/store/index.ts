@@ -22,6 +22,7 @@ const store = createStore({
     currMusic: {
       index: -1
     },
+    waitNum: 0, // 插队待播数量
     likeList: [],
     collectArtistList: [],
     records: [],
@@ -47,6 +48,9 @@ const store = createStore({
     },
     setCurrMusic(state, music) {
       state.currMusic = music
+    },
+    setWaitNum(state, num) {
+      state.waitNum = num
     },
     setLikeList(state, list) {
       state.likeList = list
@@ -88,6 +92,9 @@ const store = createStore({
     },
     getCurrMusic(state) {
       return state.currMusic
+    },
+    getWaitNum(state) {
+      state.waitNum
     },
     getLikeList(state) {
       return state.likeList
