@@ -17,8 +17,8 @@
     </div>
     <HR align="center" width="100%" color="#cccccc" />
     <div class="second">
-      <span class="option" @click="playSelect">播放</span>
-      <span class="option" @click="nextPlay">下一首播放</span>
+      <span class="option" @click="playNow">播放</span>
+      <span class="option" @click="playWait">下一首播放</span>
     </div>
     <HR align="center" width="100%" color="#cccccc" />
     <div class="third">
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, onMounted, ref, onUpdated, onBeforeUnmount, onActivated, onBeforeUpdate } from 'vue'
+import { defineComponent, onMounted, ref, onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
 import coverImage from '@/assets/image/cover2.jpg'
 export default defineComponent({
@@ -60,12 +60,12 @@ export default defineComponent({
       }
     }
 
-    const playSelect = () => {
-      ctx.emit('playSelect')
+    const playNow = () => {
+      ctx.emit('playNow')
     }
 
-    const nextPlay = () => {
-      ctx.emit('nextPlay')
+    const playWait = () => {
+      ctx.emit('playWait')
     }
 
     onMounted(() => {
@@ -91,8 +91,8 @@ export default defineComponent({
       coverImage,
       x,
       y,
-      playSelect,
-      nextPlay
+      playNow,
+      playWait
     }
   }
 })
