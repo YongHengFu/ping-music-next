@@ -16,22 +16,32 @@ service.interceptors.request.use((config) => {
     }
   }
   localStorage.setItem('lastTime', nowTime + '')
-
-  const cookie = localStorage.getItem('cookie')
-  if (cookie) {
-    // 注意：config.method 的判断值必须是小写的post和get
-    if (config.method === 'post') {
-      config.data = {
-        cookie: cookie,
-        ...config.data
-      }
-    } else if (config.method === 'get') {
-      config.params = {
-        cookie: cookie,
-        ...config.params
-      }
+  if (config.method === 'post') {
+    config.data = {
+      ...config.data,
+      timestamp: new Date().getTime()
+    }
+  } else if (config.method === 'get') {
+    config.params = {
+      ...config.params,
+      timestamp: new Date().getTime()
     }
   }
+  // const cookie = localStorage.getItem('cookie')
+  // if (cookie) {
+  //   // 注意：config.method 的判断值必须是小写的post和get
+  //   if (config.method === 'post') {
+  //     config.data = {
+  //       cookie: cookie,
+  //       ...config.data
+  //     }
+  //   } else if (config.method === 'get') {
+  //     config.params = {
+  //       cookie: cookie,
+  //       ...config.params
+  //     }
+  //   }
+  // }
   return config
 }, (error) => Promise.reject(error))
 
