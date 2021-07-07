@@ -223,3 +223,30 @@ export function getSimiMv(params:object) {
     params
   })
 }
+
+/** ------搜索----- **/
+
+/** 根据关键词搜索
+ @param keywords： 关键词
+ @param limit: 每页数量 , 默认为 50
+ @param offset: 偏移数量 , 用于分页 , (页数-1)*50, 其中 50 为 limit 的值
+ @param type: 搜索类型；默认为 1 即单曲 , 取值意义 : 1: 单曲, 10: 专辑, 100: 歌手, 1000: 歌单, 1002: 用户, 1004: MV, 1006: 歌词, 1009: 电台, 1014: 视频, 1018:综合
+ **/
+export function searchByKeywords(params:object) {
+  return request({
+    url: '/search',
+    method: 'get',
+    params
+  })
+}
+
+/** 获取最佳匹配
+ @param keywords： 关键词
+ **/
+export function searchBestMatch(params:object) {
+  return request({
+    url: '/search/multimatch',
+    method: 'get',
+    params
+  })
+}

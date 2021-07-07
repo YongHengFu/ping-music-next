@@ -72,7 +72,7 @@
           <div>
             <svg-icon name="left" style="margin-right: 30px;cursor: pointer" @click="routePrev" />
             <svg-icon name="right" style="cursor: pointer" @click="routeNext" />
-            <InputSearch class="search" />
+            <input v-model="searchKeyword" class="search" @keyup.enter.stop="goToSearch">
           </div>
           <div>
             <Image :src="userAvatar" :type="1" radius="50%" style="width: 30px;" />
@@ -109,7 +109,7 @@
 import { defineComponent, computed, watch, ref, toRef, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { Layout, Input, Avatar } from 'ant-design-vue'
+import { Layout } from 'ant-design-vue'
 import Loading from '@/components/Loading.vue'
 import ControlBar from '@/components/ControlBar.vue'
 import ListDrawer from '@/components/ListDrawer.vue'
@@ -135,6 +135,7 @@ import {
   UpOutlined
 } from '@ant-design/icons-vue'
 import { getLikeList } from '@/api/music'
+import search from '@/pages/search/search.vue'
 
 interface item {
   index: number;
@@ -166,8 +167,6 @@ export default defineComponent({
     LayoutSider: Layout.Sider,
     LayoutContent: Layout.Content,
     LayoutFooter: Layout.Footer,
-    InputSearch: Input.Search,
-    Avatar: Avatar,
     ControlBar,
     ListDrawer,
     Loading
@@ -179,6 +178,7 @@ export default defineComponent({
     const isShowDrawer = ref(false)
     const userAvatar = ref('')
     const nickName = ref('未登录')
+    const searchKeyword = ref('')
     const itemList = [
       {
         index: 0,
@@ -378,6 +378,10 @@ export default defineComponent({
       })
     }
 
+    const goToSearch = () => {
+      router.push('/search/' + searchKeyword.value)
+    }
+
     const routePrev = () => {
       router.go(-1)
     }
@@ -427,10 +431,12 @@ export default defineComponent({
       isShowCollect,
       currPath,
       loginState,
+      searchKeyword,
       pageChange,
       showDrawer,
       showDialog,
       openPlayList,
+      goToSearch,
       routePrev,
       routeNext
     }
@@ -523,13 +529,23 @@ export default defineComponent({
 }
 
 .search {
+  font-size: 20px;
   width: 250px;
   min-width: 150px;
   margin-left: 50px;
+  height: 100%;
+  outline: none;
+  border-radius: 20px;
+  border: none;
+  padding: 2px 15px;
+  font-weight: 600;
+  background: #ececec;
+  /*color: var(--primary-color);*/
 }
 
-.search {
-  border-radius: 20px;
+.search:focus{
+  background: #FFFFFF ;
+  border: 1px var(--primary-color) solid;
 }
 
 .listItem{

@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, createWebHashHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Layout from '@/layout/index.vue'
 import recommend from '@/pages/recommend.vue'
 import musicHall from '@/pages/MusicHall/musicHall.vue'
@@ -8,6 +8,7 @@ import playList from '@/pages/playList/playList.vue'
 import album from '@/pages/album/album.vue'
 import artist from '@/pages/artist/artist.vue'
 import videoPlayer from '@/pages/videoPlayer/VideoPlayer.vue'
+import search from '@/pages/search/search.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -57,6 +58,12 @@ const routes: Array<RouteRecordRaw> = [
         path: 'videoPlayer/:id',
         name: 'videoPlayer',
         component: videoPlayer,
+        meta: { title: 'PING', keepAlive: false }
+      },
+      {
+        path: 'search/:keywords',
+        name: 'search',
+        component: search,
         meta: { title: 'PING', keepAlive: false }
       }
     ]
