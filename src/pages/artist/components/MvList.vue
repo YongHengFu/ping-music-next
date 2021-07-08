@@ -8,6 +8,7 @@
         :image="item?.imgurl16v9"
         :video-id="item?.id"
         :text="item?.name"
+        type="mv"
       />
     </div>
   </div>

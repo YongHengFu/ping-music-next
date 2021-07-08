@@ -55,7 +55,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: { title: 'PING', keepAlive: false }
       },
       {
-        path: 'videoPlayer/:id',
+        path: 'videoPlayer/:type/:id',
         name: 'videoPlayer',
         component: videoPlayer,
         meta: { title: 'PING', keepAlive: false }

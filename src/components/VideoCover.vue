@@ -19,12 +19,13 @@ export default defineComponent({
   props: {
     image: String,
     text: String,
-    videoId: String
+    videoId: String,
+    type: String
   },
   setup(props, ctx) {
     const router = useRouter()
     const onOpen = () => {
-      router.push('/videoPlayer/' + props?.videoId)
+      router.push('/videoPlayer/' + props?.type + '/' + props?.videoId)
     }
     return {
       onOpen

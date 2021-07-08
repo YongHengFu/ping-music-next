@@ -213,12 +213,45 @@ export function getMvUrl(params:object) {
   })
 }
 
-/** 获取相似mv
+/** 获取相关mv
  @param mvid:mv的id
  **/
 export function getSimiMv(params:object) {
   return request({
     url: '/simi/mv',
+    method: 'get',
+    params
+  })
+}
+
+/** 获取视频数据
+ @param id:视频的id
+ **/
+export function getVideoDetail(params:object) {
+  return request({
+    url: '/video/detail',
+    method: 'get',
+    params
+  })
+}
+
+/** 获取视频的url
+ @param id:视频的id
+ **/
+export function getVideoUrl(params:object) {
+  return request({
+    url: '/video/url',
+    method: 'get',
+    params
+  })
+}
+
+/** 获取相关视频
+ @param id:视频的id
+ **/
+export function getSimiVideo(params:object) {
+  return request({
+    url: '/related/allvideo',
     method: 'get',
     params
   })

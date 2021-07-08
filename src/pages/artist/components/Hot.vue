@@ -44,6 +44,7 @@
           :image="mvList[n-1]?.imgurl16v9"
           :text="mvList[n-1]?.name"
           :video-id="mvList[n-1]?.id"
+          type="mv"
         />
       </div>
     </div>

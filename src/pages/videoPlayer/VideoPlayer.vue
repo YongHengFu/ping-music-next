@@ -27,15 +27,11 @@
     </div>
     <div style="display: flex;justify-content: space-between;align-items: flex-end;margin-top: 10px">
       <span style="font-size: 24px;font-weight: bolder">{{ videoInfo?.artistName }}-{{ videoInfo?.name }}</span>
-      <!--      <div>-->
-      <!--        <span>{{ videoInfo?.publishTime }}</span>-->
-      <!--      </div>-->
     </div>
     <div style="margin-top: 30px">
       <span class="h2">相关视频</span>
-      <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
       <div class="video-list">
-        <div v-for="item of simiMvList" :key="item?.id" class="video-item">
+        <div v-for="item of simiVideoList" :key="item?.id" class="video-item">
           <Image :type="0" :src="item?.cover" radius="8px" class="video-image" @click="openVideo(item?.id)" />
           <span>{{ item?.name }}</span>
         </div>
@@ -48,7 +44,7 @@
 import { defineComponent, ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { getMvDetail, getMvUrl, getSimiMv } from '@/api/music'
+import { getMvDetail, getMvUrl, getSimiMv, getSimiVideo, getVideoDetail, getVideoUrl } from '@/api/music'
 
 export default defineComponent({
   name: 'VideoPlayer',
@@ -59,7 +55,7 @@ export default defineComponent({
     const blockNum = computed(():number => store.state.blockNum)
     const videoSrcList = ref(<any>[])
     const videoInfo = ref({})
-    const simiMvList = ref(<any>[])
+    const simiVideoList = ref(<any>[])
     const isReady = ref(false)
     const playerOptions = {
       i18n: {
@@ -87,7 +83,7 @@ export default defineComponent({
         id: route.params?.id,
         r: br
       }
-      await getMvUrl(param).then((res) => {
+      await getMvUrl(param).then((res:any) => {
         if (res.code === 200) {
           const video = {
             size: res.data.r,
@@ -101,16 +97,63 @@ export default defineComponent({
     const getSimiMvList = () => {
       const param = { mvid: route.params?.id }
       getSimiMv(param).then((res:any) => {
-        console.log(res)
         if (res.code === 200) {
-          simiMvList.value = res.mvs
+          simiVideoList.value = res.mvs
+        }
+      })
+    }
+
+    const getVideoData = () => {
+      const param = {
+        id: route.params?.id
+      }
+      getVideoDetail(param).then((res:any) => {
+        if (res.code === 200) {
+          const info = {
+            name: res.data.creator.nickname,
+            artistName: res.data.title
+          }
+          videoInfo.value = info
+        }
+      })
+    }
+
+    const getVideoPlayUrl = () => {
+      const param = {
+        id: route.params?.id
+      }
+      getVideoUrl(param).then((res:any) => {
+        if (res.code === 200) {
+          for (const item of res.urls) {
+            const video = {
+              size: item.r,
+              src: item.url
+            }
+            videoSrcList.value.push(video)
+          }
+          isReady.value = true
+        }
+      })
+    }
+
+    const getSimiVideoList = () => {
+      const param = { id: route.params?.id }
+      getSimiVideo(param).then((res:any) => {
+        if (res.code === 200) {
+          for (const item of res.data) {
+            const video = {
+              id: item.vid,
+              cover: item.coverUrl,
+              name: item.title
+            }
+            simiVideoList.value.push(video)
+          }
         }
       })
     }
 
     const openVideo = (id:string) => {
-      // router.push('/videoPlayer/' + id)
-      router.replace('/videoPlayer/' + id)
+      router.replace('/videoPlayer/' + route.params.type + '/' + id)
     }
 
     const onPlay = () => {
@@ -119,8 +162,14 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      getMvData()
-      getSimiMvList()
+      if (route.params.type === 'mv') {
+        getMvData()
+        getSimiMvList()
+      } else {
+        getVideoData()
+        getVideoPlayUrl()
+        getSimiVideoList()
+      }
     })
 
     return {
@@ -128,7 +177,7 @@ export default defineComponent({
       playerOptions,
       videoSrcList,
       videoInfo,
-      simiMvList,
+      simiVideoList,
       isReady,
       openVideo,
       onPlay
@@ -167,6 +216,7 @@ export default defineComponent({
   margin-top: 15px;
 }
 .video-image{
+  object-fit: contain;
   cursor: pointer;
   transition: 0.3s;
 }
