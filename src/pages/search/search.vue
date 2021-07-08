@@ -13,11 +13,66 @@
         </div>
       </div>
     </div>
+    <div>
+      <span class="h2">专辑</span>
+      <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
+      <div class="album-list">
+        <MaxCover
+          v-for="n of searchResults?.album?.albums?.length>(blockNum*2)?blockNum*2:searchResults?.album?.albums?.length"
+          :key="n"
+          :image="searchResults.album?.albums[n-1]?.picUrl"
+          :text="searchResults.album?.albums[n-1]?.name"
+          @open="open(1,searchResults.album?.albums[n-1]?.id)"
+          @play="playAll(1,searchResults.album?.albums[n-1]?.id)"
+        />
+      </div>
+    </div>
+    <div>
+      <span class="h2">艺人</span>
+      <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
+      <div class="simi-list">
+        <ArtistCover
+          v-for="n of searchResults?.artist?.artists?.length>(blockNum*2)?blockNum*2:searchResults?.artist?.artists?.length"
+          :key="n"
+          :image="searchResults?.artist?.artists[n-1]?.picUrl"
+          :text="searchResults?.artist?.artists[n-1]?.name"
+          :artist-id="searchResults?.artist?.artists[n-1]?.id"
+        />
+      </div>
+    </div>
+    <div>
+      <span class="h2">歌单</span>
+      <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
+      <div class="album-list">
+        <MaxCover
+          v-for="n of searchResults?.playList?.playLists?.length>(blockNum*2)?blockNum*2:searchResults?.playList?.playLists?.length"
+          :key="n"
+          :image="searchResults.playList?.playLists[n-1]?.coverImgUrl"
+          :text="searchResults.playList?.playLists[n-1]?.name"
+          @open="open(3,searchResults.playList?.playLists[n-1]?.id)"
+          @play="playAll(3,searchResults.playList?.playLists[n-1]?.id)"
+        />
+      </div>
+    </div>
+    <div>
+      <span class="h2">视频</span>
+      <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
+      <div class="mv-list">
+        <VideoCover
+          v-for="n of searchResults?.video?.videos?.length>(blockNum*2)?blockNum*2:searchResults?.video?.videos?.length"
+          :key="n"
+          :image="searchResults?.video?.videos[n-1]?.coverUrl"
+          :text="searchResults?.video?.videos[n-1]?.title"
+          :video-id="searchResults?.video?.videos[n-1]?.vid"
+          :type="searchResults?.video?.videos[n-1]?.type===0?'mv':'video'"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import MaxCover from '@/components/MaxCover.vue'
@@ -26,10 +81,19 @@ import ArtistCover from '@/components/ArtistCover.vue'
 import VideoCover from '@/components/VideoCover.vue'
 import { searchBestMatch, searchByKeywords } from '@/api/music'
 import router from '@/router'
+import { playAblume, playList } from '@/utils/musicList'
 export default defineComponent({
   name: 'Search',
+  components: {
+    MusicBlock,
+    MaxCover,
+    VideoCover,
+    ArtistCover
+  },
   setup() {
     const route = useRoute()
+    const store = useStore()
+    const blockNum = computed(():number => store.state.blockNum)
     const keywords = route.params.keywords
     const bestMatch = ref(<any>[])
     const searchResults:any = ref({
@@ -88,7 +152,6 @@ export default defineComponent({
                 bestMatch.value.push(item)
               }
             }
-            console.log(bestMatch.value)
           }
         }
       })
@@ -100,15 +163,7 @@ export default defineComponent({
       }
       searchByKeywords(param).then((res:any) => {
         if (res.code === 200) {
-          const keys = ['song', 'playList', 'video', 'artist', 'album']
-          const result = res.result
-          if (result?.orders?.length > 0) {
-            for (const key in result.orders) {
-              if (keys.indexOf(key) !== -1 && result[key]?.length > 0) {
-                searchResults.value[key] = result[key]
-              }
-            }
-          }
+          searchResults.value = res.result
         }
       })
     }
@@ -129,15 +184,27 @@ export default defineComponent({
           break
       }
     }
+
+    const playAll = (type:number, id:string) => {
+      if (type === 1) {
+        playAblume(id)
+      } else {
+        playList(id)
+      }
+    }
+
     onMounted(() => {
       getBestMatch()
-      // searchAll()
+      searchAll()
     })
 
     return {
       keywords,
+      blockNum,
       bestMatch,
-      open
+      searchResults,
+      open,
+      playAll
     }
   }
 })
@@ -150,7 +217,7 @@ export default defineComponent({
 .best-match{
   display: flex;
   align-items: center;
-  margin-top: 20px;
+  margin: 20px 0;
 }
 .best-match-item{
   width: 400px;
@@ -162,6 +229,10 @@ export default defineComponent({
   border-radius: 8px;
   margin-right: 30px;
   cursor: pointer;
+  transition: 0.2s;
+}
+.best-match-item:hover{
+  transform: translateY(-10px);
 }
 .image{
   width: 100px;
@@ -176,5 +247,26 @@ export default defineComponent({
   /*overflow: hidden;*/
   /*text-overflow: ellipsis;*/
   /*white-space:nowrap;*/
+}
+.album-list{
+  display: grid;
+  grid-template-columns: repeat(var(--block-num), var(--block-size));
+  grid-template-rows: repeat(1, calc(var(--block-size) + 15px));
+  grid-gap: 20px 20px;
+  margin: 20px 0;
+}
+.mv-list{
+  display: grid;
+  grid-template-columns: repeat(var(--block-num), var(--block-size));
+  grid-template-rows: repeat(1, calc(var(--block-size) * (9 / 16) + 15px));
+  grid-gap: 20px 20px;
+  margin: 20px 0;
+}
+.simi-list{
+  display: grid;
+  grid-template-columns: repeat(var(--block-num), var(--block-size));
+  grid-template-rows: repeat(1, calc(var(--block-size) + 15px));
+  grid-gap: 20px 20px;
+  margin: 20px 0;
 }
 </style>
