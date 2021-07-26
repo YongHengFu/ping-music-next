@@ -72,7 +72,7 @@
           <div>
             <svg-icon name="left" style="margin-right: 30px;cursor: pointer" @click="routePrev" />
             <svg-icon name="right" style="cursor: pointer" @click="routeNext" />
-            <input v-model="searchKeyword" class="search" @keyup.enter.stop="goToSearch">
+            <input v-model="searchKeyword" class="search" @keyup.enter.stop="goToSearch" @focus="showSearchDialog=true" @focusout="showSearchDialog=false">
           </div>
           <div>
             <Image :src="userAvatar" :type="1" radius="50%" style="width: 30px;" />
@@ -101,6 +101,7 @@
         </LayoutFooter>
       </Layout>
     </Layout>
+    <SearchDialog v-if="showSearchDialog"  :search-keyword="searchKeyword" />
   </div>
 </template>
 
@@ -113,6 +114,7 @@ import { Layout } from 'ant-design-vue'
 import Loading from '@/components/Loading.vue'
 import ControlBar from '@/components/ControlBar.vue'
 import ListDrawer from '@/components/ListDrawer.vue'
+import SearchDialog from '@/components/SearchDialog.vue'
 import { getAccountInfo, getCollectArtist, getUserPlayList } from '@/api/user'
 import { message } from 'ant-design-vue'
 import { debounce } from '@/utils/frequency'
@@ -135,7 +137,6 @@ import {
   UpOutlined
 } from '@ant-design/icons-vue'
 import { getLikeList } from '@/api/music'
-import search from '@/pages/search/search.vue'
 
 interface item {
   index: number;
@@ -169,6 +170,7 @@ export default defineComponent({
     LayoutFooter: Layout.Footer,
     ControlBar,
     ListDrawer,
+    SearchDialog,
     Loading
   },
   setup() {
@@ -179,6 +181,7 @@ export default defineComponent({
     const userAvatar = ref('')
     const nickName = ref('未登录')
     const searchKeyword = ref('')
+    const showSearchDialog = ref(false)
     const itemList = [
       {
         index: 0,
@@ -432,6 +435,7 @@ export default defineComponent({
       currPath,
       loginState,
       searchKeyword,
+      showSearchDialog,
       pageChange,
       showDrawer,
       showDialog,
