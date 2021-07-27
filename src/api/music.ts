@@ -287,7 +287,7 @@ export function searchBestMatch(params:object) {
 /** 获取热搜列表 **/
 export function getHotSearch() {
   return request({
-    url: '/search/hot',
+    url: '/search/hot/detail',
     method: 'get'
   })
 }

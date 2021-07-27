@@ -1,9 +1,14 @@
 <template>
-  <div ref="searchDialog" class="search-dialog">
-    <div>
-      <div v-if="historySearchList.length>0">
+  <div
+    v-if="(searchKeyword.length===0&&(historySearchList.length>0||hotSearchList.length>0))
+      ||(searchKeyword.length>0&&Object.keys(searchSuggest).length>0)"
+    ref="searchDialog"
+    class="search-dialog"
+  >
+    <div v-if="searchKeyword.length==0">
+      <div v-if="historySearchList.length>0" style="margin: 10px 15px">
         <span>搜索历史</span>
-        <span style="float: right;cursor: pointer" @click="clearHistorySearch">清空</span>
+        <span style="float: right;cursor: pointer" class="clear" @click="clearHistorySearch"><svg-icon name="trash" /></span>
         <div class="history-search">
           <span
             v-for="item of historySearchList"
@@ -13,25 +18,65 @@
           >{{ item }}</span>
         </div>
       </div>
-      <span v-if="hotSearchList.length>0">热门搜索</span>
+      <span v-if="hotSearchList.length>0" style="display:block;margin: 15px 0 5px 15px;">热门搜索</span>
       <div class="hot-search">
-        <span
+        <div
           v-for="(item,index) of hotSearchList"
-          :key="item"
-          @click="goToSearch(item.first)"
-        >{{index}}. {{ item.first }}</span>
+          :key="item.searchWord"
+          class="hot-search-item"
+          @click="goToSearch(item.searchWord)"
+        >
+          <span class="index" :style="index<3?'color:red':''">{{ index }}</span>
+          <div>
+            <div>
+              <span class="keyword">{{ item.searchWord }}</span>
+              <svg-icon v-if="index<3" name="fire-fill" style="color: red;font-size: 14px;margin-left: 5px" />
+              <span class="score">{{ item.score }}</span>
+            </div>
+            <div>
+              <span class="content">{{ item.content }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <!--    <div v-else>-->
-    <!--      <span>热门搜索</span>-->
-    <!--    </div>-->
+    <div v-else class="search-suggest">
+      <span style="padding: 5px;color: #000000;font-weight: 500">猜您想找：</span>
+      <div v-if="searchSuggest?.songs?.length>0" class="search-suggest-item">
+        <span class="title">歌曲</span>
+        <span v-for="item of searchSuggest.songs" :key="item.id" class="content" @click="playMusic(item.id)">{{ item.name }}-
+          <span v-for="(item2,index2) of item.artists" :key="item2.id">
+            {{ item2.name }}{{ index2===item.artists.length-1?'':'/' }}
+          </span>
+        </span>
+      </div>
+
+      <div v-if="searchSuggest?.artists?.length>0" class="search-suggest-item">
+        <span class="title">歌手</span>
+        <span v-for="item of searchSuggest.artists" :key="item.id" class="content" @click="goToArtist(item.id)">{{ item.name }}
+        </span>
+      </div>
+
+      <div v-if="searchSuggest?.albums?.length>0" class="search-suggest-item">
+        <span class="title">专辑</span>
+        <span v-for="item of searchSuggest.albums" :key="item.id" class="content" @click="goToAlbum(item.id)">{{ item.name }}-{{ item.artist.name }}
+        </span>
+      </div>
+
+      <div v-if="searchSuggest?.playlists?.length>0" class="search-suggest-item">
+        <span class="title">歌单</span>
+        <span v-for="item of searchSuggest.playlists" :key="item.id" class="content" @click="goToPlaylist(item.id)">{{ item.name }}
+        </span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import {getHotSearch, searchBestMatch} from '@/api/music'
+import { getHotSearch, getSearchSuggest } from '@/api/music'
+import { playSingle } from '@/utils/musicList'
 
 export default defineComponent({
   name: 'SearchDialog',
@@ -42,8 +87,14 @@ export default defineComponent({
     const router = useRouter()
     const searchDialog = ref()
     const historySearchList = ref([])
-    const hotSearchList = ref([])
-    const searchSuggestList = ref(<any>[])
+    const hotSearchList = ref(<any>[])
+    const searchSuggest = ref({})
+
+    watch(props, () => {
+      if (props?.searchKeyword && props.searchKeyword.length > 0) {
+        getSearchSuggestData()
+      }
+    })
 
     const getHistorySearchList = () => {
       const historySearchStr = localStorage.getItem('historySearch')
@@ -61,10 +112,27 @@ export default defineComponent({
       ctx.emit('search', item)
     }
 
+    const playMusic = (id:string) => {
+      ctx.emit('close')
+      playSingle(id)
+    }
+    const goToArtist = (id:string) => {
+      ctx.emit('close')
+      router.push('/artist/' + id)
+    }
+    const goToAlbum = (id:string) => {
+      ctx.emit('close')
+      router.push('/album/' + id)
+    }
+    const goToPlaylist = (id:string) => {
+      ctx.emit('close')
+      router.push('/playlist/' + id)
+    }
+
     const getHotSearchList = () => {
       getHotSearch().then((res:any) => {
         if (res.code === 200) {
-          hotSearchList.value = res?.result?.hots
+          hotSearchList.value = res.data
         }
       })
     }
@@ -73,51 +141,9 @@ export default defineComponent({
       const param = {
         keywords: props?.searchKeyword
       }
-      searchBestMatch(param).then((res:any) => {
+      getSearchSuggest(param).then((res:any) => {
         if (res.code === 200) {
-          const result = res.result
-          if (result?.orders?.length > 0) {
-            searchSuggestList.value.order = result.orders
-            const orders = result.orders
-            for (const key in orders) {
-              if (result[orders[key]]?.length > 0) {
-                const first = result[orders[key]][0]
-                const item = {
-                  id: first?.id,
-                  name: first?.name,
-                  image: first?.picUrl,
-                  subtitle: '',
-                  type: -1 // 0:艺人，1：专辑，2：mv，3：歌单
-                }
-                const nameList = []
-                switch (orders[key]) {
-                  case 'artist':
-                    item.subtitle = '艺人'
-                    item.type = 0
-                    break
-                  case 'album':
-                    item.subtitle = '专辑 • ' + first.artist.name
-                    item.type = 1
-                    break
-                  case 'mv':
-                    for (const art of first.artists) {
-                      nameList.push(art.name)
-                    }
-                    // item.image = first.cover
-                    item.subtitle = 'MV • ' + nameList.join('/')
-                    item.type = 2
-                    break
-                  case 'playlist':
-                    // item.image = first.coverImgUrl
-                    item.subtitle = '歌单 • ' + first.creator.nickname
-                    item.type = 3
-                    break
-                }
-                item.image = item.image + '?param=300y300'
-                searchSuggestList.value.push(item)
-              }
-            }
-          }
+          searchSuggest.value = res.result
         }
       })
     }
@@ -128,6 +154,9 @@ export default defineComponent({
           ctx.emit('close')
         }
       }
+      if (props?.searchKeyword && props.searchKeyword.length > 0) {
+        getSearchSuggestData()
+      }
       getHotSearchList()
       getHistorySearchList()
     })
@@ -136,8 +165,13 @@ export default defineComponent({
       searchDialog,
       historySearchList,
       hotSearchList,
+      searchSuggest,
       goToSearch,
-      clearHistorySearch
+      clearHistorySearch,
+      playMusic,
+      goToArtist,
+      goToAlbum,
+      goToPlaylist
     }
   }
 })
@@ -156,11 +190,11 @@ export default defineComponent({
   background: #FFFFFF;
   border: 1px solid #cccccc;
   border-radius: 8px;
-  padding: 10px 15px;
 }
 .history-search{
   display: flex;
   flex-wrap: wrap;
+  margin-top: 10px;
 }
 .history-search-item{
   background: #FFFFFF;
@@ -176,5 +210,57 @@ export default defineComponent({
 .hot-search{
   display: flex;
   flex-direction: column;
+}
+.hot-search-item{
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+  cursor: pointer;
+}
+.hot-search-item:hover{
+  background: #eeeeee;
+}
+.hot-search-item .index{
+  width: 20px;
+  margin: 0 15px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  color: #C4C4C4;
+}
+.hot-search-item .keyword{
+  font-size: 15px;
+  color: #000000;
+}
+.hot-search-item .score{
+  margin-left: 10px;
+  font-size: 10px;
+  color: #a1a1a1;
+}
+.hot-search-item .content{
+  font-size: 12px;
+  color: #a1a1a1;
+}
+
+.search-suggest{
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
+}
+.search-suggest-item{
+  display: flex;
+  flex-direction: column;
+}
+.search-suggest-item .title{
+  padding-left: 10px;
+  background: #F5F5F7;
+}
+.search-suggest-item .content{
+  padding: 3px 0;
+  padding-left: 25px;
+  cursor: pointer;
+}
+.search-suggest-item .content:hover{
+  background: #eeeeee;
 }
 </style>
