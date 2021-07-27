@@ -72,7 +72,14 @@
           <div>
             <svg-icon name="left" style="margin-right: 30px;cursor: pointer" @click="routePrev" />
             <svg-icon name="right" style="cursor: pointer" @click="routeNext" />
-            <input v-model="searchKeyword" class="search" @keyup.enter.stop="goToSearch" @focus="showSearchDialog=true" @focusout="showSearchDialog=false">
+            <input
+              ref="searchInput"
+              v-model="searchKeyword"
+              class="search"
+              @keyup.enter.stop="goToSearch(searchKeyword)"
+              @focusin="searchFocus=showSearchDialog=true"
+              @focusout="searchFocus=false"
+            >
           </div>
           <div>
             <Image :src="userAvatar" :type="1" radius="50%" style="width: 30px;" />
@@ -101,7 +108,12 @@
         </LayoutFooter>
       </Layout>
     </Layout>
-    <SearchDialog v-if="showSearchDialog"  :search-keyword="searchKeyword" />
+    <SearchDialog
+      v-if="searchFocus||showSearchDialog"
+      :search-keyword="searchKeyword"
+      @search="goToSearch"
+      @close="showSearchDialog=false"
+    />
   </div>
 </template>
 
@@ -177,10 +189,12 @@ export default defineComponent({
     const route = useRoute()
     const router = useRouter()
     const store = useStore()
+    const searchInput = ref()
     const isShowDrawer = ref(false)
     const userAvatar = ref('')
     const nickName = ref('未登录')
     const searchKeyword = ref('')
+    const searchFocus = ref(false)
     const showSearchDialog = ref(false)
     const itemList = [
       {
@@ -381,8 +395,24 @@ export default defineComponent({
       })
     }
 
-    const goToSearch = () => {
-      router.push('/search/' + searchKeyword.value)
+    const goToSearch = (keyword:string) => {
+      searchInput.value.blur()
+      showSearchDialog.value = false
+      searchKeyword.value = keyword
+      showSearchDialog.value = false
+      router.push('/search/' + keyword)
+      const historySearchStr = localStorage.getItem('historySearch')
+      let historySearchList = []
+      if (historySearchStr !== null) {
+        historySearchList = JSON.parse(historySearchStr)
+        const index = historySearchList.indexOf(keyword)
+        if (index !== -1) {
+          historySearchList.splice(index, 1)
+        }
+      }
+      historySearchList.splice(0, 0, keyword)
+      historySearchList = historySearchList.slice(0, 10)
+      localStorage.setItem('historySearch', JSON.stringify(historySearchList))
     }
 
     const routePrev = () => {
@@ -422,6 +452,7 @@ export default defineComponent({
 
     return {
       route,
+      searchInput,
       isShowDrawer,
       itemList,
       menuList,
@@ -436,6 +467,7 @@ export default defineComponent({
       loginState,
       searchKeyword,
       showSearchDialog,
+      searchFocus,
       pageChange,
       showDrawer,
       showDialog,

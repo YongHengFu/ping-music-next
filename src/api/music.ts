@@ -283,3 +283,22 @@ export function searchBestMatch(params:object) {
     params
   })
 }
+
+/** 获取热搜列表 **/
+export function getHotSearch() {
+  return request({
+    url: '/search/hot',
+    method: 'get'
+  })
+}
+
+/** 获取搜索建议
+ @param keywords : 关键词
+ **/
+export function getSearchSuggest(params:object) {
+  return request({
+    url: '/search/suggest',
+    method: 'get',
+    params
+  })
+}
