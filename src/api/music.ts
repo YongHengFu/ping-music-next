@@ -132,6 +132,17 @@ export function getPrivateContent() {
     method: 'get'
   })
 }
+/** 独家放送全部
+ @param limit: 每页数量 , 默认为 50
+ @param offset: 偏移数量 , 用于分页 , ( 页数 -1)*50, 其中 50 为 limit 的值
+ **/
+export function getPrivateContentAll(params:object) {
+  return request({
+    url: '/personalized/privatecontent/list',
+    method: 'get',
+    params
+  })
+}
 
 //
 // /** 获取推荐新音乐
