@@ -1,5 +1,5 @@
 <template>
-  <div class="musicBlock">
+  <div class="musicBlock" @dblclick="play">
     <MiniCover :image="music?.album?.picUrl" :is-curr="false" style="min-width: 50px" @click="play" />
     <div class="info">
       <span class="song">{{ music?.name }}</span>
@@ -49,6 +49,7 @@ export default defineComponent({
   flex-direction: row;
   width: 100%;
   padding: 10px;
+  cursor: pointer;
 }
 .musicBlock:hover{
   background: #ececef;
