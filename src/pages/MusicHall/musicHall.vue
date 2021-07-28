@@ -1,8 +1,8 @@
 <template>
   <div style="user-select: none;width: var(--page-width)">
     <span class="h1">音乐馆</span>
-    <Tabs :tabList="tabList" @changeTab="changeTab" />
-    <component :is="currentTabComponent" />
+    <Tabs :tab-list="tabList" @changeTab="changeTab" :tabName="goToName"/>
+    <component :is="currentTabComponent" @change="change" />
   </div>
 </template>
 
@@ -11,6 +11,7 @@ import { defineComponent, ref } from 'vue'
 import Tabs from '@/components/Tabs.vue'
 import Featured from '@/pages/MusicHall/components/featured.vue'
 import Leaderboard from '@/pages/MusicHall/components/leaderboard.vue'
+import PrivateContent from '@/pages/MusicHall/components/privateContent.vue'
 import '@lottiefiles/lottie-player'
 
 // import { homepage, getNewSong, getMusicById } from '../../api/music'
@@ -19,11 +20,14 @@ export default defineComponent({
   components: {
     Tabs,
     Featured,
-    Leaderboard
+    Leaderboard,
+    PrivateContent
   },
   setup() {
+    const goToName = ref('Featured')
     const tabList = [
       { title: '精选', name: 'Featured' },
+      { title: '独家放送', name: 'PrivateContent' },
       { title: '榜单', name: 'Leaderboard' },
       { title: '歌手', name: 'Featured' },
       { title: '专辑', name: 'Featured' },
@@ -34,11 +38,17 @@ export default defineComponent({
 
     const changeTab = (tabName:string) => {
       currentTabComponent.value = tabName
+      goToName.value = ''
+    }
+    const change = (tabName:string) => {
+      goToName.value = tabName
     }
     return {
       tabList,
       currentTabComponent,
-      changeTab
+      goToName,
+      changeTab,
+      change
     }
   }
 })

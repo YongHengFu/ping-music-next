@@ -17,6 +17,20 @@
       </div>
     </div>
     <div>
+      <span class="h2" style="cursor: pointer" @click="changeTab('PrivateContent')">独家放送<RightOutlined style="font-size: 22px;text-align: center" /></span>
+      <div class="private-content-list">
+        <div
+          v-for="item of privateContentList"
+          :key="item.id"
+          class="private-content-list-item"
+          @click="openMv(item.id)"
+        >
+          <Image :src="item.sPicUrl" :type="0" class="image" style="border-radius: 8px" />
+          <span class="title">{{ item.name }}</span>
+        </div>
+      </div>
+    </div>
+    <div>
       <span class="h2" style="margin-right: 10px">最新先听 <a><svg-icon class="play-all" name="playAll" @click="playAll" /></a>
       </span>
       <div v-if="rcmdNewSongList.length>0">
@@ -26,7 +40,7 @@
             :key="n"
             :music="rcmdNewSongList[(n-1)+(m-1)*3]"
             :index="(n-1)+(m-1)*3"
-            @play="playSelect(rcmdNewSongList[(n-1)+(m-1)*3].id)"
+            @play="playSelect(rcmdNewSongList[(n-1)+(m-1)*3])"
           />
         </div>
       </div>
@@ -38,21 +52,9 @@
           v-for="item of rcmdMvList"
           :key="item.id"
           class="mv-list-item"
+          @click="openMv(item.id)"
         >
           <Image :src="item.picUrl+'?param=960y540'" :type="0" class="image" style="border-radius: 8px" />
-          <span class="title">{{ item.name }}</span>
-        </div>
-      </div>
-    </div>
-    <div>
-      <span class="h2">独家放送<RightOutlined style="font-size: 22px;text-align: center" /></span>
-      <div class="private-content-list">
-        <div
-          v-for="item of privateContentList"
-          :key="item.id"
-          class="private-content-list-item"
-        >
-          <Image :src="item.sPicUrl" :type="0" class="image" style="border-radius: 8px" />
           <span class="title">{{ item.name }}</span>
         </div>
       </div>
@@ -61,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { RightOutlined } from '@ant-design/icons-vue'
@@ -69,9 +71,10 @@ import Banner from '@/components/Banner.vue'
 import MaxCover from '@/components/MaxCover.vue'
 import MusicBlock from '@/components/MusicBlock.vue'
 import { getPrivateContent, getRcmdMv, getRcmdNewSong, getRcmdPlayList } from '@/api/music'
-import { playList, playSingle } from '@/utils/musicList'
+import { playList } from '@/utils/musicList'
 import '@lottiefiles/lottie-player'
 import { playAble } from '@/utils/musicList'
+import { message } from 'ant-design-vue'
 
 export default defineComponent({
   name: 'Featured',
@@ -81,7 +84,7 @@ export default defineComponent({
     MaxCover,
     MusicBlock
   },
-  setup() {
+  setup(props, ctx) {
     const router = useRouter()
     const store = useStore()
     const blockNum = computed(():number => store.state.blockNum)
@@ -89,6 +92,9 @@ export default defineComponent({
     const rcmdNewSongList = ref(<any>[])
     const rcmdMvList = ref(<any>[])
     const privateContentList = ref(<any>[])
+
+    const playMusicList:any = []
+    let playIndex = 0
 
     const getRcmdPlayListData = async() => {
       const param = { limit: 12 }
@@ -100,7 +106,7 @@ export default defineComponent({
     }
 
     const getRcmdNewSongData = async() => {
-      const param = { limit: 12 }
+      const param = { limit: 30 }
       await getRcmdNewSong(param).then((res:any) => {
         if (res.code === 200) {
           setMusicList(res.result)
@@ -144,31 +150,59 @@ export default defineComponent({
         }
         song.canPlay = playAble(song)
         songList.push(song)
+        if (song.canPlay.able) {
+          song.index = playIndex
+          playIndex++
+          playMusicList.push(song)
+        }
       }
       rcmdNewSongList.value = songList
-    }
-
-    const init = async() => {
-      store.commit('setLoading', true)
-      await getRcmdPlayListData()
-      await getRcmdNewSongData()
-      await getRcmdMvData()
-      await getPrivateContentData()
-      store.commit('setLoading', false)
-    }
-    init()
-
-    const playSelect = (id:string) => {
-      playSingle(id)
     }
 
     const openList = (id:string) => {
       router.push('/playList/' + id)
     }
 
+    const openMv = (id:string) => {
+      router.push('/videoPlayer/mv' + '/' + id)
+    }
+
     const playListAll = (id:string) => {
       playList(id)
     }
+
+    const playAll = () => {
+      if (playMusicList.length > 0) {
+        // isPlayAll = true
+        store.commit('setCurrMusic', playMusicList[0])
+        store.commit('setMusicList', playMusicList)
+      }
+    }
+
+    const playSelect = (music:any) => {
+      if (music.canPlay.able) {
+        for (const item of playMusicList) {
+          if (item.id === music.id) {
+            store.commit('setCurrMusic', item)
+            store.commit('setMusicList', playMusicList)
+            return
+          }
+        }
+      } else {
+        message.error(music.canPlay.msg)
+      }
+    }
+
+    const changeTab = (tabName:string) => {
+      ctx.emit('change', tabName)
+    }
+
+    onMounted(() => {
+      getRcmdPlayListData()
+      getRcmdNewSongData()
+      getRcmdMvData()
+      getPrivateContentData()
+    })
 
     return {
       blockNum,
@@ -176,9 +210,12 @@ export default defineComponent({
       rcmdNewSongList,
       rcmdMvList,
       privateContentList,
-      playSelect,
       openList,
-      playListAll
+      openMv,
+      playListAll,
+      playAll,
+      playSelect,
+      changeTab
     }
   }
 })
@@ -209,7 +246,7 @@ export default defineComponent({
 }
 .mv-list{
   display: grid;
-  grid-template-columns: repeat(var(--block-num), calc((var(--page-width) - 60px) / 4));
+  grid-template-columns: repeat(4, calc((var(--page-width) - 60px) / 4));
   grid-template-rows: repeat(1, calc(((var(--page-width) - 60px) / 4) * (9 / 16) + 20px));
   grid-gap: 20px 20px;
   margin: 20px 0;
@@ -221,7 +258,10 @@ export default defineComponent({
   cursor: pointer;
   transition: 0.2s;
 }
-.mv-list-item:hover{
+.mv-list-item .image{
+  transition: 0.2s;
+}
+.mv-list-item .image:hover{
   transform: translateY(-10px);
 }
 .mv-list-item .title{
@@ -233,22 +273,24 @@ export default defineComponent({
 
 .private-content-list{
   display: grid;
-  grid-template-columns: repeat(var(--block-num), calc((var(--page-width) - 40px) / 3));
-  grid-template-rows: repeat(1, calc(((var(--page-width) - 40px) / 3) * (17 / 32) + 20px));
+  grid-template-columns: repeat(3, calc((var(--page-width) - 40px) / 3));
+  grid-template-rows: repeat(1, calc(((var(--page-width) - 40px) / 3) * (18 / 30) + 15px));
   grid-gap: 20px 20px;
-  margin: 20px 0;
+  margin: 15px 0;
 }
 .private-content-list-item{
   display: flex;
   flex-direction: column;
   justify-content: center;
   cursor: pointer;
+}
+.private-content-list-item .image{
   transition: 0.2s;
 }
-.private-content-list-item:hover{
+.private-content-list-item .image:hover{
   transform: translateY(-10px);
 }
-.private-content-list-item-item .title{
+.private-content-list-item .title{
   font-size: 14px;
   overflow: hidden;
   text-overflow: ellipsis;
