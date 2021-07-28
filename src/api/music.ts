@@ -22,15 +22,6 @@ export function getPlayList_Qua(params:object) {
   })
 }
 
-// 推荐新音乐
-export function getNewSong(params:object) {
-  return request({
-    url: '/personalized/newsong',
-    method: 'get',
-    params
-  })
-}
-
 // 根据id获取音乐url
 export function getMusicById(params:object) {
   return request({
@@ -101,6 +92,58 @@ export function likeMusic(params:object) {
     params // 可选参数 : like: 默认为 true 即喜欢 , 若传 false, 则取消喜欢
   })
 }
+
+/** ------推荐----- **/
+
+/** 推荐新音乐
+ @param limit:取出数量,默认为10
+ **/
+export function getRcmdNewSong(params:object) {
+  return request({
+    url: '/personalized/newsong',
+    method: 'get',
+    params
+  })
+}
+
+/** 推荐歌单
+ @param limit:取出数量,默认为30
+ **/
+export function getRcmdPlayList(params:object) {
+  return request({
+    url: '/personalized',
+    method: 'get',
+    params
+  })
+}
+
+/** 推荐mv  **/
+export function getRcmdMv() {
+  return request({
+    url: '/personalized/mv',
+    method: 'get'
+  })
+}
+
+/** 独家放送  **/
+export function getPrivateContent() {
+  return request({
+    url: '/personalized/privatecontent',
+    method: 'get'
+  })
+}
+
+//
+// /** 获取推荐新音乐
+//  @param limit:取出数量,默认为10
+//  **/
+// export function getNewSong(params:object) {
+//   return request({
+//     url: '/personalized/newsong',
+//     method: 'get',
+//     params
+//   })
+// }
 
 /** ------歌手----- **/
 

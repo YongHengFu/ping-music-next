@@ -63,6 +63,10 @@ export default defineComponent({
 .song{
   font-size: 15px;
   font-weight: bold;
+  max-width: calc(((var(--block-size) + 20px) * var(--block-num)) / 4 - 90px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
 }
 .artist{
   max-width: calc(((var(--block-size) + 20px) * var(--block-num)) / 4 - 90px);
