@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="boutique-entrance">
-      <Image :src="''" :type="0" class="mask" />
-      <Image :src="''" :type="0" class="cover" style="border-radius: 8px" />
+    <div class="switch-mode" @click="mode=!mode">
+      <Image :src="modeContent?modeContent.coverImgUrl:''" :type="0" class="mask" />
+      <Image :src="modeContent?modeContent.coverImgUrl:''" :type="0" class="cover" style="border-radius: 8px" />
       <div class="info">
-        <span class="tab"><svg-icon name="crown" /> 精品歌单</span>
-        <span class="title">时光成诗</span>
-        <span class="sub-title">岁月留声，经典不逝</span>
+        <span class="tab"><svg-icon :name="mode?'crown':'cd'" /> {{ mode?'精选歌单':'网友热碟' }}</span>
+        <span class="title">{{ modeContent?.name }}</span>
+        <span class="sub-title">{{ modeContent?.description }}</span>
       </div>
     </div>
     <div class="screen">
@@ -19,13 +19,13 @@
           @click="changeTag(index)"
         >{{ item }}</span>
       </div>
-      <div v-if="mode==='ord'" class="order">
+      <div v-if="mode" class="order">
         <span class="order-item" :class="currOrder==='\'hot\''?'order-item-active':''" @click="currOrder='\'hot\''">最热</span>
         <span> | </span>
         <span class="order-item" :class="currOrder==='\'new\''?'order-item-active':''" @click="currOrder='\'new\''">最新</span>
       </div>
     </div>
-    <div v-if="mode==='ord'" class="ord-play-list">
+    <div v-if="mode" class="ord-play-list">
       <MaxCover
         v-for="item of ordPlayList"
         :key="item.id"
@@ -35,11 +35,12 @@
         @play="playListAll(item?.id)"
       />
     </div>
-    <div v-if="mode==='bou'" class="bou-play-list">
+    <div v-else class="bou-play-list">
       <div
         v-for="item of bouPlayList"
         :key="item.id"
         class="bou-play-list-item"
+        @click="openList(item?.id)"
       >
         <MaxCover
           :image="item?.coverImgUrl"
@@ -48,9 +49,14 @@
           @play="playListAll(item?.id)"
         />
         <div class="info">
-          <span class="name">{{item?.name}}</span>
-          <span class="creator">{{item?.creator?.nickname}}</span>
-          <span class="desc">{{item?.copywriter}}</span>
+          <span class="name">{{ item?.name }}</span>
+          <span class="creator">By {{ item?.creator?.nickname }}
+            <Image
+              :src="item.creator?.avatarDetail?.identityIconUrl?item.creator.avatarDetail.identityIconUrl:''"
+              :type="1"
+              style="width: 15px;height: 15px"
+            /></span>
+          <span class="desc">{{ item?.copywriter }}</span>
         </div>
       </div>
 
@@ -72,7 +78,8 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter()
-    const mode = ref('bou')
+    const mode = ref(true)
+    const modeContent = ref(null)
     const hotTagList = ref(['全部'])
     const currTagIndex = ref(0)
     const currOrder = ref('\'hot\'')
@@ -87,6 +94,14 @@ export default defineComponent({
     watch(currOrder, () => {
       getTopPlayListData()
       getHqPlayListData()
+    })
+
+    watch(mode, () => {
+      if (!mode.value) {
+        modeContent.value = ordPlayList.value[0]
+      } else {
+        modeContent.value = bouPlayList.value[0]
+      }
     })
 
     const getHotTagList = () => {
@@ -108,6 +123,7 @@ export default defineComponent({
       getTopPlayList(param).then((res:any) => {
         if (res.code === 200) {
           ordPlayList.value = res.playlists
+          // modeContent.value = ordPlayList.value[0]
         }
       })
     }
@@ -120,6 +136,7 @@ export default defineComponent({
       getHqPlayList(param).then((res:any) => {
         if (res.code === 200) {
           bouPlayList.value = res.playlists
+          modeContent.value = bouPlayList.value[0]
         }
       })
     }
@@ -143,21 +160,22 @@ export default defineComponent({
     })
     return {
       mode,
+      modeContent,
       hotTagList,
       currTagIndex,
       currOrder,
       ordPlayList,
+      bouPlayList,
       changeTag,
       openList,
-      playListAll,
-      bouPlayList
+      playListAll
     }
   }
 })
 </script>
 
 <style scoped>
-.boutique-entrance{
+.switch-mode{
   width: 100%;
   height: calc(var(--block-size) + 20px);
   border-radius: 8px;
@@ -165,12 +183,13 @@ export default defineComponent({
   align-items: center;
   padding: 20px;
   position: relative;
-  border: 1px solid #E7AA5A;
   margin-top: 20px;
   overflow: hidden;
   cursor: pointer;
+  border: 1.5px solid #E7AA5A;
+  background: #000000;
 }
-.boutique-entrance .mask{
+.switch-mode .mask{
   width: 100%;
   height: calc(var(--block-size) + 20px);
   position: absolute;
@@ -178,44 +197,46 @@ export default defineComponent({
   right: 0;
   top: 0;
   bottom: 0;
-  filter: blur(50px);
+  filter: blur(40px);
+  opacity: 0.8;
   object-fit: cover;
   z-index: 0;
+  transform: scale(1.1,1.1);
 }
-.boutique-entrance .cover{
-  border: 1px solid #E7AA5A;
+.switch-mode .cover{
   width: calc(var(--block-size) - 20px);
   height: 100%;
-  margin-right: 10px;
+  margin-right: 20px;
+  border: 1px solid #E7AA5A;
   z-index: 2;
 }
-.boutique-entrance .info{
+.switch-mode .info{
   z-index: 2;
   display: flex;
   flex-direction: column;
 }
-.boutique-entrance .info .tab{
+.switch-mode .info .tab{
+  width: 100px;
   border: 1px solid #E7AA5A;
   border-radius: 15px;
   color: #E7AA5A;
-  padding: 5px 10px;
+  text-align: center;
+  padding: 3px 0px;
   background: #3f3f3f;
 }
-.boutique-entrance .info .title{
+.switch-mode .info .title{
   color: #FFFFFF;
   font-size: 16px;
   font-weight: bold;
   margin: 20px 0 10px 0 ;
 }
-.boutique-entrance .info .sub-title{
-  color: #b6b6b6;
-}
-.boutique-entrance .info .tab{
-  border: 1px solid #E7AA5A;
-  border-radius: 15px;
-  color: #E7AA5A;
-  padding: 5px 10px;
-  background: #3f3f3f;
+.switch-mode .info .sub-title{
+  color: #CFD0D4;
+  max-width: calc(var(--page-width) - var(--block-size) - 60px);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 .screen{
   display: flex;
@@ -233,7 +254,6 @@ export default defineComponent({
 .tags .tags-item-active{
   background: var(--light-color);
   color: var(--primary-color);
-  /*font-weight: bolder;*/
 }
 .order .order-item{
   cursor: pointer;
@@ -258,10 +278,28 @@ export default defineComponent({
 }
 .bou-play-list-item{
   display: flex;
+  cursor: pointer;
 }
 .bou-play-list-item .info{
+  max-width: calc((var(--page-width) - 40px) / 3 - var(--block-size) - 10px);
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-left: 10px;
+}
+.bou-play-list-item .info span{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+}
+.bou-play-list-item .info .name{
+  font-weight: bold;
+  font-size: 16px;
+}
+.bou-play-list-item .info .creator{
+  margin: 20px 0 25px 0;
+}
+.bou-play-list-item .info .desc{
+  color: #acacac;
 }
 </style>

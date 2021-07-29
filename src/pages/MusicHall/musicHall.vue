@@ -28,15 +28,15 @@ export default defineComponent({
   setup() {
     const goToName = ref('Featured')
     const tabList = [
-      { title: '歌单', name: 'PlayList' },
       { title: '精选推荐', name: 'Featured' },
+      { title: '歌单', name: 'PlayList' },
       { title: '独家放送', name: 'PrivateContent' },
       { title: '排行榜', name: 'Leaderboard' },
       { title: '歌手', name: 'Featured' },
       { title: '视频', name: 'Featured' },
       { title: '电台', name: 'Featured' }
     ]
-    const currentTabComponent = ref('PlayList')
+    const currentTabComponent = ref('Featured')
 
     const changeTab = (tabName:string) => {
       currentTabComponent.value = tabName
