@@ -12,6 +12,7 @@ import Tabs from '@/components/Tabs.vue'
 import Featured from '@/pages/MusicHall/components/featured.vue'
 import Leaderboard from '@/pages/MusicHall/components/leaderboard.vue'
 import PrivateContent from '@/pages/MusicHall/components/privateContent.vue'
+import PlayList from '@/pages/MusicHall/components/playList.vue'
 import '@lottiefiles/lottie-player'
 
 // import { homepage, getNewSong, getMusicById } from '../../api/music'
@@ -21,20 +22,21 @@ export default defineComponent({
     Tabs,
     Featured,
     Leaderboard,
-    PrivateContent
+    PrivateContent,
+    PlayList
   },
   setup() {
     const goToName = ref('Featured')
     const tabList = [
-      { title: '精选', name: 'Featured' },
+      { title: '歌单', name: 'PlayList' },
+      { title: '精选推荐', name: 'Featured' },
       { title: '独家放送', name: 'PrivateContent' },
-      { title: '榜单', name: 'Leaderboard' },
+      { title: '排行榜', name: 'Leaderboard' },
       { title: '歌手', name: 'Featured' },
-      { title: '专辑', name: 'Featured' },
       { title: '视频', name: 'Featured' },
       { title: '电台', name: 'Featured' }
     ]
-    const currentTabComponent = ref('Featured')
+    const currentTabComponent = ref('PlayList')
 
     const changeTab = (tabName:string) => {
       currentTabComponent.value = tabName

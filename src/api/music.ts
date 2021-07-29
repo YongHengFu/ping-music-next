@@ -156,6 +156,42 @@ export function getPrivateContentAll(params:object) {
 //   })
 // }
 
+/** ------歌单----- **/
+
+/** 热门歌单标签  **/
+export function getHotTagsPlayList() {
+  return request({
+    url: '/playlist/hot',
+    method: 'get'
+  })
+}
+
+/** 获取歌单(网友精选碟)
+ @param order: 可选值为 'new' 和 'hot', 分别对应最新和最热 , 默认为 'hot'
+ @param cat: tag, 比如 " 华语 "、" 古风 " ... , 默认为 "全部"
+ @param limit: 取出歌单数量 , 默认为 50
+ @param offset: 偏移数量 , 用于分页 , ( 页数 -1)*50, 其中 50 为 limit 的值
+ **/
+export function getTopPlayList(params:object) {
+  return request({
+    url: '/top/playlist',
+    method: 'get',
+    params
+  })
+}
+/** 获取歌单(精品歌单)
+ @param cat: tag, 比如 " 华语 "、" 古风 " ... , 默认为 "全部"
+ @param limit: 取出歌单数量 , 默认为 20
+ @param before: 分页参数,取上一页最后一个歌单的 updateTime 获取下一页数据
+ **/
+export function getHqPlayList(params:object) {
+  return request({
+    url: '/top/playlist/highquality',
+    method: 'get',
+    params
+  })
+}
+
 /** ------歌手----- **/
 
 /** 获取歌手信息和热门歌曲
