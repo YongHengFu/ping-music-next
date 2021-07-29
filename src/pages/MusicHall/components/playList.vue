@@ -123,7 +123,9 @@ export default defineComponent({
       getTopPlayList(param).then((res:any) => {
         if (res.code === 200) {
           ordPlayList.value = res.playlists
-          // modeContent.value = ordPlayList.value[0]
+          if (!mode.value) {
+            modeContent.value = ordPlayList.value[0]
+          }
         }
       })
     }
@@ -137,6 +139,9 @@ export default defineComponent({
         if (res.code === 200) {
           bouPlayList.value = res.playlists
           modeContent.value = bouPlayList.value[0]
+          if (mode.value) {
+            modeContent.value = bouPlayList.value[0]
+          }
         }
       })
     }
