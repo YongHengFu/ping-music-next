@@ -276,7 +276,7 @@ export default defineComponent({
 }
 .bou-play-list{
   display: grid;
-  grid-template-columns: repeat(3, calc((var(--page-width) - 40px) / 3));
+  grid-template-columns: repeat(2, calc((var(--page-width) - 20px) / 2));
   grid-template-rows: repeat(1, var(--block-size));
   grid-gap: 20px 20px;
   margin: 20px 0;
@@ -286,11 +286,11 @@ export default defineComponent({
   cursor: pointer;
 }
 .bou-play-list-item .info{
-  max-width: calc((var(--page-width) - 40px) / 3 - var(--block-size) - 10px);
+  max-width: calc((var(--page-width) - 20px) / 2 - var(--block-size) - 20px);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-left: 10px;
+  margin-left: 20px;
 }
 .bou-play-list-item .info span{
   overflow: hidden;
