@@ -205,6 +205,20 @@ export function getArtist(params:object) {
   })
 }
 
+/** 获取歌手列表
+ @param limit: 每页数量 , 默认为 30
+ @param offset: 偏移数量 , 用于分页 , ( 页数 -1)*50, 其中 50 为 limit 的值
+ @param type 取值:-1:全部,1:男歌手,2:女歌手,3:乐队
+ @param area 取值:-1:全部,7华语,96欧美,8:日本,16韩国,0:其他
+**/
+export function getArtistList(params:object) {
+  return request({
+    url: '/artist/list',
+    method: 'get',
+    params
+  })
+}
+
 /** 获取歌手热门歌曲(50首)
  @param id:歌手id
 **/

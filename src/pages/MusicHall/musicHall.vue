@@ -13,9 +13,9 @@ import Featured from '@/pages/MusicHall/components/featured.vue'
 import Leaderboard from '@/pages/MusicHall/components/leaderboard.vue'
 import PrivateContent from '@/pages/MusicHall/components/privateContent.vue'
 import PlayList from '@/pages/MusicHall/components/playList.vue'
+import Artist from '@/pages/MusicHall/components/Artist.vue'
 import '@lottiefiles/lottie-player'
 
-// import { homepage, getNewSong, getMusicById } from '../../api/music'
 export default defineComponent({
   name: 'MusicHall',
   components: {
@@ -23,7 +23,8 @@ export default defineComponent({
     Featured,
     Leaderboard,
     PrivateContent,
-    PlayList
+    PlayList,
+    Artist
   },
   setup() {
     const goToName = ref('Featured')
@@ -32,8 +33,7 @@ export default defineComponent({
       { title: '歌单', name: 'PlayList' },
       { title: '独家放送', name: 'PrivateContent' },
       { title: '排行榜', name: 'Leaderboard' },
-      { title: '歌手', name: 'Featured' },
-      { title: '视频', name: 'Featured' },
+      { title: '歌手', name: 'Artist' },
       { title: '电台', name: 'Featured' }
     ]
     const currentTabComponent = ref('Featured')

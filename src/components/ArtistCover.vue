@@ -1,7 +1,7 @@
 <template>
   <div class="artist-cover">
     <Image
-      :src="image+'?param=500y500'"
+      :src="image+'?param=300y300'"
       :type="0"
       radius="50%"
       class="image"
