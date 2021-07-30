@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue'
 import store from '@/store'
+import Cookie from 'js-cookie'
 
 const service = axios.create({
   baseURL: (import.meta.env.VITE_APP_BASE_URL) as string,
@@ -16,32 +17,20 @@ service.interceptors.request.use((config) => {
     }
   }
   localStorage.setItem('lastTime', nowTime + '')
+
   if (config.method === 'post') {
     config.data = {
       ...config.data,
-      timestamp: new Date().getTime()
+      timestamp: new Date().getTime(),
+      cookie: `MUSIC_U=${Cookie.get('MUSIC_U')};`
     }
   } else if (config.method === 'get') {
     config.params = {
       ...config.params,
-      timestamp: new Date().getTime()
+      timestamp: new Date().getTime(),
+      cookie: `MUSIC_U=${Cookie.get('MUSIC_U')};`
     }
   }
-  // const cookie = localStorage.getItem('cookie')
-  // if (cookie) {
-  //   // 注意：config.method 的判断值必须是小写的post和get
-  //   if (config.method === 'post') {
-  //     config.data = {
-  //       cookie: cookie,
-  //       ...config.data
-  //     }
-  //   } else if (config.method === 'get') {
-  //     config.params = {
-  //       cookie: cookie,
-  //       ...config.params
-  //     }
-  //   }
-  // }
   return config
 }, (error) => Promise.reject(error))
 

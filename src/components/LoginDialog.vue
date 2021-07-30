@@ -184,6 +184,7 @@ export default defineComponent({
 
     const loginSuccess = async(result:any) => {
       localStorage.setItem('cookie', result.cookie)
+      setCookies(result.cookie)
       let res = result
       if (!result.account) {
         await getAccountInfo().then((result:any) => {
@@ -199,6 +200,13 @@ export default defineComponent({
       localStorage.setItem('avatarUrl', res.profile.avatarUrl)
       closeDialog()
       message.success('哈喽!~' + res.profile.nickname)
+    }
+
+    const setCookies = (cookieStr:string) => {
+      const cookies = cookieStr.split(';;')
+      cookies.map(cookie => {
+        document.cookie = cookie
+      })
     }
 
     const accountCheck = (account: string, password: string) => {
@@ -221,22 +229,22 @@ export default defineComponent({
       }
     }
 
-    const saveCookie = (cookie: string) => {
-      const cookies = cookie.split(';')
-      const list = ['_csrf', 'NMTID', 'MUSIC_U']
-      for (const item of cookies) {
-        for (const val of list) {
-          let index = item.indexOf(val)
-          if (index !== -1) {
-            index = item.indexOf('=')
-            const name = item.slice(0, index)
-            const value = item.slice(index + 1)
-            Cookie.set(name, value)
-            break
-          }
-        }
-      }
-    }
+    // const saveCookie = (cookie: string) => {
+    //   const cookies = cookie.split(';')
+    //   const list = ['_csrf', 'NMTID', 'MUSIC_U']
+    //   for (const item of cookies) {
+    //     for (const val of list) {
+    //       let index = item.indexOf(val)
+    //       if (index !== -1) {
+    //         index = item.indexOf('=')
+    //         const name = item.slice(0, index)
+    //         const value = item.slice(index + 1)
+    //         Cookie.set(name, value)
+    //         break
+    //       }
+    //     }
+    //   }
+    // }
 
     const closeDialog = () => {
       isInvalid = true
