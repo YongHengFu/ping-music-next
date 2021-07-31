@@ -2,7 +2,7 @@
   <div>
     <div class="switch-mode" @click="mode=!mode">
       <Image :src="modeContent?modeContent.coverImgUrl:''" :type="0" class="mask" />
-      <Image :src="modeContent?modeContent.coverImgUrl:''" :type="0" class="cover" style="border-radius: 8px" />
+      <Image :src="modeContent?modeContent.coverImgUrl:''" :type="0" :animation="2" class="cover" style="border-radius: 8px" />
       <div class="info">
         <span class="tab"><svg-icon :name="mode?'crown':'cd'" /> {{ mode?'精选歌单':'网友热碟' }}</span>
         <span class="title">{{ modeContent?.name }}</span>

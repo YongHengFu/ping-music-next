@@ -25,7 +25,7 @@
           class="private-content-list-item"
           @click="openMv(item.id)"
         >
-          <Image :src="item.sPicUrl" :type="0" class="image" style="border-radius: 8px" />
+          <Image :src="item.sPicUrl" :type="0" :animation="2" class="image" style="border-radius: 8px" />
           <span class="title">{{ item.name }}</span>
         </div>
       </div>
@@ -54,7 +54,7 @@
           class="mv-list-item"
           @click="openMv(item.id)"
         >
-          <Image :src="item.picUrl+'?param=960y540'" :type="0" class="image" style="border-radius: 8px" />
+          <Image :src="item.picUrl+'?param=960y540'" :type="0" :animation="2" class="image" style="border-radius: 8px" />
           <span class="title">{{ item.name }}</span>
         </div>
       </div>
@@ -258,12 +258,6 @@ export default defineComponent({
   cursor: pointer;
   transition: 0.2s;
 }
-.mv-list-item .image{
-  transition: 0.2s;
-}
-.mv-list-item .image:hover{
-  transform: translateY(-10px);
-}
 .mv-list-item .title{
   font-size: 14px;
   overflow: hidden;
@@ -283,12 +277,6 @@ export default defineComponent({
   flex-direction: column;
   justify-content: center;
   cursor: pointer;
-}
-.private-content-list-item .image{
-  transition: 0.2s;
-}
-.private-content-list-item .image:hover{
-  transform: translateY(-10px);
 }
 .private-content-list-item .title{
   font-size: 14px;

@@ -1,5 +1,7 @@
 <template>
-  <img :src="imageUrl" class="image" :style="{'border-radius':borderRadius}" @error="fallback">
+  <div class="container" :class="{'move-up':animation===1}" :style="{'border-radius':borderRadius}">
+    <img :src="imageUrl" class="content" :class="{'enlarge':animation===2}" :style="{'border-radius':borderRadius}" @error="fallback">
+  </div>
 </template>
 
 <script>
@@ -12,7 +14,8 @@ export default defineComponent({
   props: {
     src: String,
     radius: String,
-    type: Number
+    type: Number,
+    animation: Number
   },
   setup(props) {
     // const fallback = ref('')
@@ -54,7 +57,19 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.image{
+.container{
   width: 100%;
+  overflow: hidden;
+  transition: transform 0.5s;
+}
+.content{
+  width: 100%;
+  transition: transform 0.5s;
+}
+.move-up:hover{
+  transform: translateY(-10px);
+}
+.enlarge:hover{
+  transform: scale(1.2);
 }
 </style>

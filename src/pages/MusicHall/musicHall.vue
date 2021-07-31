@@ -13,7 +13,7 @@ import Featured from '@/pages/MusicHall/components/featured.vue'
 import Leaderboard from '@/pages/MusicHall/components/leaderboard.vue'
 import PrivateContent from '@/pages/MusicHall/components/privateContent.vue'
 import PlayList from '@/pages/MusicHall/components/playList.vue'
-import Artist from '@/pages/MusicHall/components/Artist.vue'
+import Artist from '@/pages/MusicHall/components/artist.vue'
 import '@lottiefiles/lottie-player'
 
 export default defineComponent({

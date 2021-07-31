@@ -3,6 +3,7 @@
     <Image
       :src="image+'?param=300y300'"
       :type="0"
+      :animation="2"
       radius="50%"
       class="image"
       @click="openArtist"
@@ -49,10 +50,5 @@ export default defineComponent({
   height: calc(var(--block-size) - 10%);
   object-fit: cover;
   cursor: pointer;
-  transition: 0.3s;
-}
-.image:hover{
-  transform: translateY(-10px);
-  /*transform: rotate(360deg);*/
 }
 </style>

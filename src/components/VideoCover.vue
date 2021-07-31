@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="cover" @click="onOpen">
-      <Image :src="image+'?param=960y540'" :type="0" class="image" style="border-radius: 8px" />
+      <Image :src="image+'?param=960y540'" :animation="2" :type="0" class="image" style="border-radius: 8px" />
       <div class="play">
         <svg-icon name="play-fill" class="play-icon" />
         <Image :src="image+'?param=960y540'" :type="0" class="mask" />
@@ -39,12 +39,8 @@ export default defineComponent({
   position: relative;
   width: var(--block-size);
   height: calc(var(--block-size) * (9 / 16));
-  transition: 0.2s;
   background-size: cover;
   cursor: pointer;
-}
-.cover:hover{
-  transform: translateY(-10px);
 }
 .image{
   position: absolute;
@@ -67,6 +63,7 @@ export default defineComponent({
   background: rgb(191, 189, 189);
   visibility: hidden;
   transition: width 0.2s, height 0.2s;
+  pointer-events: none;
 }
 .cover:hover .play{
   visibility: visible;
