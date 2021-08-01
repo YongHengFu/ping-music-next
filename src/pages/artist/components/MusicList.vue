@@ -65,7 +65,7 @@ export default defineComponent({
           mvId: item.mv,
           duration: item.dt / 1000,
           publishTime: item.publishTime,
-          privileges: item.privileges,
+          privileges: item.privilege,
           fee: item.fee,
           noCopyrightRcmd: item.noCopyrightRcmd,
           canPlay: null,
