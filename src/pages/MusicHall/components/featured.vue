@@ -4,8 +4,8 @@
       <Banner class="banner" />
     </div>
     <div>
-      <span class="h2">推荐歌单<RightOutlined style="font-size: 22px;text-align: center" /></span>
-      <div class="qual-list">
+      <span class="h2" style="cursor: pointer" @click="changeTab('PlayList')">推荐歌单<RightOutlined style="font-size: 22px;text-align: center" /></span>
+      <div class="play-list">
         <MaxCover
           v-for="n of rcmdPlayList.length>(blockNum*2)?blockNum*2:rcmdPlayList.length"
           :key="n"
@@ -248,7 +248,7 @@ export default defineComponent({
   color: var(--primary-color);
   cursor: pointer;
 }
-.qual-list{
+.play-list{
   display: grid;
   grid-template-columns: repeat(var(--block-num), var(--block-size));
   grid-template-rows: repeat(1, calc(var(--block-size) + 15px));

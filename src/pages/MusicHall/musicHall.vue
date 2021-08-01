@@ -34,7 +34,7 @@ export default defineComponent({
       { title: '独家放送', name: 'PrivateContent' },
       { title: '排行榜', name: 'Leaderboard' },
       { title: '歌手', name: 'Artist' },
-      { title: '电台', name: 'Featured' }
+      { title: '最新先听', name: 'NewSong' }
     ]
     const currentTabComponent = ref('Featured')
 
