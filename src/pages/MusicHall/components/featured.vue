@@ -25,7 +25,15 @@
           class="private-content-list-item"
           @click="openMv(item.id)"
         >
-          <Image :src="item.sPicUrl" :type="0" :animation="2" class="image" style="border-radius: 8px" />
+          <Image
+            :src="item.sPicUrl"
+            :type="0"
+            :play-icon="true"
+            :animation="2"
+            class="image"
+            style="border-radius: 8px"
+            @play="openMv(item.id)"
+          />
           <span class="title">{{ item.name }}</span>
         </div>
       </div>
@@ -54,7 +62,15 @@
           class="mv-list-item"
           @click="openMv(item.id)"
         >
-          <Image :src="item.picUrl+'?param=960y540'" :type="0" :animation="2" class="image" style="border-radius: 8px" />
+          <Image
+            :src="item.picUrl+'?param=960y540'"
+            :type="0"
+            :play-icon="true"
+            :animation="2"
+            class="image"
+            style="border-radius: 8px"
+            @play="openMv(item.id)"
+          />
           <span class="title">{{ item.name }}</span>
         </div>
       </div>

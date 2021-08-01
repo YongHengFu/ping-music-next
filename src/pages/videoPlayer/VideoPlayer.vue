@@ -32,7 +32,16 @@
       <span class="h2">相关视频</span>
       <div class="video-list">
         <div v-for="item of simiVideoList" :key="item?.id" class="video-item">
-          <Image :type="0" :src="item?.cover" radius="8px" class="video-image" @click="openVideo(item?.id)" />
+          <Image
+            :play-icon="true"
+            :animation="2"
+            :type="0"
+            :src="item?.cover"
+            radius="8px"
+            class="video-image"
+            @click="openVideo(item?.id)"
+            @play="openVideo(item?.id)"
+          />
           <span>{{ item?.name }}</span>
         </div>
       </div>
@@ -216,11 +225,6 @@ export default defineComponent({
   margin-top: 15px;
 }
 .video-image{
-  object-fit: contain;
   cursor: pointer;
-  transition: 0.3s;
-}
-.video-image:hover{
-  transform: translateY(-10px);
 }
 </style>
