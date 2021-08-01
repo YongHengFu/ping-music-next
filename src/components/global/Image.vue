@@ -1,5 +1,5 @@
 <template>
-  <div class="container" :class="{'move-up':animation===1}" :style="{'border-radius':borderRadius}">
+  <div class="image-container" :class="{'move-up':animation===1}" :style="{'border-radius':borderRadius}">
     <div class="content" :class="{'enlarge':animation===2}">
       <img :src="imageUrl" :style="{'border-radius':borderRadius}" style="width: 100%;height:100%;object-fit: contain" @error="fallback">
       <div v-if="playIcon" class="play" @click.stop="onPlay">
@@ -69,7 +69,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.container{
+.image-container{
   width: 100%;
   overflow: hidden;
   transition: transform 0.5s;
@@ -101,7 +101,7 @@ export default defineComponent({
   visibility: hidden;
   transition: width 0.2s, height 0.2s;
 }
-.container:hover .play{
+.image-container:hover .play{
   visibility: visible;
 }
 .play-icon{

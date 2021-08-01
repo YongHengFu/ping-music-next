@@ -1,11 +1,6 @@
 <template>
   <div class="container">
-    <div :style="{'background-image': 'url(' + imgUrl + ')'}" class="cover" @click="onOpen">
-      <div class="play" @click.stop="onPlay">
-        <svg-icon name="play-fill" class="play-icon" />
-        <div :style="{'background-image': 'url(' + imgUrl + ')'}" class="mask" />
-      </div>
-    </div>
+    <Image :src="imgUrl" :play-icon="true" :type="0" class="cover" style="border-radius: 8px" @click="onOpen" @play="onPlay"/>
     <div class="list">
       <p style="font-size: 22px;font-weight: bolder;margin-bottom: 10px">{{ data.name }}</p>
       <div v-for="(item,index) of data.tracks" :key="item.first" class="music">
@@ -19,9 +14,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import coverImage from '@/assets/image/cover2.jpg'
+import Image from '@/components/global/Image.vue'
 export default defineComponent({
   name: 'BoardBlock',
-  components: { },
+  components: { Image },
   props: {
     data: {
       type: Object
@@ -59,7 +55,7 @@ export default defineComponent({
 }
 .cover{
   position: relative;
-  min-width: var(--block-size);
+  width: var(--block-size);
   height: var(--block-size);
   border-radius: 8px;
   transition: 0.2s;
