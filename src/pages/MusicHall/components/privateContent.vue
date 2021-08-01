@@ -8,7 +8,13 @@
         class="private-content-list-item"
         @click="openMv(item.id)"
       >
-        <Image :src="item.picUrl" :type="0" class="image" style="border-radius: 8px" />
+        <Image
+          :src="item.picUrl"
+          :play-icon="true"
+          :animation="2"
+          :type="0"
+          style="border-radius: 8px"
+        />
         <span class="title">{{ item.name }}</span>
       </div>
     </div>
@@ -62,12 +68,6 @@ export default defineComponent({
   flex-direction: column;
   justify-content: center;
   cursor: pointer;
-}
-.private-content-list-item .image{
-  transition: 0.2s;
-}
-.private-content-list-item .image:hover{
-  transform: translateY(-10px);
 }
 .private-content-list-item .title{
   font-size: 14px;
