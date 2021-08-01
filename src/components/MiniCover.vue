@@ -3,7 +3,6 @@
     <div :style="{'background-image': 'url(' + image + '?param=100y100)'}" class="cover" @click="onPlay">
       <div v-if="!isCurr" class="play">
         <svg-icon name="play-fill" class="play-icon" />
-        <div :style="{'background-image': 'url(' + image + '?param=100y100)'}" class="mask" />
       </div>
     </div>
     <div v-if="isCurr" class="play-animation">
@@ -84,19 +83,6 @@ export default defineComponent({
 }
 .cover:hover .play{
   visibility: visible;
-}
-.mask{
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  filter: blur(12px);
-  background: rgba(134, 133, 133, 0.9);
-  background-position: center;
-  background-size: 300%;
-  z-index: 1;
 }
 .play-icon{
   width: 60%;

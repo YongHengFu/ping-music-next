@@ -1,7 +1,7 @@
 <template>
   <div class="image-container" :class="{'move-up':animation===1}" :style="{'border-radius':borderRadius}">
     <div class="content" :class="{'enlarge':animation===2}">
-      <img :src="imageUrl" :style="{'border-radius':borderRadius}" style="width: 100%;height:100%;object-fit: contain" @error="fallback">
+      <img :src="imageUrl" :style="{'border-radius':borderRadius}" style="width: 100%;height:100%;" @error="fallback">
       <div v-if="playIcon" class="play" @click.stop="onPlay">
         <svg-icon name="play-fill" class="play-icon" />
         <div class="mask" :style="{'background-image': 'url('+imageUrl+')'}"></div>
@@ -71,14 +71,17 @@ export default defineComponent({
 <style scoped>
 .image-container{
   width: 100%;
+  height: 100%;
   overflow: hidden;
   transition: transform 0.5s;
   position: relative;
   background: #e3e3e3;
 }
-.content{
+.image-container .content{
   width: 100%;
   height: 100%;
+  display: flex;
+  align-items: center;
   transition: transform 0.5s;
 }
 .move-up:hover{

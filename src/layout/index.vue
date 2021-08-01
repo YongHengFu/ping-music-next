@@ -81,8 +81,8 @@
               @focusout="searchFocus=false"
             >
           </div>
-          <div>
-            <Image :src="userAvatar" :type="1" radius="50%" style="width: 30px;" />
+          <div style="display: flex;align-items: center">
+            <Image :src="userAvatar" :type="1" radius="50%" style="width: 30px;height: 30px;object-fit: fill" />
             <span class="discolour" style="margin: 0 10px" @click="showDialog">
               {{ nickName }}
               <svg-icon name="down" style="font-size: 11px" /></span>
