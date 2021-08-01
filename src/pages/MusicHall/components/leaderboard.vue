@@ -90,7 +90,7 @@ export default defineComponent({
       for (const [index, item] of list.entries()) {
         if (index < 4) {
           superList.value.push(item)
-        } else if (item.name.indexOf('云音乐') !== -1) {
+        } else if (item.name.indexOf('云音乐') !== -1 || item.name.indexOf('语榜') !== -1) {
           cloudList.value.push(item)
         } else {
           switch (item.name) {
@@ -99,6 +99,7 @@ export default defineComponent({
             case '中国新乡村音乐排行榜':
             case '潜力爆款榜':
             case '听歌识曲榜':
+            case '网络热歌榜':
               patternList.value.push(item)
               break
             default:
@@ -137,9 +138,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.container{
-
-}
 .super-list{
   display: grid;
   grid-template-columns: repeat(2, calc(50% - 10px));
