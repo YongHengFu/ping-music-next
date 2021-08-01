@@ -495,6 +495,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   user-select: none;
+  overflow-y: auto;
 }
 
 .layout .header {
