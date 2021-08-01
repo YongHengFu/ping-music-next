@@ -93,6 +93,17 @@ export function likeMusic(params:object) {
   })
 }
 
+/** 获取新歌速递
+ @param area 取值:0:全部,7华语,96欧美,8:日本,16韩国
+ **/
+export function getNewSongList(params:object) {
+  return request({
+    url: '/top/song',
+    method: 'get',
+    params
+  })
+}
+
 /** ------推荐----- **/
 
 /** 推荐新音乐
