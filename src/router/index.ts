@@ -9,6 +9,7 @@ import album from '@/pages/album/album.vue'
 import artist from '@/pages/artist/artist.vue'
 import videoPlayer from '@/pages/videoPlayer/VideoPlayer.vue'
 import search from '@/pages/search/search.vue'
+import video from '@/pages/video/video.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -64,6 +65,12 @@ const routes: Array<RouteRecordRaw> = [
         path: 'search/:keywords',
         name: 'search',
         component: search,
+        meta: { title: 'PING', keepAlive: false }
+      },
+      {
+        path: 'video',
+        name: 'video',
+        component: video,
         meta: { title: 'PING', keepAlive: false }
       }
     ]
