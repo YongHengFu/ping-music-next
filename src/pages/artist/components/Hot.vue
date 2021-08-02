@@ -39,7 +39,7 @@
       <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
       <div class="mv-list">
         <VideoCover
-          v-for="n of mvList.length>(blockNum*2)?blockNum*2:mvList.length"
+          v-for="n of mvList.length>8?8:mvList.length"
           :key="n"
           :image="mvList[n-1]?.imgurl16v9"
           :text="mvList[n-1]?.name"
@@ -210,8 +210,8 @@ export default defineComponent({
 }
 .mv-list{
   display: grid;
-  grid-template-columns: repeat(var(--block-num), var(--block-size));
-  grid-template-rows: repeat(1, calc(var(--block-size) * (9 / 16) + 15px));
+  grid-template-columns: repeat(4, calc((var(--page-width) - 60px) / 4));
+  grid-template-rows: repeat(1, calc(((var(--page-width) - 60px) / 4) * (9 / 16) + 15px));
   grid-gap: 20px 20px;
   margin: 20px 0;
 }

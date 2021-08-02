@@ -67,8 +67,8 @@ export default defineComponent({
 <style scoped>
 .mv-list{
   display: grid;
-  grid-template-columns: repeat(var(--block-num), var(--block-size));
-  grid-template-rows: repeat(1, calc(var(--block-size) * (9 / 16) + 15px));
+  grid-template-columns: repeat(4, calc((var(--page-width) - 60px) / 4));
+  grid-template-rows: repeat(1, calc(((var(--page-width) - 60px) / 4) * (9 / 16) + 15px));
   grid-gap: 20px 20px;
   margin: 20px 0;
 }

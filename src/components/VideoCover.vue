@@ -40,8 +40,8 @@ export default defineComponent({
 
 <style scoped>
 .cover{
-  width: var(--block-size);
-  height: calc(var(--block-size) * (9 / 16));
+  width: calc((var(--page-width) - 60px) / 4);
+  height: calc(((var(--page-width) - 60px) / 4) * (9 / 16));
   cursor: pointer;
 }
 

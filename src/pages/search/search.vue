@@ -59,7 +59,7 @@
       <!--      <span class="discolour" style="float: right;cursor: pointer">更多</span>-->
       <div class="mv-list">
         <VideoCover
-          v-for="n of searchResults?.video?.videos?.length>(blockNum*2)?blockNum*2:searchResults?.video?.videos?.length"
+          v-for="n of searchResults?.video?.videos?.length>4?4:searchResults?.video?.videos?.length"
           :key="n"
           :image="searchResults?.video?.videos[n-1]?.coverUrl"
           :text="searchResults?.video?.videos[n-1]?.title"
@@ -257,8 +257,8 @@ export default defineComponent({
 }
 .mv-list{
   display: grid;
-  grid-template-columns: repeat(var(--block-num), var(--block-size));
-  grid-template-rows: repeat(1, calc(var(--block-size) * (9 / 16) + 15px));
+  grid-template-columns: repeat(4, calc((var(--page-width) - 60px) / 4));
+  grid-template-rows: repeat(1, calc(((var(--page-width) - 60px) / 4) * (9 / 16) + 15px));
   grid-gap: 20px 20px;
   margin: 20px 0;
 }

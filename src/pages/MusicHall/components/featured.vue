@@ -56,24 +56,34 @@
     <div>
       <span class="h2">推荐MV<RightOutlined style="font-size: 22px;text-align: center" /></span>
       <div class="mv-list">
-        <div
+        <VideoCover
           v-for="item of rcmdMvList"
           :key="item.id"
-          class="mv-list-item"
-          @click="openMv(item.id)"
-        >
-          <Image
-            :src="item.picUrl+'?param=960y540'"
-            :type="0"
-            :play-icon="true"
-            :animation="2"
-            class="image"
-            style="border-radius: 8px"
-            @play="openMv(item.id)"
-          />
-          <span class="title">{{ item.name }}</span>
-        </div>
+          :image="item.picUrl"
+          :text="item.name"
+          :video-id="item?.id"
+          type="mv"
+        />
       </div>
+      <!--      <div class="mv-list">-->
+      <!--        <div-->
+      <!--          v-for="item of rcmdMvList"-->
+      <!--          :key="item.id"-->
+      <!--          class="mv-list-item"-->
+      <!--          @click="openMv(item.id)"-->
+      <!--        >-->
+      <!--          <Image-->
+      <!--            :src="item.picUrl+'?param=960y540'"-->
+      <!--            :type="0"-->
+      <!--            :play-icon="true"-->
+      <!--            :animation="2"-->
+      <!--            class="image"-->
+      <!--            style="border-radius: 8px"-->
+      <!--            @play="openMv(item.id)"-->
+      <!--          />-->
+      <!--          <span class="title">{{ item.name }}</span>-->
+      <!--        </div>-->
+      <!--      </div>-->
     </div>
   </div>
 </template>
@@ -86,6 +96,7 @@ import { RightOutlined } from '@ant-design/icons-vue'
 import Banner from '@/components/Banner.vue'
 import MaxCover from '@/components/MaxCover.vue'
 import MusicBlock from '@/components/MusicBlock.vue'
+import VideoCover from '@/components/VideoCover.vue'
 import { getPrivateContent, getRcmdMv, getRcmdNewSong, getRcmdPlayList } from '@/api/music'
 import { playList } from '@/utils/musicList'
 import '@lottiefiles/lottie-player'
@@ -98,7 +109,8 @@ export default defineComponent({
     RightOutlined,
     Banner,
     MaxCover,
-    MusicBlock
+    MusicBlock,
+    VideoCover
   },
   setup(props, ctx) {
     const router = useRouter()

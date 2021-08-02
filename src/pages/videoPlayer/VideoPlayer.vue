@@ -31,19 +31,14 @@
     <div style="margin-top: 30px">
       <span class="h2">相关视频</span>
       <div class="video-list">
-        <div v-for="item of simiVideoList" :key="item?.id" class="video-item">
-          <Image
-            :play-icon="true"
-            :animation="2"
-            :type="0"
-            :src="item?.cover"
-            radius="8px"
-            class="video-image"
-            @click="openVideo(item?.id)"
-            @play="openVideo(item?.id)"
-          />
-          <span>{{ item?.name }}</span>
-        </div>
+        <VideoCover
+          v-for="item of simiVideoList"
+          :key="item.id"
+          :image="item.cover"
+          :text="item.name"
+          :video-id="item.id"
+          :type="route.params.type"
+        />
       </div>
     </div>
   </div>
@@ -53,10 +48,14 @@
 import { defineComponent, ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import VideoCover from '@/components/VideoCover.vue'
 import { getMvDetail, getMvUrl, getSimiMv, getSimiVideo, getVideoDetail, getVideoUrl } from '@/api/music'
 
 export default defineComponent({
   name: 'VideoPlayer',
+  components: {
+    VideoCover
+  },
   setup(props, ctx) {
     const route = useRoute()
     const router = useRouter()
@@ -107,7 +106,7 @@ export default defineComponent({
       const param = { mvid: route.params?.id }
       getSimiMv(param).then((res:any) => {
         if (res.code === 200) {
-          simiVideoList.value = res.mvs
+          simiVideoList.value = res.mvs.slice(0, 4)
         }
       })
     }
@@ -155,7 +154,9 @@ export default defineComponent({
               cover: item.coverUrl,
               name: item.title
             }
-            simiVideoList.value.push(video)
+            if (simiVideoList.value.length < 4) {
+              simiVideoList.value.push(video)
+            }
           }
         }
       })
@@ -182,6 +183,7 @@ export default defineComponent({
     })
 
     return {
+      route,
       blockNum,
       playerOptions,
       videoSrcList,
@@ -217,14 +219,10 @@ export default defineComponent({
   transform: translate(-50%,-50%);
 }
 .video-list{
-  width: 100%;
   display: grid;
-  grid-template-columns: repeat(5, calc((100% - 80px) / 5));
-  grid-template-rows: repeat(1, calc(((100% - 80px) / 5) * (9 / 16) + 15px));
-  grid-gap: 10px 20px;
-  margin-top: 15px;
-}
-.video-image{
-  cursor: pointer;
+  grid-template-columns: repeat(4, calc((var(--page-width) - 60px) / 4));
+  grid-template-rows: repeat(1, calc(((var(--page-width) - 60px) / 4) * (9 / 16) + 20px));
+  grid-gap: 20px 20px;
+  margin: 20px 0;
 }
 </style>
