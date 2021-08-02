@@ -91,9 +91,8 @@ export default defineComponent({
   transform: scale(1.2);
 }
 .play{
-  width: 25%;
-  height: 0;
-  padding-bottom: 25%;
+  height: 40%;
+  aspect-ratio: 1/1;
   position: absolute;
   top: 50%;
   left: 50%;
