@@ -130,6 +130,7 @@ import SearchDialog from '@/components/SearchDialog.vue'
 import { getAccountInfo, getCollectArtist, getUserPlayList } from '@/api/user'
 import { message } from 'ant-design-vue'
 import { debounce } from '@/utils/frequency'
+import { message } from 'ant-design-vue'
 
 import {
   FireOutlined,
@@ -299,7 +300,11 @@ export default defineComponent({
     })
 
     const pageChange = (index: number) => {
-      router.push({ path: itemList[index].path })
+      if (index === 1 || index === 2) {
+        router.push({ path: itemList[index].path })
+      } else {
+        message.warning('该功能正在开发')
+      }
     }
 
     const showDrawer = () => {

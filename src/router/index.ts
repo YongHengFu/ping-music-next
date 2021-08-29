@@ -14,7 +14,7 @@ import video from '@/pages/video/video.vue'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/recommend',
+    redirect: '/musicHall',
     component: Layout,
     children: [
       {
