@@ -295,9 +295,9 @@ export default defineComponent({
       }
     })
 
-    watch(refreshLogin, () => {
-      refreshLoginState()
-    })
+    // watch(refreshLogin, () => {
+    //   refreshLoginState()
+    // })
 
     const pageChange = (index: number) => {
       if (index === 1 || index === 2) {

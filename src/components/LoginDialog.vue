@@ -203,7 +203,7 @@ export default defineComponent({
     }
 
     const setCookies = (cookieStr:string) => {
-      const cookies = cookieStr.split(';;')
+      const cookies = cookieStr.split(';')
       cookies.map(cookie => {
         document.cookie = cookie
       })
