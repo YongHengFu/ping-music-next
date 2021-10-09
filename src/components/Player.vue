@@ -2,7 +2,7 @@
   <audio
     ref="audio"
     :src="source"
-    autoplay
+    :autoplay="auto"
     @durationchange="durationchange"
     @canplay="canplay"
     @play="play"
@@ -21,7 +21,7 @@ export default defineComponent({
     const store = useStore()
     const audio:any = ref(null)
     const source = ref('')
-    const autoPlay = ref('')
+    const auto = ref(false)
     let rand = [0]
     let isFirst = true // 当前歌曲是否恢复的数据
 
@@ -60,7 +60,11 @@ export default defineComponent({
         store.commit('setWaitNum', 0)
       }
       source.value = `https://music.163.com/song/media/outer/url?id=${currMusic.value?.id}.mp3`
-      autoPlay.value = 'autoPlay'
+      if (isFirst) {
+        isFirst = false
+      } else {
+        auto.value = true
+      }
       setMediaMetadata()
     })
 
@@ -128,14 +132,9 @@ export default defineComponent({
     }
 
     const play = () => {
-      if (isFirst) {
-        audio.value.pause()
-        isFirst = false
-      } else {
-        if (!state.value) {
-          const param = { prop: 'state', value: true }
-          store.commit('setAudio', param)
-        }
+      if (!state.value) {
+        const param = { prop: 'state', value: true }
+        store.commit('setAudio', param)
       }
       setRecords(currMusic.value.id)
     }
@@ -347,7 +346,7 @@ export default defineComponent({
     onMounted(() => {
       initMediaSession()
       monitorKeyboard()
-      setTimeout(initState, 100)
+      setTimeout(initState, 0)
       window.onbeforeunload = () => {
         saveState()
       }
@@ -356,7 +355,7 @@ export default defineComponent({
     return {
       audio,
       source,
-      autoPlay,
+      auto,
       durationchange,
       progress,
       canplay,
