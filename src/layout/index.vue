@@ -324,7 +324,7 @@ export default defineComponent({
         if (res.code === 200) {
           if (!res.account) {
             logout()
-            message.error('登录失效，请重新登录!')
+            message.error('未登录，扫码登录体验更多精彩！')
           } else {
             store.commit('setLoginState', true)
           }
